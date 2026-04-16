@@ -330,8 +330,16 @@ html.dark { color-scheme: dark; }
   }
 
   /* Minimum touch targets */
-  button, a, input, select, textarea {
-    min-height: 44px;
+  button, a[class*="rounded"], [role="button"] {
+    min-height: 44px !important;
+    min-width: 44px !important;
+  }
+
+  /* Small icon buttons: use padding for touch area */
+  button[class*="w-8"], button[class*="h-8"] {
+    min-height: 44px !important;
+    min-width: 44px !important;
+    padding: 6px !important;
   }
 
   /* Better input sizing on mobile */

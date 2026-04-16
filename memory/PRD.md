@@ -76,3 +76,21 @@
 - Motto: "No Spam. No Secrets. Just Savings."
 - Fonts: Sora (headings) + DM Sans (body)
 - Brand Color: #059669 (Emerald Green)
+
+### Phase 6 - Dark Mode, Sounds & Mobile Touch (April 16, 2026)
+- [x] Dark mode toggle with comprehensive CSS overrides
+  - Shadcn CSS variables (.dark block) for all component vars
+  - Custom class dark variants: glass-nav, bg-mesh-light/auth, feature-card-shade, card-premium, bg-stats-glass, bg-cta-gradient
+  - Tailwind arbitrary value overrides: text colors, bg colors, borders
+  - Persisted in localStorage (rinkosh_theme)
+- [x] Micro-interaction sounds via Web Audio API synthesis
+  - Click, toggle, success, error, hover, tab sounds
+  - Optional: SoundToggle in navbar, stored in localStorage (rinkosh_sounds)
+  - No external audio files needed
+- [x] Mobile touch refinements
+  - Tap highlight removal, touch-action: manipulation
+  - Active scale states on buttons (0.97/0.98)
+  - 44px minimum touch targets
+  - iOS font-size 16px fix to prevent zoom
+  - Tab horizontal scroll on mobile
+  - Haptic-ready CSS classes
