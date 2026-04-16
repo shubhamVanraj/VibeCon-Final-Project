@@ -595,7 +595,15 @@ Give specific, actionable advice with numbers when possible."""
         system_message=system_msg
     ).with_model("anthropic", "claude-sonnet-4-5-20250929")
 
-    response_text = await chat.send_message(UserMessage(text=data.message))
+    try:
+        response_text = await chat.send_message(UserMessage(text=data.message))
+    except Exception as e:
+        logger.error(f"AI suggest error: {e}")
+        error_msg = str(e)
+        if "Budget" in error_msg or "budget" in error_msg:
+            response_text = "I'm currently experiencing high demand. Please try again in a few minutes, or ask your question in the meantime - I'll try to help with what I know!"
+        else:
+            response_text = "I'm having trouble connecting right now. Please try again shortly."
     return {"response": response_text, "language": data.language}
 
 
@@ -611,7 +619,11 @@ async def ai_translate(data: TranslateRequest, request: Request):
         system_message=f"Translate the given text to {target}. Only return the translated text."
     ).with_model("anthropic", "claude-sonnet-4-5-20250929")
 
-    response_text = await chat.send_message(UserMessage(text=data.text))
+    try:
+        response_text = await chat.send_message(UserMessage(text=data.text))
+    except Exception as e:
+        logger.error(f"Translation error: {e}")
+        response_text = data.text
     return {"translated_text": response_text, "target_language": data.target_language}
 
 

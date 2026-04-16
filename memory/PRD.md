@@ -21,37 +21,39 @@ Build a fintech platform helping Indian users find the best loan transparently w
 - Credit score building guidance
 - Privacy-first approach
 
-## What's Been Implemented (April 16, 2026)
+## What's Been Implemented
+
+### Phase 1 (April 16, 2026)
 - [x] Landing page with trust-first messaging
 - [x] JWT + Google OAuth authentication
-- [x] 4-step onboarding flow (loan type, employment, credit info, loan details)
-- [x] Loan recommendation engine (19 products across 6 categories)
+- [x] 4-step onboarding flow
+- [x] Loan recommendation engine (19 products, 6 categories)
 - [x] Lead management with consent tracking
 - [x] Credit builder suggestions
 - [x] AI advisor with Claude Sonnet 4.5
 - [x] Voice input with OpenAI Whisper
 - [x] Multi-language support (EN/HI toggle)
-- [x] Privacy & trust layer
+
+### Phase 2 (April 16, 2026 - Enhancements)
+- [x] Forgot Password / Reset Password flow (3-step OTP-based)
+- [x] Profile editing post-onboarding (Sheet with form fields)
+- [x] Side-by-side loan comparison (Table + Card views, 2-4 loans)
+- [x] Credit Score integration placeholder (CIBIL/Experian/Equifax links)
+- [x] Landing page visual upgrade (hero image, trust section image, savings overlay)
+- [x] UI/UX upgrade (hover states, animations, depth)
+- [x] Multi-language expansion (new translation keys for all features)
+- [x] AI error handling (graceful fallback on budget exceeded)
 
 ## Prioritized Backlog
-### P0 (Critical)
-- None remaining for MVP
-
 ### P1 (Important)
-- Password reset flow
-- User profile editing after onboarding
-- Loan comparison side-by-side view
-- CIBIL/Experian integration placeholder
+- Email/SMS OTP delivery for password reset (currently shows debug OTP)
+- CIBIL/Experian actual API integration
+- Admin analytics dashboard
+- Notification system for lead status changes
 
 ### P2 (Nice to have)
 - Commission tracking/attribution system
-- Email notifications for lead updates
-- Admin dashboard for analytics
-- More granular loan filters (amount range, tenure)
+- More granular loan filters
 - User testimonials on landing page
-
-## Next Tasks
-1. Add password forgot/reset flow
-2. Profile editing capability
-3. Side-by-side loan comparison feature
-4. Push notification for lead status changes
+- Referral system
+- Dark mode toggle
