@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
 import { LanguageToggle } from '../components/LanguageToggle';
-import { useAnalytics } from '../lib/analytics';
+import { useAnalytics, usePageView } from '../lib/analytics';
 import api from '../lib/api';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
@@ -22,6 +22,7 @@ export default function OnboardingPage() {
   const { updateUser } = useAuth();
   const { t, language } = useLanguage();
   const { track } = useAnalytics();
+  usePageView('onboarding');
   const navigate = useNavigate();
 
   const loanTypes = [
