@@ -1,0 +1,129 @@
+{
+  "theme": "light",
+  "archetype": "Swiss & High-Contrast (Archetype 4) mixed with organic trust elements",
+  "mood": "Trustworthy, Transparent, Clean, Premium",
+  "colors": {
+    "background": {
+      "primary": "#FFFFFF",
+      "secondary": "#F9F9FB",
+      "tertiary": "#F3F4F6",
+      "overlay": "rgba(255, 255, 255, 0.8)"
+    },
+    "text": {
+      "primary": "#0A0A0A",
+      "secondary": "#4B5563",
+      "tertiary": "#9CA3AF",
+      "inverse": "#FFFFFF"
+    },
+    "brand": {
+      "primary": "#059669",
+      "primary_hover": "#047857",
+      "secondary": "#111827",
+      "secondary_hover": "#1F2937",
+      "accent": "#F59E0B"
+    },
+    "status": {
+      "success": "#10B981",
+      "error": "#EF4444",
+      "warning": "#F59E0B",
+      "info": "#3B82F6"
+    },
+    "border": {
+      "default": "rgba(0, 0, 0, 0.08)",
+      "focus": "#059669"
+    }
+  },
+  "typography": {
+    "fonts": {
+      "heading": "'Outfit', sans-serif",
+      "body": "'Manrope', sans-serif",
+      "mono": "'JetBrains Mono', monospace"
+    },
+    "scale": {
+      "h1": "text-5xl md:text-6xl tracking-tighter font-bold",
+      "h2": "text-3xl md:text-4xl tracking-tight font-bold",
+      "h3": "text-2xl tracking-tight font-semibold",
+      "h4": "text-xl font-semibold",
+      "body": "text-base leading-relaxed",
+      "small": "text-sm text-[#4B5563]",
+      "overline": "text-xs uppercase tracking-[0.2em] font-bold text-[#6B7280]"
+    }
+  },
+  "layout": {
+    "spacing": {
+      "section_padding": "py-20 md:py-32",
+      "container": "max-w-7xl mx-auto px-6 lg:px-8",
+      "card_padding": "p-6 md:p-8"
+    },
+    "grid": {
+      "marketing": "grid grid-cols-1 md:grid-cols-12 gap-8",
+      "dashboard": "grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6"
+    },
+    "border_radius": {
+      "card": "rounded-2xl",
+      "button": "rounded-full",
+      "input": "rounded-xl"
+    }
+  },
+  "surfaces": {
+    "glassmorphism": "backdrop-blur-xl bg-white/70 border border-black/5 shadow-sm",
+    "neumorphism": "bg-white shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-black/5",
+    "grid_borders": "border-collapse border-b border-r border-black/5"
+  },
+  "animation": {
+    "hover": "transition-all duration-200 ease-out",
+    "active": "active:scale-[0.98]",
+    "focus": "focus:outline-none focus:ring-2 focus:ring-[#059669] focus:ring-offset-2",
+    "page_transition": "animate-in fade-in slide-in-from-bottom-4 duration-500"
+  },
+  "components": {
+    "button": {
+      "primary": "bg-[#111827] text-white hover:bg-[#000000] rounded-full px-8 py-3 font-semibold",
+      "accent": "bg-[#059669] text-white hover:bg-[#047857] rounded-full px-8 py-3 font-semibold",
+      "secondary": "bg-white text-[#111827] border border-[#E5E7EB] hover:border-[#111827] rounded-full px-8 py-3 font-semibold"
+    },
+    "card": "bg-white rounded-2xl border border-black/5 p-8 shadow-[0_4px_24px_rgba(0,0,0,0.02)]",
+    "input": "w-full bg-[#F9F9FB] border border-[#E5E7EB] rounded-xl px-4 py-3 focus:border-[#059669] focus:bg-white focus:ring-1 focus:ring-[#059669] transition-all",
+    "nav_bar": "fixed top-0 w-full z-50 backdrop-blur-xl bg-white/80 border-b border-black/5"
+  },
+  "media": {
+    "images": [
+      {
+        "category": "hero_person",
+        "url": "https://images.unsplash.com/photo-1572079757625-132046cc8973?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA0MTJ8MHwxfHNlYXJjaHwxfHxpbmRpYW4lMjBwZXJzb24lMjB1c2luZyUyMHBob25lJTIwc21pbGluZ3xlbnwwfHx8fDE3NzYzMjQwNjd8MA&ixlib=rb-4.1.0&q=85",
+        "description": "Smiling Indian professional using phone, perfect for hero section trust building"
+      },
+      {
+        "category": "background_abstract",
+        "url": "https://images.unsplash.com/photo-1769541607705-3b3c5095679b?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjAzOTB8MHwxfHNlYXJjaHwxfHxhYnN0cmFjdCUyMGxpZ2h0JTIwZ2VvbWV0cmljJTIwbWluaW1hbCUyMGJhY2tncm91bmR8ZW58MHx8fHwxNzc2MzI0MDc1fDA&ixlib=rb-4.1.0&q=85",
+        "description": "Abstract white geometric background for landing page or marketing sections"
+      },
+      {
+        "category": "financial_chart",
+        "url": "https://images.unsplash.com/photo-1765046255462-198d49d07dd1?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2NzZ8MHwxfHNlYXJjaHwxfHxtaW5pbWFsaXN0JTIwYWJzdHJhY3QlMjBmaW5hbmNpYWwlMjBjaGFydHxlbnwwfHx8fDE3NzYzMjQwNjh8MA&ixlib=rb-4.1.0&q=85",
+        "description": "Minimalist financial chart abstract for the dashboard or loan recommendation engine"
+      },
+      {
+        "category": "user_avatar",
+        "url": "https://images.unsplash.com/photo-1629038152911-f899dbf8d639?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA0MTJ8MHwxfHNlYXJjaHwzfHxpbmRpYW4lMjBwZXJzb24lMjB1c2luZyUyMHBob25lJTIwc21pbGluZ3xlbnwwfHx8fDE3NzYzMjQwNjd8MA&ixlib=rb-4.1.0&q=85",
+        "description": "User profile avatar placeholder"
+      }
+    ],
+    "icons": {
+      "library": "lucide-react",
+      "style": "stroke-width: 1.5, solid and professional"
+    }
+  },
+  "instructions_to_main_agent": [
+    "Install `lucide-react` for crisp icons (1.5 stroke width).",
+    "Use Google Fonts for 'Outfit' and 'Manrope'. Add them via HTML link tags or standard imports.",
+    "Strictly follow the color palette. Backgrounds should be white or #F9F9FB. No generic gray borders; use black/5.",
+    "Headers must be sticky with glassmorphism (backdrop-blur-xl bg-white/80).",
+    "For multi-step onboarding, use Framer Motion for smooth slide transitions between steps. Keep the UI extremely clean with max width containers for focus.",
+    "Data-testid attributes MUST be added to all interactive elements.",
+    "Shadcn UI components should be heavily customized. Override standard Vercel borders and radiuses. Make them rounded-xl or rounded-2xl.",
+    "Do NOT use 'Inter' for headings. Use 'Outfit' for headings, with tight tracking.",
+    "For the Privacy & Trust Layer, use the Emerald Green accent and security icons to establish a safe environment.",
+    "For the AI Suggestion feature, use a subtle shimmering border or gradient text to indicate AI presence, avoiding full neon aesthetics."
+  ]
+}
