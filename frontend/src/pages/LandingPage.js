@@ -5,6 +5,9 @@ import { useLanguage } from '../contexts/LanguageContext';
 import { LanguageToggle } from '../components/LanguageToggle';
 import { ThemeToggle, SoundToggle } from '../components/ThemeToggle';
 import { EmiCalculator } from '../components/EmiCalculator';
+import { ChatWidget } from '../components/ChatWidget';
+import { LoanCharts } from '../components/LoanCharts';
+import { LocationPicker } from '../components/LocationPicker';
 import { BankLogo } from '../lib/bankLogos';
 import { usePageView, useAnalytics } from '../lib/analytics';
 import api, { formatCurrency } from '../lib/api';
@@ -61,7 +64,7 @@ export default function LandingPage() {
 
   useEffect(() => { fetchProducts(); }, [fetchProducts]);
 
-  // Detect user location
+  // Auto-detect user location
   useEffect(() => {
     if (!navigator.geolocation) return;
     setLocationLoading(true);
@@ -76,16 +79,18 @@ export default function LandingPage() {
             setUserLocation({ city, state, lat: pos.coords.latitude, lon: pos.coords.longitude });
             track('location_detected', { city, state });
           }
-        } catch {
-          // silent
-        } finally {
-          setLocationLoading(false);
-        }
+        } catch { /* silent */ }
+        finally { setLocationLoading(false); }
       },
       () => setLocationLoading(false),
       { timeout: 8000, maximumAge: 300000 }
     );
   }, [track]);
+
+  const handleLocationChange = (loc) => {
+    setUserLocation(loc);
+    track('location_changed', { city: loc.city });
+  };
 
   const isLoggedIn = !loading && user;
 
@@ -144,18 +149,9 @@ export default function LandingPage() {
             <span className="font-heading font-bold text-xl text-[#0A0A0A] tracking-tight">Rinkosh</span>
           </div>
           <div className="flex items-center gap-2">
-            {userLocation && (
-              <div className="hidden md:flex items-center gap-1.5 text-[#4B5563] mr-2" data-testid="user-location">
-                <MapPin className="w-3.5 h-3.5 text-[#059669]" />
-                <span className="font-body text-xs">{userLocation.city}{userLocation.state ? `, ${userLocation.state}` : ''}</span>
-              </div>
-            )}
-            {locationLoading && (
-              <div className="hidden md:flex items-center gap-1.5 text-[#9CA3AF] mr-2">
-                <Loader2 className="w-3 h-3 animate-spin" />
-                <span className="font-body text-xs">{language === 'hi' ? 'लोकेशन...' : 'Locating...'}</span>
-              </div>
-            )}
+            <div className="hidden md:block">
+              <LocationPicker location={userLocation} onLocationChange={handleLocationChange} loading={locationLoading} />
+            </div>
             <LanguageToggle compact />
             <ThemeToggle />
             <SoundToggle />
@@ -276,6 +272,24 @@ export default function LandingPage() {
               </div>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* Market Insights Charts */}
+      <section className="py-16 md:py-24 px-6 lg:px-8 bg-mesh-light" data-testid="market-insights-section">
+        <div className="max-w-7xl mx-auto">
+          <div className="mb-10">
+            <span className="text-xs uppercase tracking-[0.2em] font-bold text-[#6B7280] font-body">
+              {language === 'hi' ? 'बाज़ार अंतर्दृष्टि' : 'Market Insights'}
+            </span>
+            <h2 className="font-heading text-3xl md:text-4xl font-bold text-[#0A0A0A] tracking-tight mt-3">
+              {language === 'hi' ? 'भारतीय लोन बाज़ार एक नज़र में' : 'Indian Loan Market at a Glance'}
+            </h2>
+            <p className="font-body text-[#4B5563] mt-2 max-w-xl">
+              {language === 'hi' ? 'ब्याज दरों, श्रेणियों और बैंक कवरेज का लाइव डेटा।' : 'Live data on interest rates, categories, and bank coverage.'}
+            </p>
+          </div>
+          <LoanCharts />
         </div>
       </section>
 
@@ -659,6 +673,9 @@ export default function LandingPage() {
           <p className="font-body text-sm text-[#9CA3AF]">Transparent lending for everyone.</p>
         </div>
       </footer>
+
+      {/* Chat Widget */}
+      <ChatWidget />
     </div>
   );
 }

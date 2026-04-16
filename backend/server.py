@@ -71,6 +71,12 @@ class TranslateRequest(BaseModel):
     text: str
     target_language: str
 
+class PublicChatRequest(BaseModel):
+    message: str
+    language: Optional[str] = "en"
+    session_id: Optional[str] = None
+
+
 
 # ==================== AUTH HELPERS ====================
 
@@ -555,6 +561,42 @@ async def get_loan_products(loan_type: Optional[str] = None):
     return products
 
 
+@api_router.get("/loans/stats")
+async def get_loan_stats():
+    products = await db.loan_products.find({"is_active": True}, {"_id": 0}).to_list(200)
+    categories = {}
+    bank_rates = {}
+    for p in products:
+        lt = p["loan_type"]
+        if lt not in categories:
+            categories[lt] = {"count": 0, "min_rate": 100, "max_rate": 0, "avg_rate": 0, "rates_sum": 0}
+        categories[lt]["count"] += 1
+        categories[lt]["min_rate"] = min(categories[lt]["min_rate"], p["interest_rate"])
+        categories[lt]["max_rate"] = max(categories[lt]["max_rate"], p["interest_rate"])
+        categories[lt]["rates_sum"] += p["interest_rate"]
+
+        bn = p["bank_name"]
+        if bn not in bank_rates:
+            bank_rates[bn] = []
+        bank_rates[bn].append({"loan_type": lt, "rate": p["interest_rate"], "product": p["product_name"]})
+
+    for lt in categories:
+        categories[lt]["avg_rate"] = round(categories[lt]["rates_sum"] / categories[lt]["count"], 2)
+        del categories[lt]["rates_sum"]
+
+    top_banks = sorted(bank_rates.items(), key=lambda x: len(x[1]), reverse=True)[:10]
+    bank_summary = [{"bank": b, "products": len(r), "avg_rate": round(sum(x["rate"] for x in r) / len(r), 2)} for b, r in top_banks]
+
+    return {
+        "total_products": len(products),
+        "total_banks": len(bank_rates),
+        "total_categories": len(categories),
+        "categories": categories,
+        "top_banks": bank_summary,
+    }
+
+
+
 @api_router.get("/loans/recommendations")
 async def get_recommendations(request: Request):
     user = await get_current_user(request)
@@ -726,6 +768,51 @@ async def ai_voice(request: Request, file: UploadFile = File(...)):
         return {"text": response.text}
     finally:
         os.unlink(tmp_path)
+
+
+
+@api_router.post("/ai/chat-public")
+async def public_chat(data: PublicChatRequest, request: Request):
+    from emergentintegrations.llm.chat import LlmChat, UserMessage
+
+    lang_instruction = "Respond in Hindi." if data.language == "hi" else "Respond in English."
+
+    # Fetch loan stats for context
+    product_count = await db.loan_products.count_documents({"is_active": True})
+    categories = await db.loan_products.distinct("loan_type", {"is_active": True})
+    banks = await db.loan_products.distinct("bank_name", {"is_active": True})
+
+    system_msg = f"""You are Rinkosh AI, a friendly and knowledgeable loan advisor for Indian borrowers.
+You help users understand loan options, interest rates, EMI calculations, credit scores, and financial planning.
+{lang_instruction}
+
+Context: Rinkosh has {product_count} loan products across {len(categories)} categories ({', '.join(categories)}) from {len(banks)} banks.
+Rules:
+- Be concise (2-4 sentences max unless they ask for detail)
+- Use Rs. for currency, Indian financial context
+- If they ask about specific rates, mention that rates vary and suggest they browse loans on Rinkosh
+- Never give legal or tax advice, suggest consulting a CA/advisor
+- Be warm and helpful, like talking to a smart friend"""
+
+    session = data.session_id or f"public_{uuid.uuid4().hex[:8]}"
+    chat = LlmChat(
+        api_key=EMERGENT_LLM_KEY,
+        session_id=session,
+        system_message=system_msg
+    ).with_model("anthropic", "claude-sonnet-4-5-20250929")
+
+    try:
+        response_text = await chat.send_message(UserMessage(text=data.message))
+    except Exception as e:
+        logger.error(f"Public chat error: {e}")
+        error_msg = str(e)
+        if "Budget" in error_msg or "budget" in error_msg:
+            response_text = "I'm currently experiencing high demand. Please try again shortly!" if data.language != "hi" else "अभी ज़्यादा अनुरोध हैं। कृपया कुछ देर बाद फिर कोशिश करें!"
+        else:
+            response_text = "I'm having trouble connecting right now. Please try again." if data.language != "hi" else "कनेक्शन में समस्या है। कृपया फिर से प्रयास करें।"
+
+    await log_event(db, "chatbot_message", {"message": data.message[:100], "session": session})
+    return {"response": response_text, "session_id": session}
 
 
 # ==================== CREDIT BUILDER ====================
