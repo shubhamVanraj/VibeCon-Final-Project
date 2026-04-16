@@ -9,7 +9,7 @@ import { Card } from '../components/ui/card';
 import { RadioGroup, RadioGroupItem } from '../components/ui/radio-group';
 import { Switch } from '../components/ui/switch';
 import { Progress } from '../components/ui/progress';
-import { Shield, ArrowLeft, ArrowRight, Home, User, Car, GraduationCap, Bike, RefreshCw, Briefcase, Building2, Store, BookOpen } from 'lucide-react';
+import { Shield, ArrowLeft, ArrowRight, Home, User, Car, GraduationCap, Bike, RefreshCw, Briefcase, Building2, Store, BookOpen, CheckCircle } from 'lucide-react';
 import { toast } from 'sonner';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -100,6 +100,22 @@ export default function OnboardingPage() {
         </div>
         <div className="max-w-2xl mx-auto px-6 pb-2">
           <Progress value={progress} className="h-1.5 bg-[#E5E7EB]" data-testid="onboarding-progress" />
+          {/* Step Labels */}
+          <div className="flex justify-between mt-3">
+            {[
+              { label: t.personalLoan ? t.loanTypeQ?.split('?')[0]?.slice(0,12) || 'Loan Type' : 'Loan Type', icon: '1' },
+              { label: t.employmentDetails || 'Employment', icon: '2' },
+              { label: t.creditInformation || 'Credit', icon: '3' },
+              { label: t.loanDetails || 'Details', icon: '4' },
+            ].map((s, i) => (
+              <div key={i} className={`flex items-center gap-1.5 transition-all ${step > i ? 'text-[#059669]' : step === i + 1 ? 'text-[#0A0A0A]' : 'text-[#D1D5DB]'}`}>
+                <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-heading font-bold border-2 transition-all ${step > i ? 'bg-[#059669] border-[#059669] text-white' : step === i + 1 ? 'border-[#059669] text-[#059669]' : 'border-[#D1D5DB]'}`}>
+                  {step > i ? <CheckCircle className="w-3.5 h-3.5" /> : s.icon}
+                </div>
+                <span className="font-body text-[10px] hidden sm:inline">{s.label.slice(0, 10)}</span>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
 

@@ -6,6 +6,7 @@ import { LanguageToggle } from '../components/LanguageToggle';
 import { ThemeToggle, SoundToggle } from '../components/ThemeToggle';
 import api, { formatCurrency } from '../lib/api';
 import { BankLogo } from '../lib/bankLogos';
+import { EmiCalculator } from '../components/EmiCalculator';
 import { ProfileEditor } from '../components/ProfileEditor';
 import { LoanComparison } from '../components/LoanComparison';
 import { CreditScoreChecker } from '../components/CreditScoreChecker';
@@ -231,6 +232,7 @@ export default function DashboardPage() {
             <TabsTrigger value="leads" className="rounded-full font-body data-[state=active]:bg-[#111827] data-[state=active]:text-white px-4 py-2 text-sm" data-testid="tab-leads">{t.myLeads} {leads.length > 0 && <Badge variant="secondary" className="ml-1 text-xs">{leads.length}</Badge>}</TabsTrigger>
             <TabsTrigger value="credit" className="rounded-full font-body data-[state=active]:bg-[#111827] data-[state=active]:text-white px-4 py-2 text-sm" data-testid="tab-credit">{t.creditBuilder}</TabsTrigger>
             <TabsTrigger value="ai" className="rounded-full font-body data-[state=active]:bg-[#111827] data-[state=active]:text-white px-4 py-2 text-sm" data-testid="tab-ai">{t.aiAdvisor}</TabsTrigger>
+            <TabsTrigger value="tools" className="rounded-full font-body data-[state=active]:bg-[#111827] data-[state=active]:text-white px-4 py-2 text-sm" data-testid="tab-tools">{t.emiCalcTitle || 'EMI Calculator'}</TabsTrigger>
           </TabsList>
 
           {/* Recommendations Tab */}
@@ -506,6 +508,11 @@ export default function DashboardPage() {
                 </div>
               </div>
             </Card>
+          </TabsContent>
+
+          {/* EMI Calculator Tab */}
+          <TabsContent value="tools" className="space-y-4" data-testid="tools-content">
+            <EmiCalculator />
           </TabsContent>
         </Tabs>
       </main>

@@ -11,6 +11,7 @@ import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import AdminDashboard from './pages/AdminDashboard';
 import { LanguageProvider } from './contexts/LanguageContext';
 import { ThemeProvider } from './contexts/ThemeContext';
+import { StickyCta } from './components/StickyCta';
 import './App.css';
 
 function ProtectedRoute({ children }) {
@@ -60,6 +61,7 @@ function App() {
         <LanguageProvider>
           <AuthProvider>
             <AppRouter />
+            <StickyCta />
             <Toaster position="top-right" richColors />
           </AuthProvider>
         </LanguageProvider>

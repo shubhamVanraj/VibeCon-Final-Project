@@ -397,3 +397,34 @@ html.dark { color-scheme: dark; }
   transition: transform 0.08s ease;
 }
 
+/* ========== MOBILE RESPONSIVE FIXES ========== */
+
+/* Prevent text overflow on all screens */
+* { word-wrap: break-word; overflow-wrap: break-word; }
+h1, h2, h3, p, span, label, a { max-width: 100%; }
+
+/* Mobile padding fixes */
+@media (max-width: 640px) {
+  section { padding-left: 1rem !important; padding-right: 1rem !important; }
+  .max-w-7xl, .max-w-5xl, .max-w-4xl, .max-w-2xl { padding-left: 0.5rem; padding-right: 0.5rem; }
+
+  /* Hero responsive */
+  h1 { font-size: 2.25rem !important; line-height: 1.1 !important; }
+  h2 { font-size: 1.5rem !important; }
+
+  /* Card padding on mobile */
+  .feature-card-shade, .card-premium { padding: 1.25rem !important; }
+
+  /* Ensure buttons don't overflow */
+  .flex-col.sm\:flex-row { gap: 0.5rem; }
+  .flex-col.sm\:flex-row > * { width: 100%; }
+  .flex-col.sm\:flex-row a { width: 100%; }
+  .flex-col.sm\:flex-row a button { width: 100%; }
+}
+
+/* Hindi text handling */
+[lang="hi"], .font-body:lang(hi) {
+  line-height: 1.8;
+  word-break: keep-all;
+}
+

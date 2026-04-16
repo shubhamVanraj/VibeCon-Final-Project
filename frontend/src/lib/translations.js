@@ -99,6 +99,21 @@ export const translations = {
     typeQuestion: "Ask about loans, credit scores...",
     // AI suggestions
     aiQ1: "What loan is best for me?", aiQ2: "How to improve my credit score?", aiQ3: "Explain processing fees",
+    // EMI Calculator
+    emiCalcTitle: "EMI Calculator", emiCalcSub: "See how much you will pay monthly",
+    seeBestLoans: "See Best Loans for This EMI",
+    principal: "Principal", interest: "Interest",
+    // OTP Login
+    sendOtp: "Send OTP", verifyLogin: "Verify & Login", otpSent: "OTP sent!",
+    otpSentTo: "OTP sent to", changeEmail: "Change email",
+    // Story
+    ourStory: "Our Story", smallDiffBigSavings: "Small Difference, Big Savings",
+    estimatedSavings: "Estimated savings", knowYourEmi: "Know Your Monthly EMI",
+    // Feature details
+    feat1Detail: "We show processing fees, foreclosure charges, and total cost of ownership — not just the headline rate.",
+    feat2Detail: "Your phone number is never shared. Banks can only reach you if you explicitly click 'I\\'m Interested'.",
+    feat3Detail: "Our AI analyzes your profile to find the best match. Ask questions via text or voice in English or Hindi.",
+    feat4Detail: "We guide you through secured cards, starter loans, and payment habits that actually move your CIBIL score.",
   },
   hi: {
     brand: "रिंकोश", motto: "कोई स्पैम नहीं। कोई राज़ नहीं। बस बचत।",
@@ -199,5 +214,20 @@ export const translations = {
     askAnything: "लोन, क्रेडिट स्कोर या वित्तीय योजना के बारे में कुछ भी पूछें...",
     typeQuestion: "लोन, क्रेडिट स्कोर के बारे में पूछें...",
     aiQ1: "मेरे लिए कौन सा लोन सबसे अच्छा है?", aiQ2: "क्रेडिट स्कोर कैसे सुधारें?", aiQ3: "प्रोसेसिंग फीस क्या है?",
+    // EMI Calculator
+    emiCalcTitle: "EMI कैलकुलेटर", emiCalcSub: "देखें मासिक भुगतान कितना होगा",
+    seeBestLoans: "इस EMI के लिए सबसे अच्छे लोन देखें",
+    principal: "मूलधन", interest: "ब्याज",
+    // OTP Login
+    sendOtp: "OTP भेजें", verifyLogin: "सत्यापित करें और लॉगिन", otpSent: "OTP भेजा गया!",
+    otpSentTo: "OTP भेजा गया", changeEmail: "ईमेल बदलें",
+    // Story
+    ourStory: "हमारी कहानी", smallDiffBigSavings: "छोटा अंतर, बड़ी बचत",
+    estimatedSavings: "अनुमानित बचत", knowYourEmi: "अपनी मासिक EMI जानें",
+    // Feature details
+    feat1Detail: "हम प्रोसेसिंग फीस, फोरक्लोज़र शुल्क, और कुल लागत दिखाते हैं — सिर्फ हेडलाइन दर नहीं।",
+    feat2Detail: "आपका फोन नंबर कभी साझा नहीं किया जाता। बैंक तभी संपर्क कर सकते हैं जब आप 'मुझे दिलचस्पी है' पर क्लिक करें।",
+    feat3Detail: "हमारा AI आपकी प्रोफाइल का विश्लेषण करके सबसे अच्छा मैच ढूंढता है।",
+    feat4Detail: "हम आपको सिक्योर्ड कार्ड, स्टार्टर लोन और भुगतान की आदतों के बारे में मार्गदर्शन करते हैं।",
   }
 };

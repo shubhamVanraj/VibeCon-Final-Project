@@ -1,14 +1,18 @@
 import { Link, Navigate } from 'react-router-dom';
+import { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
 import { LanguageToggle } from '../components/LanguageToggle';
 import { ThemeToggle, SoundToggle } from '../components/ThemeToggle';
+import { EmiCalculator } from '../components/EmiCalculator';
 import { Button } from '../components/ui/button';
-import { Shield, ArrowRight, Eye, Lock, MessageSquare, TrendingUp, CheckCircle, Users, IndianRupee, Ban } from 'lucide-react';
+import { Shield, ArrowRight, Eye, Lock, MessageSquare, TrendingUp, CheckCircle, Users, IndianRupee, Ban, ChevronDown, ChevronUp, Heart, Target } from 'lucide-react';
 
 export default function LandingPage() {
   const { user, loading } = useAuth();
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
+  const [expandedFeature, setExpandedFeature] = useState(null);
+  const [expandedStep, setExpandedStep] = useState(null);
 
   if (!loading && user) return <Navigate to="/dashboard" replace />;
 
@@ -33,8 +37,15 @@ export default function LandingPage() {
     { value: "0", label: t.statSpam },
   ];
 
+  const featureDetails = [
+    t.feat1Detail || 'We show processing fees, foreclosure charges, and total cost of ownership — not just the headline rate.',
+    t.feat2Detail || 'Your phone number is never shared. Banks can only reach you if you explicitly click "I\'m Interested".',
+    t.feat3Detail || 'Our AI analyzes your profile to find the best match. Ask questions via text or voice in English or Hindi.',
+    t.feat4Detail || 'We guide you through secured cards, starter loans, and payment habits that actually move your CIBIL score.',
+  ];
+
   return (
-    <div className="min-h-screen bg-white" data-testid="landing-page">
+    <div className="min-h-screen bg-white pb-16 md:pb-0" data-testid="landing-page">
       {/* Navbar */}
       <nav className="fixed top-0 w-full z-50 glass-nav" data-testid="landing-navbar">
         <div className="max-w-7xl mx-auto px-6 lg:px-8 flex items-center justify-between h-16">
@@ -141,12 +152,21 @@ export default function LandingPage() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {features.map((f, i) => (
-              <div key={i} className="rounded-2xl p-8 feature-card-shade loan-card" data-testid={`feature-card-${i}`}>
-                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#059669]/15 to-[#059669]/5 flex items-center justify-center mb-5">
-                  <f.icon className="w-6 h-6 text-[#059669]" strokeWidth={1.5} />
+              <div key={i} className="rounded-2xl p-6 md:p-8 feature-card-shade loan-card cursor-pointer" data-testid={`feature-card-${i}`}
+                onClick={() => setExpandedFeature(expandedFeature === i ? null : i)}>
+                <div className="flex items-start justify-between">
+                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#059669]/15 to-[#059669]/5 flex items-center justify-center mb-5">
+                    <f.icon className="w-6 h-6 text-[#059669]" strokeWidth={1.5} />
+                  </div>
+                  <div className="w-8 h-8 rounded-full bg-[#F3F4F6] flex items-center justify-center transition-transform duration-300" style={{transform: expandedFeature === i ? 'rotate(180deg)' : 'rotate(0)'}}>
+                    <ChevronDown className="w-4 h-4 text-[#9CA3AF]" />
+                  </div>
                 </div>
                 <h3 className="font-heading text-xl font-semibold text-[#0A0A0A] mb-2 tracking-tight">{f.title}</h3>
                 <p className="font-body text-[#4B5563] leading-relaxed">{f.desc}</p>
+                {expandedFeature === i && (
+                  <p className="font-body text-sm text-[#059669] mt-3 pt-3 border-t border-[#059669]/10 leading-relaxed animate-fade-in-up">{featureDetails[i]}</p>
+                )}
               </div>
             ))}
           </div>
@@ -163,13 +183,25 @@ export default function LandingPage() {
             </h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {steps.map((s, i) => (
-              <div key={i} className="relative" data-testid={`step-card-${i}`}>
-                <div className="font-heading text-6xl font-bold text-gradient opacity-20 mb-4">{s.num}</div>
-                <h3 className="font-heading text-lg font-semibold text-[#0A0A0A] mb-2 tracking-tight">{s.title}</h3>
-                <p className="font-body text-sm text-[#4B5563] leading-relaxed">{s.desc}</p>
-              </div>
-            ))}
+            {steps.map((s, i) => {
+              const details = [
+                t.step1Detail || 'We ask about your loan type, income, employment, and credit score. Takes just 2 minutes.',
+                t.step2Detail || 'Our engine compares 35+ products across 18 banks. You see the real total cost — not just the interest rate.',
+                t.step3Detail || 'No one calls or emails you unless you click "I\'m Interested" on a specific bank.',
+                t.step4Detail || 'See real-time status: Interested → Applied → Approved → Disbursed. Revoke access anytime.',
+              ];
+              return (
+                <div key={i} className="relative cursor-pointer group" data-testid={`step-card-${i}`}
+                  onClick={() => setExpandedStep(expandedStep === i ? null : i)}>
+                  <div className="font-heading text-5xl font-bold text-gradient opacity-20 mb-3">{s.num}</div>
+                  <h3 className="font-heading text-lg font-semibold text-[#0A0A0A] mb-2 tracking-tight group-hover:text-[#059669] transition-colors">{s.title}</h3>
+                  <p className="font-body text-sm text-[#4B5563] leading-relaxed">{s.desc}</p>
+                  {expandedStep === i && (
+                    <p className="font-body text-sm text-[#059669] mt-2 pt-2 border-t border-[#059669]/10 animate-fade-in-up">{details[i]}</p>
+                  )}
+                </div>
+              );
+            })}
           </div>
         </div>
       </section>
@@ -212,6 +244,89 @@ export default function LandingPage() {
               </div>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* Our Story */}
+      <section className="py-20 md:py-32 px-6 lg:px-8 bg-mesh-light" data-testid="our-story-section">
+        <div className="max-w-4xl mx-auto">
+          <div className="flex items-center gap-2 mb-8">
+            <Heart className="w-5 h-5 text-[#059669]" strokeWidth={1.5} />
+            <span className="text-xs uppercase tracking-[0.2em] font-bold text-[#059669] font-body">{language === 'hi' ? 'हमारी कहानी' : 'Our Story'}</span>
+          </div>
+          <div className="space-y-6">
+            <div className="feature-card-shade rounded-2xl p-6 md:p-8">
+              <p className="font-body text-lg text-[#0A0A0A] leading-relaxed">
+                {language === 'hi'
+                  ? '"नमस्ते, मैं शुभम हूं, बोकारो से — भारत का एक टियर-2 शहर। बड़े होते हुए मैंने देखा कि अपने आसपास के लोगों के लिए सही वित्तीय निर्णय लेना कितना मुश्किल था — खासकर जब बात लोन की हो।"'
+                  : '"Hi, I\'m Shubham, from Bokaro, a Tier-2 city in India. Growing up, I saw how difficult it was for people around me to make the right financial decisions — especially when it came to loans."'}
+              </p>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="feature-card-shade rounded-2xl p-6">
+                <Target className="w-6 h-6 text-[#F59E0B] mb-3" strokeWidth={1.5} />
+                <p className="font-body text-[#4B5563] leading-relaxed">
+                  {language === 'hi'
+                    ? 'आज भी, लाखों भारतीय बिना स्पष्ट जानकारी के लोन लेते हैं — छिपे शुल्कों या जागरूकता की कमी से पैसे गंवाते हैं।'
+                    : 'Even today, millions of Indians take loans without clear visibility into the best options, often losing money due to hidden charges or lack of awareness.'}
+                </p>
+              </div>
+              <div className="feature-card-shade rounded-2xl p-6">
+                <Eye className="w-6 h-6 text-[#059669] mb-3" strokeWidth={1.5} />
+                <p className="font-body text-[#4B5563] leading-relaxed">
+                  {language === 'hi'
+                    ? 'ज़्यादातर प्लेटफॉर्म आपका डेटा बेचने पर ध्यान देते हैं, सही निर्णय लेने में मदद करने पर नहीं।'
+                    : 'Most platforms focus on selling your data, not helping you make the right decision.'}
+                </p>
+              </div>
+            </div>
+            <div className="bg-[#059669]/5 rounded-2xl p-6 md:p-8 border border-[#059669]/10">
+              <p className="font-heading font-semibold text-lg text-[#059669] leading-relaxed">
+                {language === 'hi'
+                  ? 'रिंकोश इसे बदलने के लिए बनाया गया है — आपको पूर्ण नियंत्रण, पारदर्शिता, और जो सच में आपके लिए सबसे अच्छा है उसे चुनने की क्षमता देना।'
+                  : 'Rinkosh is built to change that — giving you full control, transparency, and the ability to choose what\'s truly best for you.'}
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Savings Stats */}
+      <section className="py-16 md:py-24 px-6 lg:px-8" data-testid="savings-stats-section">
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-12">
+            <span className="text-xs uppercase tracking-[0.2em] font-bold text-[#6B7280] font-body">{language === 'hi' ? 'छोटे अंतर, बड़ी बचत' : 'Small Difference, Big Savings'}</span>
+            <h2 className="font-heading text-2xl md:text-3xl font-bold text-[#0A0A0A] tracking-tight mt-3">
+              {language === 'hi' ? '0.10% कम ब्याज दर का मतलब = बड़ी बचत' : 'Even 0.10% lower rate = Big savings'}
+            </h2>
+            <p className="font-body text-[#4B5563] mt-2">{language === 'hi' ? '10,00,000 रुपये के लोन पर' : 'On a Rs. 10,00,000 loan'}</p>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            {[
+              { label: language === 'hi' ? '5 साल' : '5 Years', low: '5,000', high: '8,000' },
+              { label: language === 'hi' ? '10 साल' : '10 Years', low: '10,000', high: '20,000' },
+              { label: language === 'hi' ? '20 साल' : '20 Years', low: '35,000', high: '75,000' },
+            ].map((s, i) => (
+              <div key={i} className="feature-card-shade rounded-2xl p-6 text-center loan-card" data-testid={`savings-tile-${i}`}>
+                <div className="font-heading font-bold text-sm text-[#4B5563] mb-3 uppercase tracking-wider">{s.label}</div>
+                <div className="font-heading text-2xl md:text-3xl font-bold text-gradient mb-1">Rs.{s.low} - {s.high}</div>
+                <div className="font-body text-xs text-[#9CA3AF]">{language === 'hi' ? 'अनुमानित बचत' : 'Estimated savings'}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* EMI Calculator */}
+      <section className="py-16 md:py-24 px-6 lg:px-8 bg-mesh-light" data-testid="emi-calculator-section">
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-10">
+            <span className="text-xs uppercase tracking-[0.2em] font-bold text-[#6B7280] font-body">{language === 'hi' ? 'EMI कैलकुलेटर' : 'EMI Calculator'}</span>
+            <h2 className="font-heading text-2xl md:text-3xl font-bold text-[#0A0A0A] tracking-tight mt-3">
+              {language === 'hi' ? 'अपनी मासिक EMI जानें' : 'Know Your Monthly EMI'}
+            </h2>
+          </div>
+          <EmiCalculator showCta />
         </div>
       </section>
 

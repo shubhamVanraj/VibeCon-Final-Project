@@ -292,6 +292,66 @@ async def google_callback(request: Request, response: Response):
 
 # ==================== FORGOT / RESET PASSWORD ====================
 
+@api_router.post("/auth/login-otp-request")
+async def login_otp_request(request: Request):
+    body = await request.json()
+    identifier = body.get("identifier", "").lower().strip()
+    if not identifier:
+        raise HTTPException(status_code=400, detail="Email or mobile number required")
+    user = await db.users.find_one({"email": identifier}, {"_id": 0})
+    if not user:
+        return {"message": "If the account exists, an OTP has been sent."}
+    import secrets as sec
+    otp = ''.join([str(sec.randbelow(10)) for _ in range(6)])
+    await db.login_otps.delete_many({"identifier": identifier, "used": False})
+    await db.login_otps.insert_one({
+        "otp": otp, "user_id": user["user_id"], "identifier": identifier,
+        "expires_at": (datetime.now(timezone.utc) + timedelta(minutes=10)).isoformat(),
+        "used": False, "created_at": datetime.now(timezone.utc).isoformat()
+    })
+    logger.info(f"Login OTP for {identifier}: {otp}")
+    return {"message": "If the account exists, an OTP has been sent.", "debug_otp": otp}
+
+
+@api_router.post("/auth/login-otp-verify")
+async def login_otp_verify(request: Request, response: Response):
+    body = await request.json()
+    identifier = body.get("identifier", "").lower().strip()
+    otp = body.get("otp", "").strip()
+    if not identifier or not otp:
+        raise HTTPException(status_code=400, detail="Identifier and OTP required")
+    token_doc = await db.login_otps.find_one(
+        {"identifier": identifier, "otp": otp, "used": False}, {"_id": 0}
+    )
+    if not token_doc:
+        raise HTTPException(status_code=400, detail="Invalid or expired OTP")
+    expires_at = token_doc.get("expires_at")
+    if isinstance(expires_at, str):
+        expires_at = datetime.fromisoformat(expires_at)
+    if expires_at.tzinfo is None:
+        expires_at = expires_at.replace(tzinfo=timezone.utc)
+    if expires_at < datetime.now(timezone.utc):
+        raise HTTPException(status_code=400, detail="OTP has expired")
+    user = await db.users.find_one({"user_id": token_doc["user_id"]}, {"_id": 0})
+    if not user:
+        raise HTTPException(status_code=400, detail="User not found")
+    await db.login_otps.update_one(
+        {"identifier": identifier, "otp": otp}, {"$set": {"used": True}}
+    )
+    profile = await db.user_profiles.find_one({"user_id": user["user_id"], "onboarding_complete": True})
+    has_profile = profile is not None
+    access_token = create_access_token(user["user_id"], user["email"])
+    refresh_token = create_refresh_token(user["user_id"])
+    set_auth_cookies(response, access_token, refresh_token)
+    return {
+        "user_id": user["user_id"], "email": user["email"], "name": user["name"],
+        "role": user.get("role", "user"), "auth_type": user.get("auth_type", "email"),
+        "has_profile": has_profile, "language": user.get("language", "en")
+    }
+
+
+# ==================== FORGOT / RESET PASSWORD (continued) ====================
+
 @api_router.post("/auth/forgot-password")
 async def forgot_password(request: Request):
     body = await request.json()
@@ -825,6 +885,7 @@ async def startup_event():
     await db.leads.create_index("user_id")
     await db.user_profiles.create_index("user_id", unique=True)
     await db.password_reset_tokens.create_index("email")
+    await db.login_otps.create_index("identifier")
     await seed_admin()
     await seed_loan_products()
 

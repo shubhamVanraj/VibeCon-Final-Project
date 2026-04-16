@@ -298,6 +298,44 @@ class RinkoshAPITester:
             return True
         return False
 
+    def test_otp_login_flow(self):
+        """Test OTP login flow (Phase 7)"""
+        # Test OTP request
+        success, response = self.run_test(
+            "OTP Login Request",
+            "POST",
+            "auth/login-otp-request",
+            200,
+            data={"identifier": "admin@rinkosh.com"}
+        )
+        if not success:
+            return False
+        
+        debug_otp = response.get('debug_otp')
+        if not debug_otp:
+            self.log("❌ No debug OTP returned for login")
+            return False
+        
+        self.log(f"   Debug OTP for login: {debug_otp}")
+        
+        # Test OTP verification and login
+        success, response = self.run_test(
+            "OTP Login Verify",
+            "POST",
+            "auth/login-otp-verify",
+            200,
+            data={
+                "identifier": "admin@rinkosh.com",
+                "otp": debug_otp
+            }
+        )
+        if success:
+            self.user_id = response.get('user_id')
+            has_profile = response.get('has_profile', False)
+            self.log(f"   OTP login successful, user_id: {self.user_id}, has_profile: {has_profile}")
+            return True
+        return False
+
     def test_credit_score_check(self):
         """Test credit score check placeholder"""
         success, response = self.run_test("Credit Score Check", "GET", "credit-score/check", 200)
@@ -437,6 +475,7 @@ def main():
         ("Language Update", tester.test_language_update),
         ("AI Suggest", tester.test_ai_suggest),
         ("Forgot Password Flow", tester.test_forgot_password_flow),
+        ("OTP Login Flow (Phase 7)", tester.test_otp_login_flow),
     ]
     
     for test_name, test_func in other_tests:
