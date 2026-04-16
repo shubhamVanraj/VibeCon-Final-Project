@@ -77,13 +77,13 @@ export default function LandingPage() {
             <div className="flex flex-col sm:flex-row gap-4 animate-fade-in-up-delay-2">
               <Link to="/register">
                 <Button className="bg-[#111827] text-white hover:bg-[#000000] rounded-full px-8 py-3 font-body font-semibold h-14 text-base" data-testid="hero-cta-button">
-                  Find Best Loan
+                  {t.findBestLoan}
                   <ArrowRight className="w-5 h-5 ml-2" />
                 </Button>
               </Link>
               <Link to="/login">
                 <Button variant="outline" className="rounded-full px-8 py-3 font-body font-semibold border-[#E5E7EB] hover:border-[#111827] h-14 text-base" data-testid="hero-login-button">
-                  I have an account
+                  {t.iHaveAccount || 'I have an account'}
                 </Button>
               </Link>
             </div>
@@ -131,9 +131,9 @@ export default function LandingPage() {
       <section className="py-20 md:py-32 px-6 lg:px-8" data-testid="features-section">
         <div className="max-w-7xl mx-auto">
           <div className="mb-16">
-            <span className="text-xs uppercase tracking-[0.2em] font-bold text-[#6B7280] font-body">Why Rinkosh</span>
+            <span className="text-xs uppercase tracking-[0.2em] font-bold text-[#6B7280] font-body">{t.whyRinkosh || 'Why Rinkosh'}</span>
             <h2 className="font-heading text-3xl md:text-4xl font-bold text-[#0A0A0A] tracking-tight mt-3">
-              Transparency at every step
+              {t.transparencyAtEveryStep || 'Transparency at every step'}
             </h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -154,9 +154,9 @@ export default function LandingPage() {
       <section className="py-20 md:py-32 px-6 lg:px-8 bg-[#F9F9FB]" data-testid="how-it-works-section">
         <div className="max-w-7xl mx-auto">
           <div className="mb-16">
-            <span className="text-xs uppercase tracking-[0.2em] font-bold text-[#6B7280] font-body">How It Works</span>
+            <span className="text-xs uppercase tracking-[0.2em] font-bold text-[#6B7280] font-body">{t.howItWorks || 'How It Works'}</span>
             <h2 className="font-heading text-3xl md:text-4xl font-bold text-[#0A0A0A] tracking-tight mt-3">
-              Four simple steps
+              {t.fourSimpleSteps || 'Four simple steps'}
             </h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -190,10 +190,10 @@ export default function LandingPage() {
                 <Lock className="w-8 h-8 text-[#059669]" strokeWidth={1.5} />
               </div>
               <h2 className="font-heading text-3xl md:text-4xl font-bold text-[#0A0A0A] tracking-tight mb-4">
-                Your privacy is sacred
+                {t.privacyIsSacred || 'Your privacy is sacred'}
               </h2>
               <p className="font-body text-lg text-[#4B5563] mb-10">
-                We never share your data without explicit consent. No third-party selling. No hidden clauses.
+                {t.privacyDesc || 'We never share your data without explicit consent. No third-party selling. No hidden clauses.'}
               </p>
               <div className="space-y-3">
                 {[
@@ -216,14 +216,14 @@ export default function LandingPage() {
       <section className="py-20 md:py-32 px-6 lg:px-8 bg-[#111827]" data-testid="cta-section">
         <div className="max-w-2xl mx-auto text-center">
           <h2 className="font-heading text-3xl md:text-4xl font-bold text-white tracking-tight mb-4">
-            Ready to save on your next loan?
+            {t.readyToSave || 'Ready to save on your next loan?'}
           </h2>
           <p className="font-body text-lg text-[#9CA3AF] mb-8">
-            Join thousands of Indians making smarter borrowing decisions.
+            {t.joinThousands || 'Join thousands of Indians making smarter borrowing decisions.'}
           </p>
           <Link to="/register">
             <Button className="bg-[#059669] text-white hover:bg-[#047857] rounded-full px-10 py-3 font-body font-semibold h-14 text-base" data-testid="cta-signup-button">
-              Get Started Free
+              {t.getStartedFree || 'Get Started Free'}
               <ArrowRight className="w-5 h-5 ml-2" />
             </Button>
           </Link>
