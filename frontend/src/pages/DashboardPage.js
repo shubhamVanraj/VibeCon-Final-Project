@@ -68,8 +68,9 @@ export default function DashboardPage() {
 
   const fetchData = useCallback(async () => {
     try {
-      const [recsRes, leadsRes, creditRes] = await Promise.all([
-        api.get('/loans/recommendations').catch(() => ({ data: [] })),
+      // Check if user has completed onboarding first
+      const recsRes = await api.get('/loans/recommendations');
+      const [leadsRes, creditRes] = await Promise.all([
         api.get('/leads').catch(() => ({ data: [] })),
         api.get('/credit-builder/suggestions').catch(() => ({ data: [] })),
       ]);
