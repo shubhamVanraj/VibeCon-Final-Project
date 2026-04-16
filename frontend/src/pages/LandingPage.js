@@ -14,10 +14,9 @@ export default function LandingPage() {
   const { t, language } = useLanguage();
   const [expandedFeature, setExpandedFeature] = useState(null);
   const [expandedStep, setExpandedStep] = useState(null);
+  usePageView('landing');
 
   if (!loading && user) return <Navigate to="/dashboard" replace />;
-
-  usePageView('landing');
 
   const features = [
     { icon: Eye, title: t.feat1, desc: t.feat1d },
