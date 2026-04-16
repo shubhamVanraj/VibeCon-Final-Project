@@ -1,5 +1,7 @@
 import { Link, Navigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { useLanguage } from '../contexts/LanguageContext';
+import { LanguageToggle } from '../components/LanguageToggle';
 import { Button } from '../components/ui/button';
 import { Shield, ArrowRight, Eye, Lock, MessageSquare, TrendingUp, CheckCircle, Users, IndianRupee, Ban } from 'lucide-react';
 
@@ -26,6 +28,7 @@ const stats = [
 
 export default function LandingPage() {
   const { user, loading } = useAuth();
+  const { t } = useLanguage();
 
   if (!loading && user) return <Navigate to="/dashboard" replace />;
 
@@ -39,6 +42,7 @@ export default function LandingPage() {
             <span className="font-heading font-bold text-xl text-[#0A0A0A]">Rinkosh</span>
           </div>
           <div className="flex items-center gap-3">
+            <LanguageToggle />
             <Link to="/login">
               <Button variant="ghost" className="rounded-full font-body font-semibold text-[#4B5563] hover:text-[#0A0A0A]" data-testid="nav-login-button">
                 Login
@@ -62,10 +66,13 @@ export default function LandingPage() {
               <span className="text-xs font-body font-bold uppercase tracking-wider">Your data is surakshit (safe)</span>
             </div>
             <h1 className="font-heading text-5xl md:text-6xl lg:text-7xl font-bold text-[#0A0A0A] tracking-tighter leading-[1.05] mb-6 animate-fade-in-up">
-              Stop Overpaying<br />on Loans
+              {t.heroHeading || <>Stop Overpaying<br />on Loans</>}
             </h1>
-            <p className="font-body text-lg md:text-xl text-[#4B5563] leading-relaxed mb-10 max-w-xl animate-fade-in-up-delay-1">
-              We compare interest rates, fees, and hidden charges across 20+ banks. No spam, no data selling. You control everything.
+            <p className="font-body text-lg md:text-xl text-[#4B5563] leading-relaxed mb-4 max-w-xl animate-fade-in-up-delay-1">
+              {t.heroSubtext || 'We compare interest rates, fees, and hidden charges across 20+ banks. No spam, no data selling. You control everything.'}
+            </p>
+            <p className="font-body text-sm text-[#059669] font-semibold mb-10 animate-fade-in-up-delay-1 italic">
+              {t.motto || 'No Spam. No Secrets. Just Savings.'}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 animate-fade-in-up-delay-2">
               <Link to="/register">

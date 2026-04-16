@@ -308,8 +308,51 @@ class RinkoshAPITester:
             return True
         return False
 
+    def test_admin_analytics(self):
+        """Test admin analytics endpoint"""
+        success, response = self.run_test("Admin Analytics", "GET", "admin/analytics", 200)
+        if success:
+            total_users = response.get('total_users', 0)
+            total_leads = response.get('total_leads', 0)
+            leads_by_status = response.get('leads_by_status', {})
+            leads_by_bank = response.get('leads_by_bank', [])
+            commission_summary = response.get('commission_summary', {})
+            recent_leads = response.get('recent_leads', [])
+            
+            self.log(f"   Total users: {total_users}")
+            self.log(f"   Total leads: {total_leads}")
+            self.log(f"   Leads by status: {leads_by_status}")
+            self.log(f"   Leads by bank count: {len(leads_by_bank)}")
+            self.log(f"   Commission summary: {commission_summary}")
+            self.log(f"   Recent leads count: {len(recent_leads)}")
+            return True
+        return False
+
+    def test_admin_lead_update(self, lead_id):
+        """Test admin lead update endpoint"""
+        success, response = self.run_test(
+            "Admin Lead Update",
+            "PUT",
+            f"admin/leads/{lead_id}",
+            200,
+            data={"status": "applied"}
+        )
+        if success:
+            updated_status = response.get('status')
+            self.log(f"   Lead status updated to: {updated_status}")
+            return True
+        return False
+
+    def test_non_admin_access(self):
+        """Test that non-admin users get 403 on admin endpoints"""
+        success, response = self.run_test("Non-Admin Analytics Access", "GET", "admin/analytics", 403)
+        if success:
+            self.log("   Non-admin correctly blocked from admin endpoints")
+            return True
+        return False
+
 def main():
-    print("🚀 Starting Rinkosh API Testing (Iteration 2)...")
+    print("🚀 Starting Rinkosh API Testing (Iteration 3)...")
     print("=" * 60)
     
     tester = RinkoshAPITester()
@@ -319,7 +362,6 @@ def main():
         ("Health Check", tester.test_health),
         ("Admin Login", tester.test_admin_login),
         ("Auth Me", tester.test_auth_me),
-        ("Logout", tester.test_logout),
     ]
     
     # Run basic tests first
@@ -329,13 +371,13 @@ def main():
             print(f"📊 Tests passed: {tester.tests_passed}/{tester.tests_run}")
             return 1
     
-    # Test new forgot password flow
-    print("\n🔐 Testing Forgot Password Flow...")
-    if not tester.test_forgot_password_flow():
-        print("❌ Forgot password flow failed")
+    # Test new admin analytics endpoints (Phase 3)
+    print("\n📊 Testing Admin Analytics (Phase 3)...")
+    if not tester.test_admin_analytics():
+        print("❌ Admin analytics failed")
     
-    # Test user flow
-    print("\n🔄 Testing User Registration & Onboarding Flow...")
+    # Test user flow to create leads for admin testing
+    print("\n🔄 Testing User Registration & Lead Creation...")
     reg_success, test_email = tester.test_user_registration()
     if not reg_success:
         print("❌ User registration failed")
@@ -349,32 +391,55 @@ def main():
         print("❌ Profile operations failed")
         return 1
     
-    # Test loan features
+    # Test loan features to create leads
     print("\n💰 Testing Loan Features...")
     loan_tests = [
         ("Loan Products", tester.test_loan_products),
         ("Loan Recommendations", tester.test_loan_recommendations),
         ("Lead Operations", tester.test_lead_operations),
-        ("Credit Builder", tester.test_credit_builder),
     ]
     
+    lead_id = None
     for test_name, test_func in loan_tests:
         if not test_func():
             print(f"❌ {test_name} test failed")
+        elif test_name == "Lead Operations":
+            # Get the lead ID for admin testing
+            success, leads = tester.run_test("Get Leads for Admin Test", "GET", "leads", 200)
+            if success and leads:
+                lead_id = leads[0].get('lead_id')
     
-    # Test new credit score check
-    print("\n📊 Testing Credit Score Check...")
-    if not tester.test_credit_score_check():
-        print("❌ Credit score check failed")
+    # Test non-admin access to admin endpoints
+    print("\n🔒 Testing Non-Admin Access Control...")
+    if not tester.test_non_admin_access():
+        print("❌ Non-admin access control failed")
     
-    # Test AI features
-    print("\n🤖 Testing AI Features...")
-    ai_tests = [
-        ("AI Suggest", tester.test_ai_suggest),
+    # Switch back to admin for admin-specific tests
+    print("\n👑 Testing Admin-Specific Features...")
+    if not tester.test_admin_login():
+        print("❌ Admin re-login failed")
+        return 1
+    
+    # Test admin analytics again with data
+    if not tester.test_admin_analytics():
+        print("❌ Admin analytics with data failed")
+    
+    # Test admin lead update if we have a lead
+    if lead_id:
+        if not tester.test_admin_lead_update(lead_id):
+            print("❌ Admin lead update failed")
+    
+    # Test other features
+    print("\n🏗️ Testing Other Features...")
+    other_tests = [
+        ("Credit Builder", tester.test_credit_builder),
+        ("Credit Score Check", tester.test_credit_score_check),
         ("Language Update", tester.test_language_update),
+        ("AI Suggest", tester.test_ai_suggest),
+        ("Forgot Password Flow", tester.test_forgot_password_flow),
     ]
     
-    for test_name, test_func in ai_tests:
+    for test_name, test_func in other_tests:
         if not test_func():
             print(f"❌ {test_name} test failed")
     

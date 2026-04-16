@@ -671,6 +671,65 @@ async def get_credit_builder_suggestions(request: Request):
     return suggestions
 
 
+# ==================== ADMIN ENDPOINTS ====================
+
+@api_router.get("/admin/analytics")
+async def admin_analytics(request: Request):
+    user = await get_current_user(request)
+    if user.get("role") != "admin":
+        raise HTTPException(status_code=403, detail="Admin access required")
+
+    total_users = await db.users.count_documents({})
+    total_leads = await db.leads.count_documents({})
+
+    leads_by_status = {}
+    async for doc in db.leads.aggregate([{"$group": {"_id": "$status", "count": {"$sum": 1}}}]):
+        leads_by_status[doc["_id"]] = doc["count"]
+
+    leads_by_bank = []
+    async for doc in db.leads.aggregate([{"$group": {"_id": "$bank_name", "count": {"$sum": 1}}}, {"$sort": {"count": -1}}]):
+        leads_by_bank.append({"bank_name": doc["_id"], "count": doc["count"]})
+
+    recent_leads = await db.leads.find({}, {"_id": 0}).sort("created_at", -1).to_list(20)
+
+    disbursed = leads_by_status.get("disbursed", 0)
+    estimated_commission = disbursed * 500000 * 0.01
+    conversion_rate = (disbursed / total_leads * 100) if total_leads > 0 else 0
+
+    return {
+        "total_users": total_users,
+        "total_leads": total_leads,
+        "leads_by_status": leads_by_status,
+        "leads_by_bank": leads_by_bank,
+        "recent_leads": recent_leads,
+        "commission_summary": {
+            "total_disbursed": disbursed,
+            "estimated_commission": round(estimated_commission, 2),
+            "conversion_rate": round(conversion_rate, 2)
+        }
+    }
+
+
+@api_router.put("/admin/leads/{lead_id}")
+async def admin_update_lead(lead_id: str, request: Request):
+    user = await get_current_user(request)
+    if user.get("role") != "admin":
+        raise HTTPException(status_code=403, detail="Admin access required")
+    body = await request.json()
+    status = body.get("status")
+    if status not in ["interested", "applied", "approved", "disbursed", "revoked"]:
+        raise HTTPException(status_code=400, detail="Invalid status")
+    lead = await db.leads.find_one({"lead_id": lead_id}, {"_id": 0})
+    if not lead:
+        raise HTTPException(status_code=404, detail="Lead not found")
+    await db.leads.update_one(
+        {"lead_id": lead_id},
+        {"$set": {"status": status, "updated_at": datetime.now(timezone.utc).isoformat()}}
+    )
+    updated = await db.leads.find_one({"lead_id": lead_id}, {"_id": 0})
+    return updated
+
+
 # ==================== HEALTH ====================
 
 @api_router.get("/health")

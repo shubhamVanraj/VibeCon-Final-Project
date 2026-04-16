@@ -1,8 +1,9 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { useLanguage } from '../contexts/LanguageContext';
+import { LanguageToggle } from '../components/LanguageToggle';
 import api, { formatCurrency } from '../lib/api';
-import { translations } from '../lib/translations';
 import { ProfileEditor } from '../components/ProfileEditor';
 import { LoanComparison } from '../components/LoanComparison';
 import { CreditScoreChecker } from '../components/CreditScoreChecker';
@@ -38,9 +39,8 @@ const impactColors = {
 
 export default function DashboardPage() {
   const { user, logout } = useAuth();
+  const { t, language } = useLanguage();
   const navigate = useNavigate();
-  const [language, setLanguage] = useState(user?.language || 'en');
-  const t = translations[language] || translations.en;
 
   const [recommendations, setRecommendations] = useState([]);
   const [leads, setLeads] = useState([]);
@@ -82,12 +82,6 @@ export default function DashboardPage() {
 
   useEffect(() => { fetchData(); }, [fetchData]);
   useEffect(() => { chatEndRef.current?.scrollIntoView({ behavior: 'smooth' }); }, [messages]);
-
-  const handleLanguageToggle = async (checked) => {
-    const lang = checked ? 'hi' : 'en';
-    setLanguage(lang);
-    try { await api.put('/user/language', { language: lang }); } catch {}
-  };
 
   const handleInterested = async (rec) => {
     try {
@@ -200,12 +194,11 @@ export default function DashboardPage() {
             <span className="font-heading font-bold text-lg text-[#0A0A0A]">Rinkosh</span>
           </div>
           <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2 text-sm font-body">
-              <span className={language === 'en' ? 'text-[#0A0A0A] font-semibold' : 'text-[#9CA3AF]'}>EN</span>
-              <Switch checked={language === 'hi'} onCheckedChange={handleLanguageToggle} data-testid="language-toggle" />
-              <span className={language === 'hi' ? 'text-[#0A0A0A] font-semibold' : 'text-[#9CA3AF]'}>HI</span>
-            </div>
+            <LanguageToggle />
             <Separator orientation="vertical" className="h-6" />
+            {user?.role === 'admin' && (
+              <Button variant="ghost" size="sm" onClick={() => navigate('/admin')} className="text-[#4B5563] hover:text-[#059669] font-body text-xs" data-testid="admin-link">Admin</Button>
+            )}
             <Button variant="ghost" size="sm" onClick={() => setProfileOpen(true)} className="text-[#4B5563] hover:text-[#059669]" data-testid="edit-profile-button">
               <Settings className="w-4 h-4" />
             </Button>

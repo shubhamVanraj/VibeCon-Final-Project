@@ -8,6 +8,8 @@ import AuthCallback from './pages/AuthCallback';
 import OnboardingPage from './pages/OnboardingPage';
 import DashboardPage from './pages/DashboardPage';
 import ForgotPasswordPage from './pages/ForgotPasswordPage';
+import AdminDashboard from './pages/AdminDashboard';
+import { LanguageProvider } from './contexts/LanguageContext';
 import './App.css';
 
 function ProtectedRoute({ children }) {
@@ -44,6 +46,7 @@ function AppRouter() {
       <Route path="/forgot-password" element={<ForgotPasswordPage />} />
       <Route path="/onboarding" element={<ProtectedRoute><OnboardingPage /></ProtectedRoute>} />
       <Route path="/dashboard" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
+      <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
@@ -52,10 +55,12 @@ function AppRouter() {
 function App() {
   return (
     <BrowserRouter>
-      <AuthProvider>
-        <AppRouter />
-        <Toaster position="top-right" richColors />
-      </AuthProvider>
+      <LanguageProvider>
+        <AuthProvider>
+          <AppRouter />
+          <Toaster position="top-right" richColors />
+        </AuthProvider>
+      </LanguageProvider>
     </BrowserRouter>
   );
 }
