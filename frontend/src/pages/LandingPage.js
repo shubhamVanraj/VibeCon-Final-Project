@@ -240,8 +240,8 @@ export default function LandingPage() {
             <div className="relative">
               <div className="absolute -inset-6 bg-gradient-to-br from-[#059669]/10 via-transparent to-[#3B82F6]/5 rounded-3xl blur-2xl" />
               <img
-                src="https://images.unsplash.com/photo-1658480023495-dc8cae9e781e?crop=entropy&cs=srgb&fm=jpg&ixlib=rb-4.1.0&q=85&w=600&h=500&fit=crop"
-                alt="Indian professional using smartphone for banking"
+                src="https://images.unsplash.com/photo-1737573477556-ac3ed2db618c?crop=entropy&cs=srgb&fm=jpg&ixlib=rb-4.1.0&q=85&w=600&h=500&fit=crop"
+                alt="Young Indian professional making smart financial decisions"
                 className="relative rounded-3xl shadow-2xl object-cover w-full h-[480px]"
                 loading="lazy"
               />
@@ -496,8 +496,8 @@ export default function LandingPage() {
             <div className="order-2 lg:order-1">
               <div className="relative">
                 <img
-                  src="https://images.unsplash.com/photo-1534951009808-766178b47a4f?crop=entropy&cs=srgb&fm=jpg&ixlib=rb-4.1.0&q=85&w=500&h=400&fit=crop"
-                  alt="Financial growth and savings"
+                  src="https://images.unsplash.com/photo-1714976327252-c114f61d8b22?crop=entropy&cs=srgb&fm=jpg&ixlib=rb-4.1.0&q=85&w=500&h=400&fit=crop"
+                  alt="Confident professional taking control of financial decisions"
                   className="rounded-3xl shadow-lg object-cover w-full h-[360px]"
                   loading="lazy"
                 />
