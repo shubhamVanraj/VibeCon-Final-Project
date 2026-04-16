@@ -428,3 +428,37 @@ h1, h2, h3, p, span, label, a { max-width: 100%; }
   word-break: keep-all;
 }
 
+
+
+/* ========== SCROLL REVEAL SHADING ========== */
+.reveal-on-scroll {
+  opacity: 0;
+  transform: translateY(32px);
+  transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.reveal-on-scroll.revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Staggered children reveal */
+.reveal-on-scroll.revealed > * {
+  animation: childFadeUp 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.reveal-on-scroll.revealed > *:nth-child(1) { animation-delay: 0s; }
+.reveal-on-scroll.revealed > *:nth-child(2) { animation-delay: 0.08s; }
+.reveal-on-scroll.revealed > *:nth-child(3) { animation-delay: 0.16s; }
+
+@keyframes childFadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Section hover shade */
+.feature-card-shade {
+  transition: box-shadow 0.3s ease, transform 0.3s ease, background-color 0.3s ease;
+}
+.feature-card-shade:hover {
+  box-shadow: 0 8px 32px rgba(5, 150, 105, 0.08), 0 2px 8px rgba(0,0,0,0.04);
+  transform: translateY(-2px);
+}

@@ -18,7 +18,8 @@ import {
   Shield, ArrowRight, Eye, Lock, MessageSquare, TrendingUp,
   CheckCircle, Users, IndianRupee, Ban, ChevronDown, ChevronUp,
   Heart, Target, MapPin, LogOut, Settings, Home, User, Car,
-  GraduationCap, Bike, RefreshCw, Search, Loader2, Gem, Repeat, LandPlot, BarChart3
+  GraduationCap, Bike, RefreshCw, Search, Loader2, Gem, Repeat, LandPlot, BarChart3,
+  Linkedin, Mail, Phone, Headphones, ExternalLink
 } from 'lucide-react';
 
 const LOAN_TYPE_META = {
@@ -48,6 +49,20 @@ export default function LandingPage() {
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [userLocation, setUserLocation] = useState(null);
   const [locationLoading, setLocationLoading] = useState(false);
+  const [contactOpen, setContactOpen] = useState(false);
+
+  // Scroll reveal for sections
+  useEffect(() => {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('revealed');
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+    document.querySelectorAll('.reveal-on-scroll').forEach(el => observer.observe(el));
+    return () => observer.disconnect();
+  }, []);
 
   // Fetch all loan products for browse section
   const fetchProducts = useCallback(async () => {
@@ -262,7 +277,7 @@ export default function LandingPage() {
       </section>
 
       {/* Stats */}
-      <section className="py-12 bg-stats-glass" data-testid="stats-section">
+      <section className="py-12 bg-stats-glass reveal-on-scroll" data-testid="stats-section">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {stats.map((stat, i) => (
@@ -276,7 +291,7 @@ export default function LandingPage() {
       </section>
 
       {/* Market Insights Charts */}
-      <section className="py-16 md:py-24 px-6 lg:px-8 bg-mesh-light" data-testid="market-insights-section">
+      <section className="py-16 md:py-24 px-6 lg:px-8 bg-mesh-light reveal-on-scroll" data-testid="market-insights-section">
         <div className="max-w-7xl mx-auto">
           <div className="mb-10">
             <span className="text-xs uppercase tracking-[0.2em] font-bold text-[#6B7280] font-body">
@@ -443,7 +458,7 @@ export default function LandingPage() {
       </section>
 
       {/* Features */}
-      <section className="py-20 md:py-32 px-6 lg:px-8" data-testid="features-section">
+      <section className="py-20 md:py-32 px-6 lg:px-8 reveal-on-scroll" data-testid="features-section">
         <div className="max-w-7xl mx-auto">
           <div className="mb-16">
             <span className="text-xs uppercase tracking-[0.2em] font-bold text-[#6B7280] font-body">{t.whyRinkosh || 'Why Rinkosh'}</span>
@@ -475,7 +490,7 @@ export default function LandingPage() {
       </section>
 
       {/* How it works */}
-      <section className="py-20 md:py-32 px-6 lg:px-8 bg-mesh-light" data-testid="how-it-works-section">
+      <section className="py-20 md:py-32 px-6 lg:px-8 bg-mesh-light reveal-on-scroll" data-testid="how-it-works-section">
         <div className="max-w-7xl mx-auto">
           <div className="mb-16">
             <span className="text-xs uppercase tracking-[0.2em] font-bold text-[#6B7280] font-body">{t.howItWorks || 'How It Works'}</span>
@@ -508,7 +523,7 @@ export default function LandingPage() {
       </section>
 
       {/* Trust */}
-      <section className="py-20 md:py-32 px-6 lg:px-8" data-testid="trust-section">
+      <section className="py-20 md:py-32 px-6 lg:px-8 reveal-on-scroll" data-testid="trust-section">
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div className="order-2 lg:order-1">
@@ -549,7 +564,7 @@ export default function LandingPage() {
       </section>
 
       {/* Our Story */}
-      <section className="py-20 md:py-32 px-6 lg:px-8 bg-mesh-light" data-testid="our-story-section">
+      <section className="py-20 md:py-32 px-6 lg:px-8 bg-mesh-light reveal-on-scroll" data-testid="our-story-section">
         <div className="max-w-4xl mx-auto">
           <div className="flex items-center gap-2 mb-8">
             <Heart className="w-5 h-5 text-[#059669]" strokeWidth={1.5} />
@@ -562,6 +577,17 @@ export default function LandingPage() {
                   ? '"नमस्ते, मैं शुभम हूं, बोकारो से — भारत का एक टियर-2 शहर। बड़े होते हुए मैंने देखा कि अपने आसपास के लोगों के लिए सही वित्तीय निर्णय लेना कितना मुश्किल था — खासकर जब बात लोन की हो।"'
                   : '"Hi, I\'m Shubham, from Bokaro, a Tier-2 city in India. Growing up, I saw how difficult it was for people around me to make the right financial decisions — especially when it came to loans."'}
               </p>
+              <div className="flex items-center gap-3 mt-5 pt-5 border-t border-black/5">
+                <div className="w-10 h-10 rounded-full bg-[#059669] flex items-center justify-center text-white font-heading font-bold text-sm">SK</div>
+                <div className="flex-1">
+                  <div className="font-heading font-semibold text-sm text-[#0A0A0A]">Shubham Kumar</div>
+                  <div className="font-body text-xs text-[#9CA3AF]">{language === 'hi' ? 'संस्थापक, रिंकोश' : 'Founder, Rinkosh'}</div>
+                </div>
+                <a href="https://www.linkedin.com/in/shubhamkr0108/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#0A66C2]/10 text-[#0A66C2] hover:bg-[#0A66C2]/20 transition-colors" data-testid="founder-linkedin">
+                  <Linkedin className="w-3.5 h-3.5" />
+                  <span className="font-body text-xs font-semibold">LinkedIn</span>
+                </a>
+              </div>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="feature-card-shade rounded-2xl p-6">
@@ -593,7 +619,7 @@ export default function LandingPage() {
       </section>
 
       {/* Savings Stats */}
-      <section className="py-16 md:py-24 px-6 lg:px-8" data-testid="savings-stats-section">
+      <section className="py-16 md:py-24 px-6 lg:px-8 reveal-on-scroll" data-testid="savings-stats-section">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-12">
             <span className="text-xs uppercase tracking-[0.2em] font-bold text-[#6B7280] font-body">{language === 'hi' ? 'छोटे अंतर, बड़ी बचत' : 'Small Difference, Big Savings'}</span>
@@ -663,14 +689,96 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="py-10 px-6 lg:px-8 border-t border-[#059669]/5" data-testid="footer">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-2.5">
-            <img src="https://static.prod-images.emergentagent.com/jobs/46236293-45eb-486f-8de9-3cfd3f7e2526/images/251ac3f41bd806cd53ef74f0a949d1a3be51ac19219729fbf89fb0dba4f12b85.png" alt="Rinkosh" className="w-6 h-6 object-contain" />
-            <span className="font-heading font-bold text-[#0A0A0A] tracking-tight">Rinkosh</span>
+      {/* Talk to Us Toggle */}
+      <div className="fixed bottom-24 md:bottom-8 left-4 md:left-6 z-[998]">
+        <button
+          onClick={() => setContactOpen(!contactOpen)}
+          className="w-12 h-12 rounded-full bg-[#111827] text-white shadow-xl hover:bg-[#000] transition-all hover:scale-105 flex items-center justify-center"
+          data-testid="talk-to-us-toggle"
+        >
+          {contactOpen ? <ChevronDown className="w-5 h-5" /> : <Headphones className="w-5 h-5" />}
+        </button>
+        {contactOpen && (
+          <div className="absolute bottom-16 left-0 w-72 bg-white rounded-2xl shadow-2xl border border-black/10 p-5 space-y-4" data-testid="talk-to-us-panel">
+            <div>
+              <h4 className="font-heading font-bold text-sm text-[#0A0A0A]">{language === 'hi' ? 'हमसे बात करें' : 'Talk to Us'}</h4>
+              <p className="font-body text-[10px] text-[#9CA3AF] mt-0.5">{language === 'hi' ? 'हम आपकी मदद के लिए यहां हैं' : 'We are here to assist you'}</p>
+            </div>
+            <a href="mailto:support@rinkosh.com" className="flex items-center gap-3 p-3 rounded-xl bg-[#059669]/5 hover:bg-[#059669]/10 transition-colors group" data-testid="contact-email">
+              <div className="w-9 h-9 rounded-lg bg-[#059669]/10 flex items-center justify-center group-hover:bg-[#059669]/20 transition-colors">
+                <Mail className="w-4 h-4 text-[#059669]" />
+              </div>
+              <div>
+                <div className="font-body text-xs font-semibold text-[#0A0A0A]">{language === 'hi' ? 'ईमेल सपोर्ट' : 'Email Support'}</div>
+                <div className="font-body text-[10px] text-[#059669]">support@rinkosh.com</div>
+              </div>
+            </a>
+            <a href="https://www.linkedin.com/in/shubhamkr0108/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 p-3 rounded-xl bg-[#0A66C2]/5 hover:bg-[#0A66C2]/10 transition-colors group" data-testid="contact-linkedin">
+              <div className="w-9 h-9 rounded-lg bg-[#0A66C2]/10 flex items-center justify-center group-hover:bg-[#0A66C2]/20 transition-colors">
+                <Linkedin className="w-4 h-4 text-[#0A66C2]" />
+              </div>
+              <div>
+                <div className="font-body text-xs font-semibold text-[#0A0A0A]">{language === 'hi' ? 'लिंक्डइन पर संपर्क करें' : 'Connect on LinkedIn'}</div>
+                <div className="font-body text-[10px] text-[#0A66C2]">Shubham Kumar</div>
+              </div>
+            </a>
+            <div className="flex items-center gap-3 p-3 rounded-xl bg-[#F3F4F6]">
+              <div className="w-9 h-9 rounded-lg bg-white flex items-center justify-center">
+                <Phone className="w-4 h-4 text-[#4B5563]" />
+              </div>
+              <div>
+                <div className="font-body text-xs font-semibold text-[#0A0A0A]">{language === 'hi' ? 'फोन सपोर्ट जल्द' : 'Phone Support Coming Soon'}</div>
+                <div className="font-body text-[10px] text-[#9CA3AF]">{language === 'hi' ? 'हम इस पर काम कर रहे हैं' : 'We are working on it'}</div>
+              </div>
+            </div>
           </div>
-          <p className="font-body text-sm text-[#9CA3AF]">Transparent lending for everyone.</p>
+        )}
+      </div>
+
+      {/* Footer */}
+      <footer className="py-12 md:py-16 px-6 lg:px-8 bg-[#FAFAFA] border-t border-[#059669]/5 reveal-on-scroll" data-testid="footer">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-10 mb-10">
+            {/* Brand */}
+            <div className="md:col-span-2">
+              <div className="flex items-center gap-2.5 mb-4">
+                <img src="https://static.prod-images.emergentagent.com/jobs/46236293-45eb-486f-8de9-3cfd3f7e2526/images/251ac3f41bd806cd53ef74f0a949d1a3be51ac19219729fbf89fb0dba4f12b85.png" alt="Rinkosh" className="w-8 h-8 object-contain" />
+                <span className="font-heading font-bold text-xl text-[#0A0A0A] tracking-tight">Rinkosh</span>
+              </div>
+              <p className="font-body text-sm text-[#4B5563] leading-relaxed max-w-sm mb-4">
+                {language === 'hi' ? 'भारत का पारदर्शी लोन खोज प्लेटफॉर्म। कोई स्पैम नहीं, कोई छिपे शुल्क नहीं — बस बचत।' : 'India\'s transparent loan discovery platform. No spam, no hidden charges — just savings.'}
+              </p>
+              <p className="font-body text-xs text-gradient font-bold tracking-wide">{t.motto || 'No Spam. No Secrets. Just Savings.'}</p>
+            </div>
+            {/* Contact */}
+            <div>
+              <h4 className="font-heading font-bold text-sm text-[#0A0A0A] mb-4">{language === 'hi' ? 'संपर्क करें' : 'Contact'}</h4>
+              <div className="space-y-3">
+                <a href="mailto:support@rinkosh.com" className="flex items-center gap-2 font-body text-sm text-[#4B5563] hover:text-[#059669] transition-colors" data-testid="footer-email">
+                  <Mail className="w-4 h-4" />
+                  support@rinkosh.com
+                </a>
+                <a href="https://www.linkedin.com/in/shubhamkr0108/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 font-body text-sm text-[#4B5563] hover:text-[#0A66C2] transition-colors" data-testid="footer-linkedin">
+                  <Linkedin className="w-4 h-4" />
+                  {language === 'hi' ? 'लिंक्डइन पर फॉलो करें' : 'Follow on LinkedIn'}
+                  <ExternalLink className="w-3 h-3" />
+                </a>
+              </div>
+            </div>
+            {/* Quick Links */}
+            <div>
+              <h4 className="font-heading font-bold text-sm text-[#0A0A0A] mb-4">{language === 'hi' ? 'त्वरित लिंक' : 'Quick Links'}</h4>
+              <div className="space-y-3">
+                <a href="#browse-loans" className="block font-body text-sm text-[#4B5563] hover:text-[#059669] transition-colors">{language === 'hi' ? 'लोन ब्राउज़ करें' : 'Browse Loans'}</a>
+                <a href="#" onClick={(e) => { e.preventDefault(); document.querySelector('[data-testid="emi-calculator-section"]')?.scrollIntoView({ behavior: 'smooth' }); }} className="block font-body text-sm text-[#4B5563] hover:text-[#059669] transition-colors">{language === 'hi' ? 'EMI कैलकुलेटर' : 'EMI Calculator'}</a>
+                <a href="#" onClick={(e) => { e.preventDefault(); document.querySelector('[data-testid="our-story-section"]')?.scrollIntoView({ behavior: 'smooth' }); }} className="block font-body text-sm text-[#4B5563] hover:text-[#059669] transition-colors">{language === 'hi' ? 'हमारी कहानी' : 'Our Story'}</a>
+              </div>
+            </div>
+          </div>
+          <div className="border-t border-black/5 pt-6 flex flex-col md:flex-row items-center justify-between gap-3">
+            <p className="font-body text-xs text-[#9CA3AF]">&copy; 2026 Rinkosh. {language === 'hi' ? 'सर्वाधिकार सुरक्षित।' : 'All rights reserved.'}</p>
+            <p className="font-body text-xs text-[#9CA3AF]">{language === 'hi' ? 'भारत में बनाया गया' : 'Made with purpose in India'}</p>
+          </div>
         </div>
       </footer>
 
