@@ -5,6 +5,7 @@ import { useLanguage } from '../contexts/LanguageContext';
 import { LanguageToggle } from '../components/LanguageToggle';
 import { ThemeToggle, SoundToggle } from '../components/ThemeToggle';
 import api, { formatCurrency } from '../lib/api';
+import { usePageView, useAnalytics } from '../lib/analytics';
 import { BankLogo } from '../lib/bankLogos';
 import { EmiCalculator } from '../components/EmiCalculator';
 import { ProfileEditor } from '../components/ProfileEditor';
@@ -44,6 +45,8 @@ export default function DashboardPage() {
   const { user, logout } = useAuth();
   const { t, language } = useLanguage();
   const navigate = useNavigate();
+  usePageView('dashboard');
+  const { track } = useAnalytics();
 
   const [recommendations, setRecommendations] = useState([]);
   const [leads, setLeads] = useState([]);
@@ -94,6 +97,7 @@ export default function DashboardPage() {
         product_name: rec.product_name,
       });
       toast.success(`Interest registered with ${rec.bank_name}`);
+      track('lead_interest', { bank: rec.bank_name, product: rec.product_name });
       const { data } = await api.get('/leads');
       setLeads(data);
     } catch (err) {

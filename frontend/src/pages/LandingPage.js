@@ -5,6 +5,7 @@ import { useLanguage } from '../contexts/LanguageContext';
 import { LanguageToggle } from '../components/LanguageToggle';
 import { ThemeToggle, SoundToggle } from '../components/ThemeToggle';
 import { EmiCalculator } from '../components/EmiCalculator';
+import { usePageView } from '../lib/analytics';
 import { Button } from '../components/ui/button';
 import { Shield, ArrowRight, Eye, Lock, MessageSquare, TrendingUp, CheckCircle, Users, IndianRupee, Ban, ChevronDown, ChevronUp, Heart, Target } from 'lucide-react';
 
@@ -15,6 +16,8 @@ export default function LandingPage() {
   const [expandedStep, setExpandedStep] = useState(null);
 
   if (!loading && user) return <Navigate to="/dashboard" replace />;
+
+  usePageView('landing');
 
   const features = [
     { icon: Eye, title: t.feat1, desc: t.feat1d },

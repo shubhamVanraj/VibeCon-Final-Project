@@ -1,6 +1,9 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { useLanguage } from '../contexts/LanguageContext';
+import { LanguageToggle } from '../components/LanguageToggle';
+import { useAnalytics } from '../lib/analytics';
 import api from '../lib/api';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
@@ -18,6 +21,7 @@ export default function OnboardingPage() {
   const [loading, setLoading] = useState(false);
   const { updateUser } = useAuth();
   const { t, language } = useLanguage();
+  const { track } = useAnalytics();
   const navigate = useNavigate();
 
   const loanTypes = [
@@ -74,6 +78,7 @@ export default function OnboardingPage() {
         desired_tenure_months: parseInt(form.desired_tenure_months) || 60,
       };
       await api.put('/user/profile', payload);
+      track('onboarding_complete', { loan_type: form.loan_type, income: form.monthly_income });
       updateUser({ has_profile: true });
       toast.success('Profile complete! Getting your recommendations...');
       navigate('/dashboard');

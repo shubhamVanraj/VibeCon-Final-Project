@@ -5,6 +5,7 @@ import { useLanguage } from '../contexts/LanguageContext';
 import { LanguageToggle } from '../components/LanguageToggle';
 import { ThemeToggle } from '../components/ThemeToggle';
 import api, { formatApiErrorDetail } from '../lib/api';
+import { usePageView, useAnalytics } from '../lib/analytics';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
@@ -25,6 +26,8 @@ export default function LoginPage() {
   const { user, loading: authLoading, login } = useAuth();
   const { t } = useLanguage();
   const navigate = useNavigate();
+  usePageView('login');
+  const { track } = useAnalytics();
 
   if (authLoading) return null;
   if (user) return <Navigate to="/dashboard" replace />;

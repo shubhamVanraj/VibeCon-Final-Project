@@ -124,6 +124,20 @@ async def get_current_user(request: Request) -> dict:
         raise HTTPException(status_code=401, detail="Invalid token")
 
 
+# ==================== ANALYTICS HELPER ====================
+
+async def log_event(database, event_type, data=None, user_id=None):
+    """Log an analytics event to the database"""
+    event = {
+        "event_id": f"evt_{uuid.uuid4().hex[:12]}",
+        "event_type": event_type,
+        "data": data or {},
+        "user_id": user_id,
+        "timestamp": datetime.now(timezone.utc).isoformat()
+    }
+    await database.analytics_events.insert_one(event)
+
+
 # ==================== AUTH ROUTES ====================
 
 @api_router.post("/auth/register")
@@ -151,6 +165,8 @@ async def register(data: UserRegister, response: Response):
     refresh_token = create_refresh_token(user_id)
     set_auth_cookies(response, access_token, refresh_token)
 
+    await log_event(db, "user_registered", {"email": email, "user_id": user_id, "method": "email"})
+
     return {
         "user_id": user_id, "email": email, "name": data.name,
         "role": "user", "auth_type": "email", "has_profile": False
@@ -163,9 +179,9 @@ async def login(data: UserLogin, request: Request, response: Response):
     ip = request.client.host if request.client else "unknown"
     identifier = f"{ip}:{email}"
 
-    # Brute force check
+    # Brute force check - 10 attempts, 5 min lockout
     attempt = await db.login_attempts.find_one({"identifier": identifier}, {"_id": 0})
-    if attempt and attempt.get("attempts", 0) >= 5:
+    if attempt and attempt.get("attempts", 0) >= 10:
         locked_until = attempt.get("locked_until")
         if locked_until:
             if isinstance(locked_until, str):
@@ -173,25 +189,28 @@ async def login(data: UserLogin, request: Request, response: Response):
             if locked_until.tzinfo is None:
                 locked_until = locked_until.replace(tzinfo=timezone.utc)
             if locked_until > datetime.now(timezone.utc):
-                raise HTTPException(status_code=429, detail="Too many attempts. Try again in 15 minutes.")
-            else:
-                await db.login_attempts.delete_one({"identifier": identifier})
+                await log_event(db, "login_blocked", {"email": email, "ip": ip, "reason": "brute_force"})
+                raise HTTPException(status_code=429, detail="Too many attempts. Please wait 5 minutes.")
+        # Lockout expired, clear it
+        await db.login_attempts.delete_one({"identifier": identifier})
 
     user = await db.users.find_one({"email": email}, {"_id": 0})
     if not user or not user.get("password_hash"):
         await db.login_attempts.update_one(
             {"identifier": identifier},
-            {"$inc": {"attempts": 1}, "$set": {"locked_until": (datetime.now(timezone.utc) + timedelta(minutes=15)).isoformat()}},
+            {"$inc": {"attempts": 1}, "$set": {"locked_until": (datetime.now(timezone.utc) + timedelta(minutes=5)).isoformat()}},
             upsert=True
         )
+        await log_event(db, "login_fail", {"email": email, "ip": ip, "reason": "invalid_email"})
         raise HTTPException(status_code=401, detail="Invalid email or password")
 
     if not verify_password(data.password, user["password_hash"]):
         await db.login_attempts.update_one(
             {"identifier": identifier},
-            {"$inc": {"attempts": 1}, "$set": {"locked_until": (datetime.now(timezone.utc) + timedelta(minutes=15)).isoformat()}},
+            {"$inc": {"attempts": 1}, "$set": {"locked_until": (datetime.now(timezone.utc) + timedelta(minutes=5)).isoformat()}},
             upsert=True
         )
+        await log_event(db, "login_fail", {"email": email, "ip": ip, "reason": "wrong_password"})
         raise HTTPException(status_code=401, detail="Invalid email or password")
 
     await db.login_attempts.delete_one({"identifier": identifier})
@@ -202,6 +221,8 @@ async def login(data: UserLogin, request: Request, response: Response):
     access_token = create_access_token(user["user_id"], email)
     refresh_token = create_refresh_token(user["user_id"])
     set_auth_cookies(response, access_token, refresh_token)
+
+    await log_event(db, "login_success", {"email": email, "user_id": user["user_id"], "method": "password"})
 
     return {
         "user_id": user["user_id"], "email": user["email"], "name": user["name"],
@@ -456,9 +477,8 @@ async def update_profile(data: UserProfileUpdate, request: Request):
         upsert=True
     )
     profile = await db.user_profiles.find_one({"user_id": user["user_id"]}, {"_id": 0})
+    await log_event(db, "profile_updated", {"loan_type": profile_data.get("loan_type")}, user["user_id"])
     return profile
-
-
 @api_router.put("/user/language")
 async def update_language(request: Request):
     user = await get_current_user(request)
@@ -593,6 +613,7 @@ async def create_lead(data: LeadCreate, request: Request):
     }
     await db.leads.insert_one(lead_doc)
     lead = await db.leads.find_one({"lead_id": lead_id}, {"_id": 0})
+    await log_event(db, "lead_created", {"lead_id": lead_id, "bank": data.bank_name, "product": data.product_name}, user["user_id"])
     return lead
 
 
@@ -790,6 +811,54 @@ async def admin_update_lead(lead_id: str, request: Request):
     return updated
 
 
+# ==================== ANALYTICS EVENTS ====================
+
+@api_router.post("/analytics/event")
+async def track_event(request: Request):
+    """Track a user journey event. Works with or without auth."""
+    body = await request.json()
+    event_type = body.get("event_type", "")
+    data = body.get("data", {})
+    if not event_type:
+        raise HTTPException(status_code=400, detail="event_type required")
+    user_id = None
+    try:
+        user = await get_current_user(request)
+        user_id = user.get("user_id")
+    except Exception:
+        pass
+    ip = request.client.host if request.client else "unknown"
+    ua = request.headers.get("user-agent", "")
+    data["ip"] = ip
+    data["user_agent"] = ua[:200]
+    await log_event(db, event_type, data, user_id)
+    return {"status": "ok"}
+
+
+@api_router.get("/admin/events")
+async def get_admin_events(request: Request, event_type: Optional[str] = None, limit: int = 100):
+    """Get analytics events (admin only)"""
+    user = await get_current_user(request)
+    if user.get("role") != "admin":
+        raise HTTPException(status_code=403, detail="Admin access required")
+    query = {}
+    if event_type:
+        query["event_type"] = event_type
+    events = await db.analytics_events.find(query, {"_id": 0}).sort("timestamp", -1).to_list(limit)
+
+    # Summary stats
+    total = await db.analytics_events.count_documents({})
+    type_counts = {}
+    async for doc in db.analytics_events.aggregate([{"$group": {"_id": "$event_type", "count": {"$sum": 1}}}, {"$sort": {"count": -1}}]):
+        type_counts[doc["_id"]] = doc["count"]
+
+    return {
+        "events": events,
+        "total_events": total,
+        "event_type_counts": type_counts
+    }
+
+
 # ==================== HEALTH ====================
 
 @api_router.get("/health")
@@ -886,6 +955,9 @@ async def startup_event():
     await db.user_profiles.create_index("user_id", unique=True)
     await db.password_reset_tokens.create_index("email")
     await db.login_otps.create_index("identifier")
+    await db.analytics_events.create_index("event_type")
+    await db.analytics_events.create_index("timestamp")
+    await db.analytics_events.create_index("user_id")
     await seed_admin()
     await seed_loan_products()
 
