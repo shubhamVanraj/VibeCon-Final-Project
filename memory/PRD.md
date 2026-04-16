@@ -4,49 +4,56 @@
 ## Architecture
 - Frontend: React 19 + Tailwind CSS + Shadcn UI + Framer Motion + Recharts
 - Backend: FastAPI + MongoDB (Motor async driver)
-- AI: Claude Sonnet 4.5 (suggestions/translation) + OpenAI Whisper (voice input)
+- AI: Claude Sonnet 4.5 (suggestions/chatbot/translation) + OpenAI Whisper (voice)
 - Auth: JWT email/password + Emergent Google OAuth (HTTP-only cookies)
 
 ## What's Been Implemented
 
 ### Phase 1-8 (Complete)
-- Landing page, JWT/Google Auth, 4-step onboarding, loan recommendations, lead management
-- Credit builder, AI advisor (Claude 4.5), voice input (Whisper), EN/HI languages
-- Forgot Password, profile editing, loan comparison, credit score placeholder
-- Admin analytics dashboard, dark mode, micro-interactions, mobile touch
-- OTP login, EMI Calculator, Our Story section, sticky CTA, step tracker
-- Bug fixes: 429 login, frontend compilation, analytics tracking
+- Full MVP: Landing, Auth, Onboarding, Recommendations, Leads, Credit Builder
+- AI Advisor (Claude 4.5), Voice (Whisper), EN/HI languages
+- Admin dashboard, dark mode, sounds, mobile touch, EMI calculator
+- OTP login, Our Story, analytics tracking
 
-### Phase 9 - Exploration-First Flow (April 16, 2026)
-- [x] After login → land on Landing Page (not forced to dashboard)
-- [x] Browse All Loans section with category filters
-- [x] Gentle onboarding nudge (not forced redirect)
-- [x] Location sync via geolocation + OpenStreetMap Nominatim
-- [x] Personalized navbar for logged-in users
+### Phase 9 - Exploration-First Flow
+- [x] After login → land on Landing Page, not dashboard
+- [x] Browse All Loans section with 10 category filters
+- [x] Gentle onboarding nudge, location auto-detect
 
-### Phase 10 - Images & Expanded Loan Categories (April 16, 2026)
-- [x] Hero image: AI-generated Indian professional comparing loans (emergentagent CDN)
-- [x] Trust image: Handshake symbolizing trust & transparency (Unsplash)
-- [x] 4 new loan categories added: Gold Loan, 2nd Hand Vehicle, Plot Loan, Loan Against MF
-- [x] 52 total loan products across 10 categories and 20 banks
-- [x] New banks: Muthoot Finance, Manappuram Finance
-- [x] Category filter pills: All(52), Personal(13), Home(10), Car(6), Bike(3), Education(3), Gold(5), 2nd Hand Vehicle(4), Plot(4), Loan Against MF(4)
-- [x] Onboarding updated with all 10 loan types
-- [x] Stats bar: 35+ Banks, 10 Categories
-- [x] EN/HI translations for all new types
+### Phase 10 - Images & Expanded Loans
+- [x] AI-generated hero + handshake trust image
+- [x] 4 new categories: Gold, 2nd Hand Vehicle, Plot, Loan Against MF
+- [x] 52 products, 10 categories, 20 banks
 
-## Brand Assets
-- Hero: AI-generated (emergentagent CDN)
-- Trust: Handshake (Unsplash photo-1518135714426)
+### Phase 11 - Chatbot, Location Picker, Charts (April 16, 2026)
+- [x] Chatbot widget (Claude 4.5): floating green bubble, opens panel with quick questions, session-based chat
+- [x] LocationPicker: navbar dropdown with search (Nominatim) + 15 popular Indian cities
+- [x] Market Insights section: 3 charts (Recharts)
+  - Category Distribution donut chart
+  - Interest Rate Comparison horizontal bar chart
+  - Top Bank Coverage vertical bar chart
+- [x] Public API: POST /api/ai/chat-public, GET /api/loans/stats
+- [x] EN/HI support for chatbot and all new sections
+
+## Key Endpoints
+- POST /api/ai/chat-public — Public chatbot (Claude 4.5, no auth required)
+- GET /api/loans/stats — Loan market stats for charts (public)
+- GET /api/loans/products — All 52 products (public)
+- POST /api/ai/suggest — Auth'd AI advisor
+- All other auth, loan, lead, credit, analytics endpoints
+
+## Brand
 - Logo: Green shield "R" motif
-- Fonts: Sora (headings) + DM Sans (body)
-- Brand Color: #059669
+- Fonts: Sora + DM Sans
+- Color: #059669
+- Hero: AI-generated (emergentagent CDN)
+- Trust: Handshake (Unsplash)
 
 ## Prioritized Backlog
 
 ### P1
-- Chatbot widget ("Ask anything about loans") on landing page
-- Email/SMS OTP delivery (currently dev mode)
+- Email/SMS OTP delivery (currently dev mode, shows OTP in toast)
+- LLM budget top-up for chatbot to work live (currently returns fallback)
 
 ### P2
 - Real CIBIL/Experian API integration (currently MOCKED)
