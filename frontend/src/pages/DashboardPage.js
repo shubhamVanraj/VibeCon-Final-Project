@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
 import { LanguageToggle } from '../components/LanguageToggle';
+import { ThemeToggle, SoundToggle } from '../components/ThemeToggle';
 import api, { formatCurrency } from '../lib/api';
 import { BankLogo } from '../lib/bankLogos';
 import { ProfileEditor } from '../components/ProfileEditor';
@@ -194,8 +195,10 @@ export default function DashboardPage() {
             <img src="https://static.prod-images.emergentagent.com/jobs/46236293-45eb-486f-8de9-3cfd3f7e2526/images/251ac3f41bd806cd53ef74f0a949d1a3be51ac19219729fbf89fb0dba4f12b85.png" alt="Rinkosh" className="w-7 h-7 object-contain" />
             <span className="font-heading font-bold text-lg text-[#0A0A0A] tracking-tight">Rinkosh</span>
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3">
             <LanguageToggle />
+            <ThemeToggle />
+            <SoundToggle />
             <Separator orientation="vertical" className="h-6" />
             {user?.role === 'admin' && (
               <Button variant="ghost" size="sm" onClick={() => navigate('/admin')} className="text-[#4B5563] hover:text-[#059669] font-body text-xs" data-testid="admin-link">Admin</Button>

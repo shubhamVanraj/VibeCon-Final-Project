@@ -2,6 +2,7 @@ import { Link, Navigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
 import { LanguageToggle } from '../components/LanguageToggle';
+import { ThemeToggle, SoundToggle } from '../components/ThemeToggle';
 import { Button } from '../components/ui/button';
 import { Shield, ArrowRight, Eye, Lock, MessageSquare, TrendingUp, CheckCircle, Users, IndianRupee, Ban } from 'lucide-react';
 
@@ -37,12 +38,14 @@ export default function LandingPage() {
       {/* Navbar */}
       <nav className="fixed top-0 w-full z-50 glass-nav" data-testid="landing-navbar">
         <div className="max-w-7xl mx-auto px-6 lg:px-8 flex items-center justify-between h-16">
-          <div className="flex items-center gap-2">
-            <Shield className="w-6 h-6 text-[#059669]" strokeWidth={1.5} />
-            <span className="font-heading font-bold text-xl text-[#0A0A0A]">Rinkosh</span>
+          <div className="flex items-center gap-2.5">
+            <img src="https://static.prod-images.emergentagent.com/jobs/46236293-45eb-486f-8de9-3cfd3f7e2526/images/251ac3f41bd806cd53ef74f0a949d1a3be51ac19219729fbf89fb0dba4f12b85.png" alt="Rinkosh" className="w-9 h-9 object-contain" />
+            <span className="font-heading font-bold text-xl text-[#0A0A0A] tracking-tight">Rinkosh</span>
           </div>
-          <div className="flex items-center gap-3">
-            <LanguageToggle />
+          <div className="flex items-center gap-2">
+            <LanguageToggle compact />
+            <ThemeToggle />
+            <SoundToggle />
             <Link to="/login">
               <Button variant="ghost" className="rounded-full font-body font-semibold text-[#4B5563] hover:text-[#0A0A0A] hover:bg-[#059669]/5" data-testid="nav-login-button">
                 {t.login}
