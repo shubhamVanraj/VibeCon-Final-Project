@@ -267,14 +267,14 @@ export default function OnboardingPage() {
                         className="mt-3 grid grid-cols-2 md:grid-cols-4 gap-3"
                       >
                         {[
-                          { value: "12", label: "1 Year" },
-                          { value: "36", label: "3 Years" },
-                          { value: "60", label: "5 Years" },
-                          { value: "120", label: "10 Years" },
-                          { value: "180", label: "15 Years" },
-                          { value: "240", label: "20 Years" },
-                          { value: "300", label: "25 Years" },
-                          { value: "360", label: "30 Years" },
+                          { value: "12", label: t.yr1 },
+                          { value: "36", label: t.yr3 },
+                          { value: "60", label: t.yr5 },
+                          { value: "120", label: t.yr10 },
+                          { value: "180", label: t.yr15 },
+                          { value: "240", label: t.yr20 },
+                          { value: "300", label: t.yr25 },
+                          { value: "360", label: t.yr30 },
                         ].map((t) => (
                           <Label
                             key={t.value}

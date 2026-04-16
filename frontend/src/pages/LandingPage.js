@@ -45,12 +45,12 @@ export default function LandingPage() {
             <LanguageToggle />
             <Link to="/login">
               <Button variant="ghost" className="rounded-full font-body font-semibold text-[#4B5563] hover:text-[#0A0A0A]" data-testid="nav-login-button">
-                Login
+                {t.login}
               </Button>
             </Link>
             <Link to="/register">
               <Button className="bg-[#059669] text-white hover:bg-[#047857] rounded-full px-6 font-body font-semibold" data-testid="nav-signup-button">
-                Find Best Loan
+                {t.findBestLoan}
               </Button>
             </Link>
           </div>
@@ -63,7 +63,7 @@ export default function LandingPage() {
           <div>
             <div className="inline-flex items-center gap-2 bg-[#059669]/10 text-[#059669] rounded-full px-4 py-1.5 mb-8 animate-fade-in-up">
               <Lock className="w-3.5 h-3.5" strokeWidth={2} />
-              <span className="text-xs font-body font-bold uppercase tracking-wider">Your data is surakshit (safe)</span>
+              <span className="text-xs font-body font-bold uppercase tracking-wider">{t.dataSafeHindi}</span>
             </div>
             <h1 className="font-heading text-5xl md:text-6xl lg:text-7xl font-bold text-[#0A0A0A] tracking-tighter leading-[1.05] mb-6 animate-fade-in-up">
               {t.heroHeading || <>Stop Overpaying<br />on Loans</>}
