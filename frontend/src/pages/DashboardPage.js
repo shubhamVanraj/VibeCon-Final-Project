@@ -244,9 +244,15 @@ export default function DashboardPage() {
           <TabsContent value="recommendations" className="space-y-4" data-testid="recommendations-content">
             {recommendations.length === 0 ? (
               <Card className="rounded-2xl border border-black/5 p-12 text-center">
-                <p className="font-body text-[#4B5563]">{t.completeProfile}</p>
-                <Button onClick={() => navigate('/onboarding')} className="mt-4 rounded-full bg-[#059669] hover:bg-[#047857] text-white font-body" data-testid="go-onboarding-btn">
-                  {t.completeProfileBtn} <ArrowRight className="w-4 h-4 ml-2" />
+                <p className="font-body text-[#4B5563]">
+                  {user?.has_profile
+                    ? (language === 'hi' ? 'इस लोन प्रकार के लिए अभी कोई मिलान नहीं मिला। अपनी प्रोफाइल अपडेट करें या अन्य विकल्प देखें।' : 'No matching loans found for your profile. Try updating your preferences or explore other options.')
+                    : t.completeProfile}
+                </p>
+                <Button onClick={() => navigate(user?.has_profile ? '/onboarding' : '/onboarding')} className="mt-4 rounded-full bg-[#059669] hover:bg-[#047857] text-white font-body" data-testid="go-onboarding-btn">
+                  {user?.has_profile
+                    ? (language === 'hi' ? 'प्रोफाइल अपडेट करें' : 'Update Preferences')
+                    : t.completeProfileBtn} <ArrowRight className="w-4 h-4 ml-2" />
                 </Button>
               </Card>
             ) : (
