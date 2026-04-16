@@ -85,7 +85,7 @@ export default function OnboardingPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F9F9FB]" data-testid="onboarding-page">
+    <div className="min-h-screen bg-mesh-light" data-testid="onboarding-page">
       {/* Header */}
       <div className="glass-nav fixed top-0 w-full z-50">
         <div className="max-w-2xl mx-auto px-6 py-4 flex items-center justify-between">

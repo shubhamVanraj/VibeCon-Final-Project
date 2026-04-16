@@ -55,7 +55,7 @@ export default function ForgotPasswordPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F9F9FB] flex items-center justify-center p-4" data-testid="forgot-password-page">
+    <div className="min-h-screen bg-mesh-auth flex items-center justify-center p-4" data-testid="forgot-password-page">
       <div className="w-full max-w-md">
         <Link to="/login" className="inline-flex items-center gap-2 text-[#4B5563] hover:text-[#0A0A0A] mb-8 transition-colors" data-testid="back-to-login-link">
           <ArrowLeft className="w-4 h-4" />
@@ -65,8 +65,8 @@ export default function ForgotPasswordPage() {
         <Card className="rounded-2xl border border-black/5 shadow-[0_4px_24px_rgba(0,0,0,0.02)]">
           <CardHeader className="text-center pb-2">
             <div className="flex items-center justify-center gap-2 mb-2">
-              <Shield className="w-6 h-6 text-[#059669]" strokeWidth={1.5} />
-              <span className="font-heading font-bold text-xl text-[#0A0A0A]">Rinkosh</span>
+              <img src="https://static.prod-images.emergentagent.com/jobs/46236293-45eb-486f-8de9-3cfd3f7e2526/images/251ac3f41bd806cd53ef74f0a949d1a3be51ac19219729fbf89fb0dba4f12b85.png" alt="Rinkosh" className="w-7 h-7 object-contain" />
+              <span className="font-heading font-bold text-xl text-[#0A0A0A] tracking-tight">Rinkosh</span>
             </div>
             <CardTitle className="font-heading text-2xl tracking-tight">
               {step === 1 ? 'Forgot Password' : step === 2 ? 'Enter Reset Code' : 'New Password'}

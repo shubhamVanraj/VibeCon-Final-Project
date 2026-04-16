@@ -6,7 +6,7 @@ import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '../components/ui/card';
-import { Shield, ArrowLeft } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function RegisterPage() {
@@ -47,18 +47,18 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F9F9FB] flex items-center justify-center p-4" data-testid="register-page">
+    <div className="min-h-screen bg-mesh-auth flex items-center justify-center p-4" data-testid="register-page">
       <div className="w-full max-w-md">
         <Link to="/" className="inline-flex items-center gap-2 text-[#4B5563] hover:text-[#0A0A0A] mb-8 transition-colors" data-testid="back-to-home-link">
           <ArrowLeft className="w-4 h-4" />
           <span className="font-body text-sm">Back to home</span>
         </Link>
 
-        <Card className="rounded-2xl border border-black/5 shadow-[0_4px_24px_rgba(0,0,0,0.02)]">
+        <Card className="rounded-2xl border border-black/5 shadow-[0_4px_24px_rgba(0,0,0,0.04)] bg-white/80 backdrop-blur-sm">
           <CardHeader className="text-center pb-2">
             <div className="flex items-center justify-center gap-2 mb-2">
-              <Shield className="w-6 h-6 text-[#059669]" strokeWidth={1.5} />
-              <span className="font-heading font-bold text-xl text-[#0A0A0A]">Rinkosh</span>
+              <img src="https://static.prod-images.emergentagent.com/jobs/46236293-45eb-486f-8de9-3cfd3f7e2526/images/251ac3f41bd806cd53ef74f0a949d1a3be51ac19219729fbf89fb0dba4f12b85.png" alt="Rinkosh" className="w-7 h-7 object-contain" />
+              <span className="font-heading font-bold text-xl text-[#0A0A0A] tracking-tight">Rinkosh</span>
             </div>
             <CardTitle className="font-heading text-2xl tracking-tight">Create account</CardTitle>
             <CardDescription className="font-body">Start finding the best loans</CardDescription>
@@ -90,7 +90,7 @@ export default function RegisterPage() {
                   data-testid="register-password-input" />
               </div>
               <Button type="submit" disabled={loading}
-                className="w-full bg-[#111827] text-white hover:bg-[#000000] rounded-full py-3 font-body font-semibold h-12"
+                className="w-full bg-[#111827] text-white hover:bg-[#000000] rounded-full py-3 font-body font-semibold h-12 btn-dark-glow"
                 data-testid="register-submit-button">
                 {loading ? 'Creating account...' : 'Create Account'}
               </Button>

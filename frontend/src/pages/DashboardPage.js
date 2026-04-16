@@ -186,13 +186,13 @@ export default function DashboardPage() {
   const leadProductIds = new Set(leads.filter(l => l.status !== 'revoked').map(l => l.product_id));
 
   return (
-    <div className="min-h-screen bg-[#F9F9FB]" data-testid="dashboard-page">
+    <div className="min-h-screen bg-mesh-light" data-testid="dashboard-page">
       {/* Nav */}
       <nav className="glass-nav fixed top-0 w-full z-50" data-testid="dashboard-navbar">
         <div className="max-w-7xl mx-auto px-6 lg:px-8 flex items-center justify-between h-16">
-          <div className="flex items-center gap-2">
-            <Shield className="w-5 h-5 text-[#059669]" strokeWidth={1.5} />
-            <span className="font-heading font-bold text-lg text-[#0A0A0A]">Rinkosh</span>
+          <div className="flex items-center gap-2.5">
+            <img src="https://static.prod-images.emergentagent.com/jobs/46236293-45eb-486f-8de9-3cfd3f7e2526/images/251ac3f41bd806cd53ef74f0a949d1a3be51ac19219729fbf89fb0dba4f12b85.png" alt="Rinkosh" className="w-7 h-7 object-contain" />
+            <span className="font-heading font-bold text-lg text-[#0A0A0A] tracking-tight">Rinkosh</span>
           </div>
           <div className="flex items-center gap-4">
             <LanguageToggle />
@@ -242,7 +242,7 @@ export default function DashboardPage() {
             ) : (
               <div className="grid gap-4 md:grid-cols-2">
                 {recommendations.map((rec, idx) => (
-                  <Card key={rec.product_id} className="rounded-2xl border border-black/5 shadow-[0_4px_24px_rgba(0,0,0,0.02)] loan-card overflow-hidden" data-testid={`rec-card-${rec.product_id}`}>
+                  <Card key={rec.product_id} className="rounded-2xl card-premium loan-card overflow-hidden" data-testid={`rec-card-${rec.product_id}`}>
                     <CardContent className="p-6">
                       <div className="flex items-start justify-between mb-4">
                         <div className="flex items-start gap-3">
@@ -312,10 +312,10 @@ export default function DashboardPage() {
                       <Button
                         onClick={() => handleInterested(rec)}
                         disabled={leadProductIds.has(rec.product_id)}
-                        className={`w-full rounded-full font-body font-semibold h-10 ${
+                        className={`w-full rounded-full font-body font-semibold h-10 transition-all ${
                           leadProductIds.has(rec.product_id)
                             ? 'bg-gray-100 text-gray-400'
-                            : 'bg-[#059669] hover:bg-[#047857] text-white'
+                            : 'bg-[#059669] hover:bg-[#047857] text-white btn-glow'
                         }`}
                         data-testid={`interested-btn-${rec.product_id}`}
                       >
