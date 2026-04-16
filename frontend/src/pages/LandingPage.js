@@ -5,32 +5,32 @@ import { LanguageToggle } from '../components/LanguageToggle';
 import { Button } from '../components/ui/button';
 import { Shield, ArrowRight, Eye, Lock, MessageSquare, TrendingUp, CheckCircle, Users, IndianRupee, Ban } from 'lucide-react';
 
-const features = [
-  { icon: Eye, title: "Transparent Comparison", desc: "Compare interest rates, processing fees, foreclosure charges and total cost across 20+ banks and NBFCs." },
-  { icon: Ban, title: "Zero Spam Guarantee", desc: "No one contacts you unless YOU choose to share your details. Your phone stays silent." },
-  { icon: MessageSquare, title: "AI-Powered Advice", desc: "Get personalized suggestions in English or Hindi. Voice input supported for easy interaction." },
-  { icon: TrendingUp, title: "Credit Builder", desc: "Learn how to improve your credit score with actionable steps, card recommendations and starter loans." },
-];
-
-const steps = [
-  { num: "01", title: "Tell Us About Yourself", desc: "Quick 2-minute form about your loan needs, income, and credit profile." },
-  { num: "02", title: "Get Ranked Recommendations", desc: "See the best loan options sorted by total cost. Know exactly how much you save." },
-  { num: "03", title: "Choose Who Contacts You", desc: "Only share your data with banks you select. Full control, zero spam." },
-  { num: "04", title: "Track Your Applications", desc: "Monitor lead status from interest to approval. Complete transparency." },
-];
-
-const stats = [
-  { value: "20+", label: "Banks & NBFCs" },
-  { value: "6", label: "Loan Categories" },
-  { value: "100%", label: "Data Control" },
-  { value: "0", label: "Spam Calls" },
-];
-
 export default function LandingPage() {
   const { user, loading } = useAuth();
   const { t } = useLanguage();
 
   if (!loading && user) return <Navigate to="/dashboard" replace />;
+
+  const features = [
+    { icon: Eye, title: t.feat1, desc: t.feat1d },
+    { icon: Ban, title: t.feat2, desc: t.feat2d },
+    { icon: MessageSquare, title: t.feat3, desc: t.feat3d },
+    { icon: TrendingUp, title: t.feat4, desc: t.feat4d },
+  ];
+
+  const steps = [
+    { num: "01", title: t.step1, desc: t.step1d },
+    { num: "02", title: t.step2, desc: t.step2d },
+    { num: "03", title: t.step3, desc: t.step3d },
+    { num: "04", title: t.step4, desc: t.step4d },
+  ];
+
+  const stats = [
+    { value: "20+", label: t.statBanks },
+    { value: "6", label: t.statCategories },
+    { value: "100%", label: t.statControl },
+    { value: "0", label: t.statSpam },
+  ];
 
   return (
     <div className="min-h-screen bg-white" data-testid="landing-page">
@@ -197,9 +197,9 @@ export default function LandingPage() {
               </p>
               <div className="space-y-3">
                 {[
-                  { icon: CheckCircle, text: "Explicit consent before sharing" },
-                  { icon: Users, text: "You choose who contacts you" },
-                  { icon: IndianRupee, text: "No hidden fees or charges" },
+                  { icon: CheckCircle, text: t.explicitConsent },
+                  { icon: Users, text: t.youChooseWho },
+                  { icon: IndianRupee, text: t.noHiddenFees },
                 ].map((item, i) => (
                   <div key={i} className="flex items-center gap-3 bg-[#F9F9FB] rounded-xl p-4 text-left loan-card">
                     <item.icon className="w-5 h-5 text-[#059669] flex-shrink-0" strokeWidth={1.5} />

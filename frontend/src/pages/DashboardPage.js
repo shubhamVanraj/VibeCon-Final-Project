@@ -4,6 +4,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
 import { LanguageToggle } from '../components/LanguageToggle';
 import api, { formatCurrency } from '../lib/api';
+import { BankLogo } from '../lib/bankLogos';
 import { ProfileEditor } from '../components/ProfileEditor';
 import { LoanComparison } from '../components/LoanComparison';
 import { CreditScoreChecker } from '../components/CreditScoreChecker';
@@ -217,7 +218,7 @@ export default function DashboardPage() {
             {t.welcome}, {user?.name?.split(' ')[0]}
           </h1>
           <p className="font-body text-[#4B5563] mt-1">
-            {recommendations.length} {t.recommendations.toLowerCase()} found
+            {recommendations.length} {t.recommendations.toLowerCase()} {t.found}
           </p>
         </div>
 
@@ -233,9 +234,9 @@ export default function DashboardPage() {
           <TabsContent value="recommendations" className="space-y-4" data-testid="recommendations-content">
             {recommendations.length === 0 ? (
               <Card className="rounded-2xl border border-black/5 p-12 text-center">
-                <p className="font-body text-[#4B5563]">No recommendations yet. Complete your profile to get started.</p>
+                <p className="font-body text-[#4B5563]">{t.completeProfile}</p>
                 <Button onClick={() => navigate('/onboarding')} className="mt-4 rounded-full bg-[#059669] hover:bg-[#047857] text-white font-body" data-testid="go-onboarding-btn">
-                  Complete Profile <ArrowRight className="w-4 h-4 ml-2" />
+                  {t.completeProfileBtn} <ArrowRight className="w-4 h-4 ml-2" />
                 </Button>
               </Card>
             ) : (
@@ -251,10 +252,11 @@ export default function DashboardPage() {
                             className="mt-1 border-[#E5E7EB] data-[state=checked]:bg-[#059669] data-[state=checked]:border-[#059669]"
                             data-testid={`compare-check-${rec.product_id}`}
                           />
+                          <BankLogo bankName={rec.bank_name} />
                           <div>
                           <div className="flex items-center gap-2">
                             <h3 className="font-heading font-bold text-[#0A0A0A]">{rec.bank_name}</h3>
-                            {idx === 0 && <Badge className="bg-[#059669] text-white text-xs">Best</Badge>}
+                            {idx === 0 && <Badge className="bg-[#059669] text-white text-xs">{t.best}</Badge>}
                           </div>
                           <p className="font-body text-sm text-[#4B5563]">{rec.product_name}</p>
                           </div>
@@ -290,10 +292,10 @@ export default function DashboardPage() {
                       <Progress value={rec.approval_probability} className="h-1.5 bg-[#E5E7EB] mb-3" />
 
                       {rec.savings > 0 && (
-                        <div className="flex items-center gap-2 bg-[#059669]/5 rounded-lg p-2 mb-3">
-                          <TrendingDown className="w-4 h-4 text-[#059669]" strokeWidth={1.5} />
+                        <div className="flex items-center gap-2 bg-[#059669]/5 rounded-lg p-2.5 mb-3">
+                          <TrendingDown className="w-4 h-4 text-[#059669] flex-shrink-0" strokeWidth={1.5} />
                           <span className="font-body text-sm text-[#059669] font-medium">
-                            {t.save} {formatCurrency(rec.savings)} vs worst option
+                            {t.save} {formatCurrency(rec.savings)} {t.over} {rec.desired_tenure_months >= 12 ? `${Math.round(rec.desired_tenure_months / 12)} ${t.years}` : `${rec.desired_tenure_months} ${t.months}`} {t.vsWorst}
                           </span>
                         </div>
                       )}
@@ -318,7 +320,7 @@ export default function DashboardPage() {
                         data-testid={`interested-btn-${rec.product_id}`}
                       >
                         {leadProductIds.has(rec.product_id) ? (
-                          <><CheckCircle className="w-4 h-4 mr-2" /> Interest Registered</>
+                          <><CheckCircle className="w-4 h-4 mr-2" /> {t.interestRegistered}</>
                         ) : (
                           <>{t.interested} <ChevronRight className="w-4 h-4 ml-1" /></>
                         )}
@@ -349,7 +351,7 @@ export default function DashboardPage() {
             {leads.length === 0 ? (
               <Card className="rounded-2xl border border-black/5 p-12 text-center">
                 <Ban className="w-10 h-10 text-[#9CA3AF] mx-auto mb-4" />
-                <p className="font-body text-[#4B5563]">No leads yet. Express interest in a loan to see it here.</p>
+                <p className="font-body text-[#4B5563]">{t.noLeadsExpress}</p>
               </Card>
             ) : (
               <div className="space-y-3">
@@ -430,10 +432,10 @@ export default function DashboardPage() {
                   <div className="text-center py-12">
                     <Sparkles className="w-8 h-8 text-[#059669]/30 mx-auto mb-3" />
                     <p className="font-body text-sm text-[#9CA3AF]">
-                      {language === 'hi' ? 'कोई भी सवाल पूछें...' : 'Ask me anything about loans, credit scores, or financial planning...'}
+                      {language === 'hi' ? 'कोई भी सवाल पूछें...' : t.askAnything}
                     </p>
                     <div className="flex flex-wrap gap-2 justify-center mt-4">
-                      {['What loan is best for me?', 'How to improve my credit score?', 'Explain processing fees'].map((q) => (
+                      {[t.aiQ1, t.aiQ2, t.aiQ3].map((q) => (
                         <button
                           key={q}
                           onClick={() => { setChatInput(q); }}
@@ -485,8 +487,9 @@ export default function DashboardPage() {
                     value={chatInput}
                     onChange={(e) => setChatInput(e.target.value)}
                     onKeyDown={(e) => e.key === 'Enter' && !e.shiftKey && handleAiSend()}
-                    placeholder={language === 'hi' ? 'अपना सवाल लिखें...' : 'Ask about loans, credit scores...'}
+                    placeholder={t.typeQuestion}
                     className="rounded-full bg-[#F9F9FB] border-[#E5E7EB] focus:border-[#059669] focus:ring-[#059669]"
+                    lang={language === 'hi' ? 'hi' : 'en'}
                     data-testid="ai-chat-input"
                   />
                   <Button

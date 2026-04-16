@@ -13,27 +13,28 @@ import { Shield, ArrowLeft, ArrowRight, Home, User, Car, GraduationCap, Bike, Re
 import { toast } from 'sonner';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const loanTypes = [
-  { value: "personal", label: "Personal Loan", icon: User, desc: "For any personal need" },
-  { value: "home", label: "Home Loan", icon: Home, desc: "Buy or build a home" },
-  { value: "car", label: "Car Loan", icon: Car, desc: "New or used vehicle" },
-  { value: "bike", label: "Bike Loan", icon: Bike, desc: "Two-wheeler finance" },
-  { value: "education", label: "Education Loan", icon: GraduationCap, desc: "Study in India or abroad" },
-  { value: "refinance", label: "Refinance", icon: RefreshCw, desc: "Lower your existing rate" },
-];
-
-const employmentTypes = [
-  { value: "salaried", label: "Salaried", icon: Briefcase },
-  { value: "self_employed", label: "Self Employed", icon: Store },
-  { value: "business", label: "Business Owner", icon: Building2 },
-  { value: "student", label: "Student", icon: BookOpen },
-];
-
 export default function OnboardingPage() {
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
   const { updateUser } = useAuth();
+  const { t, language } = useLanguage();
   const navigate = useNavigate();
+
+  const loanTypes = [
+    { value: "personal", label: t.personalLoan, icon: User, desc: t.forAnyNeed },
+    { value: "home", label: t.homeLoan, icon: Home, desc: t.buyHome },
+    { value: "car", label: t.carLoan, icon: Car, desc: t.newUsedVehicle },
+    { value: "bike", label: t.bikeLoan, icon: Bike, desc: t.twoWheeler },
+    { value: "education", label: t.educationLoan, icon: GraduationCap, desc: t.studyAbroad },
+    { value: "refinance", label: t.refinance, icon: RefreshCw, desc: t.lowerRate },
+  ];
+
+  const employmentTypes = [
+    { value: "salaried", label: t.salaried, icon: Briefcase },
+    { value: "self_employed", label: t.selfEmployed, icon: Store },
+    { value: "business", label: t.businessOwner, icon: Building2 },
+    { value: "student", label: t.student, icon: BookOpen },
+  ];
 
   const [form, setForm] = useState({
     loan_type: '',
@@ -92,7 +93,10 @@ export default function OnboardingPage() {
             <Shield className="w-5 h-5 text-[#059669]" strokeWidth={1.5} />
             <span className="font-heading font-bold text-lg text-[#0A0A0A]">Rinkosh</span>
           </div>
-          <span className="text-sm font-body text-[#9CA3AF]">Step {step} of 4</span>
+          <div className="flex items-center gap-3">
+            <LanguageToggle compact />
+            <span className="text-sm font-body text-[#9CA3AF]">{t.stepOf} {step} {t.of} 4</span>
+          </div>
         </div>
         <div className="max-w-2xl mx-auto px-6 pb-2">
           <Progress value={progress} className="h-1.5 bg-[#E5E7EB]" data-testid="onboarding-progress" />
@@ -138,11 +142,11 @@ export default function OnboardingPage() {
               {/* Step 2: Employment */}
               {step === 2 && (
                 <div>
-                  <h2 className="font-heading text-2xl md:text-3xl font-bold text-[#0A0A0A] tracking-tight mb-2">Employment Details</h2>
-                  <p className="font-body text-[#4B5563] mb-8">This helps us find the right options for you</p>
+                  <h2 className="font-heading text-2xl md:text-3xl font-bold text-[#0A0A0A] tracking-tight mb-2">{t.employmentDetails}</h2>
+                  <p className="font-body text-[#4B5563] mb-8">{t.employmentHelp}</p>
                   <div className="space-y-6">
                     <div>
-                      <Label className="font-body font-semibold text-[#0A0A0A] mb-3 block">Employment Type</Label>
+                      <Label className="font-body font-semibold text-[#0A0A0A] mb-3 block">{t.employmentType}</Label>
                       <div className="grid grid-cols-2 gap-3">
                         {employmentTypes.map((et) => (
                           <Card
@@ -162,7 +166,7 @@ export default function OnboardingPage() {
                       </div>
                     </div>
                     <div>
-                      <Label htmlFor="income" className="font-body font-semibold text-[#0A0A0A]">Monthly Income (Rs.)</Label>
+                      <Label htmlFor="income" className="font-body font-semibold text-[#0A0A0A]">{t.monthlyIncome}</Label>
                       <Input
                         id="income" type="number" value={form.monthly_income}
                         onChange={(e) => update('monthly_income', e.target.value)}
@@ -178,13 +182,13 @@ export default function OnboardingPage() {
               {/* Step 3: Credit Info */}
               {step === 3 && (
                 <div>
-                  <h2 className="font-heading text-2xl md:text-3xl font-bold text-[#0A0A0A] tracking-tight mb-2">Credit Information</h2>
-                  <p className="font-body text-[#4B5563] mb-8">Helps us estimate your approval probability</p>
+                  <h2 className="font-heading text-2xl md:text-3xl font-bold text-[#0A0A0A] tracking-tight mb-2">{t.creditInformation}</h2>
+                  <p className="font-body text-[#4B5563] mb-8">{t.creditHelp}</p>
                   <div className="space-y-6">
                     <div className="flex items-center justify-between bg-white p-4 rounded-xl border border-black/5">
                       <div>
-                        <Label className="font-body font-semibold text-[#0A0A0A]">Do you have existing loans?</Label>
-                        <p className="font-body text-xs text-[#9CA3AF] mt-0.5">Active EMIs you're currently paying</p>
+                        <Label className="font-body font-semibold text-[#0A0A0A]">{t.existingLoansQ}</Label>
+                        <p className="font-body text-xs text-[#9CA3AF] mt-0.5">{t.existingLoansDesc}</p>
                       </div>
                       <Switch
                         checked={form.existing_loans}
@@ -206,8 +210,8 @@ export default function OnboardingPage() {
                     )}
                     <div className="flex items-center justify-between bg-white p-4 rounded-xl border border-black/5">
                       <div>
-                        <Label className="font-body font-semibold text-[#0A0A0A]">Do you know your credit score?</Label>
-                        <p className="font-body text-xs text-[#9CA3AF] mt-0.5">CIBIL, Experian, or Equifax score</p>
+                        <Label className="font-body font-semibold text-[#0A0A0A]">{t.knowCreditScore}</Label>
+                        <p className="font-body text-xs text-[#9CA3AF] mt-0.5">{t.creditScoreDesc}</p>
                       </div>
                       <Switch
                         checked={form.credit_score_known}
@@ -217,7 +221,7 @@ export default function OnboardingPage() {
                     </div>
                     {form.credit_score_known && (
                       <div>
-                        <Label htmlFor="cscore" className="font-body font-semibold text-[#0A0A0A]">Your Credit Score</Label>
+                        <Label htmlFor="cscore" className="font-body font-semibold text-[#0A0A0A]">{t.yourCreditScore}</Label>
                         <Input
                           id="cscore" type="number" value={form.credit_score} min={300} max={900}
                           onChange={(e) => update('credit_score', e.target.value)}
@@ -225,13 +229,13 @@ export default function OnboardingPage() {
                           className="mt-2 rounded-xl bg-white border-[#E5E7EB] focus:border-[#059669] focus:ring-[#059669]"
                           data-testid="credit-score-input"
                         />
-                        <p className="font-body text-xs text-[#9CA3AF] mt-1">Score between 300-900</p>
+                        <p className="font-body text-xs text-[#9CA3AF] mt-1">{t.scoreBetween}</p>
                       </div>
                     )}
                     {!form.credit_score_known && (
                       <div className="bg-[#059669]/5 rounded-xl p-4 border border-[#059669]/20">
                         <p className="font-body text-sm text-[#059669]">
-                          No worries! You can check your free credit score on CIBIL.com or through your bank's app. We'll still show recommendations based on other factors.
+                          {t.noWorries}
                         </p>
                       </div>
                     )}
@@ -242,11 +246,11 @@ export default function OnboardingPage() {
               {/* Step 4: Loan Details */}
               {step === 4 && (
                 <div>
-                  <h2 className="font-heading text-2xl md:text-3xl font-bold text-[#0A0A0A] tracking-tight mb-2">Loan Details</h2>
-                  <p className="font-body text-[#4B5563] mb-8">How much do you need and for how long?</p>
+                  <h2 className="font-heading text-2xl md:text-3xl font-bold text-[#0A0A0A] tracking-tight mb-2">{t.loanDetails}</h2>
+                  <p className="font-body text-[#4B5563] mb-8">{t.loanDetailsHelp}</p>
                   <div className="space-y-6">
                     <div>
-                      <Label htmlFor="amount" className="font-body font-semibold text-[#0A0A0A]">Loan Amount (Rs.)</Label>
+                      <Label htmlFor="amount" className="font-body font-semibold text-[#0A0A0A]">{t.loanAmount}</Label>
                       <Input
                         id="amount" type="number" value={form.desired_amount}
                         onChange={(e) => update('desired_amount', e.target.value)}
@@ -303,7 +307,7 @@ export default function OnboardingPage() {
               data-testid="onboarding-back-button"
             >
               <ArrowLeft className="w-4 h-4 mr-2" />
-              Back
+              {t.back}
             </Button>
             {step < 4 ? (
               <Button
@@ -312,7 +316,7 @@ export default function OnboardingPage() {
                 className="bg-[#111827] text-white hover:bg-[#000000] rounded-full px-6 font-body font-semibold"
                 data-testid="onboarding-next-button"
               >
-                Next
+                {t.next}
                 <ArrowRight className="w-4 h-4 ml-2" />
               </Button>
             ) : (
@@ -322,7 +326,7 @@ export default function OnboardingPage() {
                 className="bg-[#059669] text-white hover:bg-[#047857] rounded-full px-8 font-body font-semibold"
                 data-testid="onboarding-submit-button"
               >
-                {loading ? 'Saving...' : 'Get Recommendations'}
+                {loading ? t.saving : t.getRecommendations}
                 <ArrowRight className="w-4 h-4 ml-2" />
               </Button>
             )}
