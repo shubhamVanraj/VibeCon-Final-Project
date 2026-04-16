@@ -22,11 +22,7 @@ export default function AuthCallback() {
     const processAuth = async () => {
       try {
         const userData = await googleLogin(sessionId);
-        if (userData.has_profile) {
-          navigate('/dashboard', { replace: true, state: { user: userData } });
-        } else {
-          navigate('/onboarding', { replace: true, state: { user: userData } });
-        }
+        navigate('/', { replace: true });
       } catch (error) {
         console.error('Google auth failed:', error);
         navigate('/login', { replace: true });

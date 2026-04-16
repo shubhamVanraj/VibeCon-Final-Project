@@ -1,22 +1,100 @@
-import { Link, Navigate } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
 import { LanguageToggle } from '../components/LanguageToggle';
 import { ThemeToggle, SoundToggle } from '../components/ThemeToggle';
 import { EmiCalculator } from '../components/EmiCalculator';
-import { usePageView } from '../lib/analytics';
+import { BankLogo } from '../lib/bankLogos';
+import { usePageView, useAnalytics } from '../lib/analytics';
+import api, { formatCurrency } from '../lib/api';
 import { Button } from '../components/ui/button';
-import { Shield, ArrowRight, Eye, Lock, MessageSquare, TrendingUp, CheckCircle, Users, IndianRupee, Ban, ChevronDown, ChevronUp, Heart, Target } from 'lucide-react';
+import { Badge } from '../components/ui/badge';
+import { Card } from '../components/ui/card';
+import {
+  Shield, ArrowRight, Eye, Lock, MessageSquare, TrendingUp,
+  CheckCircle, Users, IndianRupee, Ban, ChevronDown, ChevronUp,
+  Heart, Target, MapPin, LogOut, Settings, Home, User, Car,
+  GraduationCap, Bike, RefreshCw, Search, Loader2
+} from 'lucide-react';
+
+const LOAN_TYPE_META = {
+  personal: { icon: User, label: 'Personal Loan', labelHi: 'पर्सनल लोन', color: '#059669' },
+  home: { icon: Home, label: 'Home Loan', labelHi: 'होम लोन', color: '#2563EB' },
+  car: { icon: Car, label: 'Car Loan', labelHi: 'कार लोन', color: '#D97706' },
+  bike: { icon: Bike, label: 'Bike Loan', labelHi: 'बाइक लोन', color: '#DC2626' },
+  education: { icon: GraduationCap, label: 'Education Loan', labelHi: 'एजुकेशन लोन', color: '#7C3AED' },
+  refinance: { icon: RefreshCw, label: 'Refinance', labelHi: 'रीफाइनेंस', color: '#0891B2' },
+};
 
 export default function LandingPage() {
-  const { user, loading } = useAuth();
+  const { user, loading, logout } = useAuth();
   const { t, language } = useLanguage();
-  const [expandedFeature, setExpandedFeature] = useState(null);
-  const [expandedStep, setExpandedStep] = useState(null);
+  const navigate = useNavigate();
+  const { track } = useAnalytics();
   usePageView('landing');
 
-  if (!loading && user) return <Navigate to="/dashboard" replace />;
+  const [expandedFeature, setExpandedFeature] = useState(null);
+  const [expandedStep, setExpandedStep] = useState(null);
+  const [allProducts, setAllProducts] = useState([]);
+  const [productsLoading, setProductsLoading] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [userLocation, setUserLocation] = useState(null);
+  const [locationLoading, setLocationLoading] = useState(false);
+
+  // Fetch all loan products for browse section
+  const fetchProducts = useCallback(async () => {
+    setProductsLoading(true);
+    try {
+      const { data } = await api.get('/loans/products');
+      setAllProducts(data);
+    } catch {
+      // silent
+    } finally {
+      setProductsLoading(false);
+    }
+  }, []);
+
+  useEffect(() => { fetchProducts(); }, [fetchProducts]);
+
+  // Detect user location
+  useEffect(() => {
+    if (!navigator.geolocation) return;
+    setLocationLoading(true);
+    navigator.geolocation.getCurrentPosition(
+      async (pos) => {
+        try {
+          const res = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${pos.coords.latitude}&lon=${pos.coords.longitude}&format=json&accept-language=en`);
+          const data = await res.json();
+          const city = data.address?.city || data.address?.town || data.address?.village || data.address?.state_district || '';
+          const state = data.address?.state || '';
+          if (city || state) {
+            setUserLocation({ city, state, lat: pos.coords.latitude, lon: pos.coords.longitude });
+            track('location_detected', { city, state });
+          }
+        } catch {
+          // silent
+        } finally {
+          setLocationLoading(false);
+        }
+      },
+      () => setLocationLoading(false),
+      { timeout: 8000, maximumAge: 300000 }
+    );
+  }, [track]);
+
+  const isLoggedIn = !loading && user;
+
+  // Group products by category
+  const categories = Object.keys(LOAN_TYPE_META);
+  const grouped = {};
+  categories.forEach(cat => { grouped[cat] = allProducts.filter(p => p.loan_type === cat); });
+  const visibleProducts = selectedCategory ? (grouped[selectedCategory] || []) : allProducts;
+
+  const handleLogout = async () => {
+    await logout();
+    navigate('/');
+  };
 
   const features = [
     { icon: Eye, title: t.feat1, desc: t.feat1d },
@@ -46,6 +124,12 @@ export default function LandingPage() {
     t.feat4Detail || 'We guide you through secured cards, starter loans, and payment habits that actually move your CIBIL score.',
   ];
 
+  const formatAmount = (amount) => {
+    if (amount >= 10000000) return `${(amount / 10000000).toFixed(1)} Cr`;
+    if (amount >= 100000) return `${(amount / 100000).toFixed(1)} L`;
+    return formatCurrency ? formatCurrency(amount) : `Rs.${amount.toLocaleString('en-IN')}`;
+  };
+
   return (
     <div className="min-h-screen bg-white pb-16 md:pb-0" data-testid="landing-page">
       {/* Navbar */}
@@ -56,19 +140,48 @@ export default function LandingPage() {
             <span className="font-heading font-bold text-xl text-[#0A0A0A] tracking-tight">Rinkosh</span>
           </div>
           <div className="flex items-center gap-2">
+            {userLocation && (
+              <div className="hidden md:flex items-center gap-1.5 text-[#4B5563] mr-2" data-testid="user-location">
+                <MapPin className="w-3.5 h-3.5 text-[#059669]" />
+                <span className="font-body text-xs">{userLocation.city}{userLocation.state ? `, ${userLocation.state}` : ''}</span>
+              </div>
+            )}
+            {locationLoading && (
+              <div className="hidden md:flex items-center gap-1.5 text-[#9CA3AF] mr-2">
+                <Loader2 className="w-3 h-3 animate-spin" />
+                <span className="font-body text-xs">{language === 'hi' ? 'लोकेशन...' : 'Locating...'}</span>
+              </div>
+            )}
             <LanguageToggle compact />
             <ThemeToggle />
             <SoundToggle />
-            <Link to="/login">
-              <Button variant="ghost" className="rounded-full font-body font-semibold text-[#4B5563] hover:text-[#0A0A0A] hover:bg-[#059669]/5" data-testid="nav-login-button">
-                {t.login}
-              </Button>
-            </Link>
-            <Link to="/register">
-              <Button className="bg-[#059669] text-white hover:bg-[#047857] rounded-full px-6 font-body font-semibold btn-glow" data-testid="nav-signup-button">
-                {t.findBestLoan}
-              </Button>
-            </Link>
+            {isLoggedIn ? (
+              <>
+                <Button variant="ghost" size="sm" onClick={() => navigate('/dashboard')} className="rounded-full font-body font-semibold text-[#4B5563] hover:text-[#059669] hover:bg-[#059669]/5" data-testid="nav-dashboard-button">
+                  {t.dashboard || 'Dashboard'}
+                </Button>
+                {user?.role === 'admin' && (
+                  <Button variant="ghost" size="sm" onClick={() => navigate('/admin')} className="text-[#4B5563] hover:text-[#059669] font-body text-xs" data-testid="nav-admin-link">Admin</Button>
+                )}
+                <span className="font-body text-sm text-[#4B5563] hidden md:inline">{user?.name?.split(' ')[0]}</span>
+                <Button variant="ghost" size="sm" onClick={handleLogout} className="text-[#4B5563] hover:text-red-500" data-testid="nav-logout-button">
+                  <LogOut className="w-4 h-4" />
+                </Button>
+              </>
+            ) : (
+              <>
+                <Link to="/login">
+                  <Button variant="ghost" className="rounded-full font-body font-semibold text-[#4B5563] hover:text-[#0A0A0A] hover:bg-[#059669]/5" data-testid="nav-login-button">
+                    {t.login}
+                  </Button>
+                </Link>
+                <Link to="/register">
+                  <Button className="bg-[#059669] text-white hover:bg-[#047857] rounded-full px-6 font-body font-semibold btn-glow" data-testid="nav-signup-button">
+                    {t.findBestLoan}
+                  </Button>
+                </Link>
+              </>
+            )}
           </div>
         </div>
       </nav>
@@ -91,17 +204,36 @@ export default function LandingPage() {
               {t.motto || 'No Spam. No Secrets. Just Savings.'}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 animate-fade-in-up-delay-2">
-              <Link to="/register">
-                <Button className="bg-[#111827] text-white hover:bg-[#000000] rounded-full px-8 py-3 font-body font-semibold h-14 text-base btn-dark-glow" data-testid="hero-cta-button">
-                  {t.findBestLoan}
-                  <ArrowRight className="w-5 h-5 ml-2" />
-                </Button>
-              </Link>
-              <Link to="/login">
-                <Button variant="outline" className="rounded-full px-8 py-3 font-body font-semibold border-[#E5E7EB] hover:border-[#111827] h-14 text-base" data-testid="hero-login-button">
-                  {t.iHaveAccount || 'I have an account'}
-                </Button>
-              </Link>
+              {isLoggedIn ? (
+                <>
+                  <a href="#browse-loans">
+                    <Button className="bg-[#111827] text-white hover:bg-[#000000] rounded-full px-8 py-3 font-body font-semibold h-14 text-base btn-dark-glow" data-testid="hero-browse-button">
+                      <Search className="w-5 h-5 mr-2" />
+                      {language === 'hi' ? 'लोन ब्राउज़ करें' : 'Browse Loans'}
+                    </Button>
+                  </a>
+                  <Button variant="outline" onClick={() => navigate(user?.has_profile ? '/dashboard' : '/onboarding')} className="rounded-full px-8 py-3 font-body font-semibold border-[#E5E7EB] hover:border-[#059669] hover:text-[#059669] h-14 text-base" data-testid="hero-personalized-button">
+                    {user?.has_profile
+                      ? (language === 'hi' ? 'मेरी सिफारिशें देखें' : 'My Recommendations')
+                      : (language === 'hi' ? 'व्यक्तिगत सिफारिशें पाएं' : 'Get Personalized Picks')}
+                    <ArrowRight className="w-5 h-5 ml-2" />
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Link to="/register">
+                    <Button className="bg-[#111827] text-white hover:bg-[#000000] rounded-full px-8 py-3 font-body font-semibold h-14 text-base btn-dark-glow" data-testid="hero-cta-button">
+                      {t.findBestLoan}
+                      <ArrowRight className="w-5 h-5 ml-2" />
+                    </Button>
+                  </Link>
+                  <Link to="/login">
+                    <Button variant="outline" className="rounded-full px-8 py-3 font-body font-semibold border-[#E5E7EB] hover:border-[#111827] h-14 text-base" data-testid="hero-login-button">
+                      {t.iHaveAccount || 'I have an account'}
+                    </Button>
+                  </Link>
+                </>
+              )}
             </div>
           </div>
           <div className="hidden lg:block animate-fade-in-right">
@@ -140,6 +272,155 @@ export default function LandingPage() {
               </div>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* Browse Loans Section */}
+      <section id="browse-loans" className="py-20 md:py-28 px-6 lg:px-8" data-testid="browse-loans-section">
+        <div className="max-w-7xl mx-auto">
+          <div className="mb-10">
+            <span className="text-xs uppercase tracking-[0.2em] font-bold text-[#6B7280] font-body">
+              {language === 'hi' ? 'लोन ब्राउज़ करें' : 'Browse Loans'}
+            </span>
+            <h2 className="font-heading text-3xl md:text-4xl font-bold text-[#0A0A0A] tracking-tight mt-3">
+              {language === 'hi' ? '35+ लोन विकल्प, 18+ बैंक' : '35+ loan options, 18+ banks'}
+            </h2>
+            <p className="font-body text-[#4B5563] mt-2 max-w-xl">
+              {language === 'hi' ? 'श्रेणी के अनुसार सभी उपलब्ध लोन विकल्प ब्राउज़ करें। अपने लिए सबसे अच्छा चुनें।' : 'Explore all available loan options by category. Find what works best for you.'}
+            </p>
+          </div>
+
+          {/* Category Pills */}
+          <div className="flex flex-wrap gap-3 mb-8" data-testid="loan-category-pills">
+            <button
+              onClick={() => { setSelectedCategory(null); track('browse_category', { category: 'all' }); }}
+              className={`px-5 py-2.5 rounded-full font-body text-sm font-semibold transition-all ${!selectedCategory ? 'bg-[#111827] text-white shadow-lg' : 'bg-[#F3F4F6] text-[#4B5563] hover:bg-[#E5E7EB]'}`}
+              data-testid="category-all"
+            >
+              {language === 'hi' ? 'सभी' : 'All'} ({allProducts.length})
+            </button>
+            {categories.map(cat => {
+              const meta = LOAN_TYPE_META[cat];
+              const Icon = meta.icon;
+              const count = grouped[cat]?.length || 0;
+              if (count === 0) return null;
+              return (
+                <button
+                  key={cat}
+                  onClick={() => { setSelectedCategory(selectedCategory === cat ? null : cat); track('browse_category', { category: cat }); }}
+                  className={`px-5 py-2.5 rounded-full font-body text-sm font-semibold transition-all flex items-center gap-2 ${selectedCategory === cat ? 'text-white shadow-lg' : 'bg-[#F3F4F6] text-[#4B5563] hover:bg-[#E5E7EB]'}`}
+                  style={selectedCategory === cat ? { backgroundColor: meta.color } : {}}
+                  data-testid={`category-${cat}`}
+                >
+                  <Icon className="w-4 h-4" />
+                  {language === 'hi' ? meta.labelHi : meta.label} ({count})
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Product Cards */}
+          {productsLoading ? (
+            <div className="flex justify-center py-16">
+              <Loader2 className="w-8 h-8 animate-spin text-[#059669]" />
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" data-testid="loan-products-grid">
+              {visibleProducts.map((product) => {
+                const catMeta = LOAN_TYPE_META[product.loan_type] || {};
+                return (
+                  <Card key={product.product_id} className="rounded-2xl border border-black/5 p-5 hover:shadow-lg hover:border-[#059669]/20 transition-all duration-300 group loan-card" data-testid={`product-card-${product.product_id}`}>
+                    <div className="flex items-start justify-between mb-4">
+                      <div className="flex items-center gap-3">
+                        <BankLogo bankName={product.bank_name} />
+                        <div>
+                          <h3 className="font-heading font-semibold text-[#0A0A0A] text-sm leading-tight">{product.product_name}</h3>
+                          <p className="font-body text-xs text-[#9CA3AF] mt-0.5">{product.bank_name}</p>
+                        </div>
+                      </div>
+                      <Badge
+                        className="text-[10px] font-bold rounded-full px-2.5 py-0.5"
+                        style={{ backgroundColor: `${catMeta.color}15`, color: catMeta.color }}
+                      >
+                        {language === 'hi' ? catMeta.labelHi : catMeta.label}
+                      </Badge>
+                    </div>
+                    <div className="grid grid-cols-3 gap-3 mb-4">
+                      <div>
+                        <div className="font-body text-[10px] text-[#9CA3AF] uppercase tracking-wider">{language === 'hi' ? 'ब्याज दर' : 'Interest'}</div>
+                        <div className="font-heading font-bold text-[#0A0A0A] text-lg">{product.interest_rate}%</div>
+                      </div>
+                      <div>
+                        <div className="font-body text-[10px] text-[#9CA3AF] uppercase tracking-wider">{language === 'hi' ? 'अधिकतम' : 'Up to'}</div>
+                        <div className="font-heading font-bold text-[#0A0A0A] text-sm">{formatAmount(product.max_amount)}</div>
+                      </div>
+                      <div>
+                        <div className="font-body text-[10px] text-[#9CA3AF] uppercase tracking-wider">{language === 'hi' ? 'अवधि' : 'Tenure'}</div>
+                        <div className="font-heading font-bold text-[#0A0A0A] text-sm">{Math.round(product.max_tenure_months / 12)}yr</div>
+                      </div>
+                    </div>
+                    {product.features && product.features.length > 0 && (
+                      <div className="flex flex-wrap gap-1.5 mb-4">
+                        {product.features.slice(0, 2).map((f, fi) => (
+                          <span key={fi} className="font-body text-[10px] bg-[#F3F4F6] text-[#4B5563] rounded-full px-2.5 py-1">{f}</span>
+                        ))}
+                      </div>
+                    )}
+                    <div className="flex items-center justify-between pt-3 border-t border-black/5">
+                      <div className="font-body text-[10px] text-[#9CA3AF]">
+                        {language === 'hi' ? 'प्रोसेसिंग फीस' : 'Processing Fee'}: {product.processing_fee_pct}%
+                      </div>
+                      {isLoggedIn ? (
+                        <Button
+                          size="sm"
+                          onClick={() => {
+                            track('browse_loan_interest', { product_id: product.product_id, bank: product.bank_name });
+                            navigate(user?.has_profile ? '/dashboard' : '/onboarding');
+                          }}
+                          className="rounded-full bg-[#059669] hover:bg-[#047857] text-white text-xs px-4 font-body"
+                          data-testid={`apply-${product.product_id}`}
+                        >
+                          {user?.has_profile
+                            ? (language === 'hi' ? 'विवरण देखें' : 'View Details')
+                            : (language === 'hi' ? 'अभी अप्लाई करें' : 'Apply Now')}
+                          <ArrowRight className="w-3 h-3 ml-1" />
+                        </Button>
+                      ) : (
+                        <Link to="/register">
+                          <Button size="sm" className="rounded-full bg-[#059669] hover:bg-[#047857] text-white text-xs px-4 font-body" data-testid={`apply-${product.product_id}`}>
+                            {language === 'hi' ? 'अभी अप्लाई करें' : 'Apply Now'}
+                            <ArrowRight className="w-3 h-3 ml-1" />
+                          </Button>
+                        </Link>
+                      )}
+                    </div>
+                  </Card>
+                );
+              })}
+            </div>
+          )}
+
+          {/* Onboarding CTA for logged-in users without profile */}
+          {isLoggedIn && !user?.has_profile && (
+            <div className="mt-10 bg-gradient-to-r from-[#059669]/5 via-[#059669]/10 to-[#059669]/5 rounded-2xl p-6 md:p-8 flex flex-col md:flex-row items-center justify-between gap-4 border border-[#059669]/10" data-testid="onboarding-nudge">
+              <div>
+                <h3 className="font-heading font-bold text-lg text-[#0A0A0A]">
+                  {language === 'hi' ? 'अपने लिए सबसे अच्छा लोन पाएं' : 'Get the best loan for YOU'}
+                </h3>
+                <p className="font-body text-sm text-[#4B5563] mt-1">
+                  {language === 'hi' ? '2 मिनट में अपनी प्रोफाइल पूरी करें और व्यक्तिगत सिफारिशें पाएं — ब्याज, EMI और कुल लागत के अनुसार।' : 'Complete your profile in 2 minutes to get personalized recommendations sorted by interest, EMI, and total cost.'}
+                </p>
+              </div>
+              <Button
+                onClick={() => { track('onboarding_nudge_click'); navigate('/onboarding'); }}
+                className="bg-[#059669] text-white hover:bg-[#047857] rounded-full px-8 py-3 font-body font-semibold btn-glow whitespace-nowrap"
+                data-testid="onboarding-nudge-btn"
+              >
+                {language === 'hi' ? 'प्रोफाइल पूरी करें' : 'Complete Profile'}
+                <ArrowRight className="w-4 h-4 ml-2" />
+              </Button>
+            </div>
+          )}
         </div>
       </section>
 
@@ -190,7 +471,7 @@ export default function LandingPage() {
                 t.step1Detail || 'We ask about your loan type, income, employment, and credit score. Takes just 2 minutes.',
                 t.step2Detail || 'Our engine compares 35+ products across 18 banks. You see the real total cost — not just the interest rate.',
                 t.step3Detail || 'No one calls or emails you unless you click "I\'m Interested" on a specific bank.',
-                t.step4Detail || 'See real-time status: Interested → Applied → Approved → Disbursed. Revoke access anytime.',
+                t.step4Detail || 'See real-time status: Interested \u2192 Applied \u2192 Approved \u2192 Disbursed. Revoke access anytime.',
               ];
               return (
                 <div key={i} className="relative cursor-pointer group" data-testid={`step-card-${i}`}
@@ -342,12 +623,25 @@ export default function LandingPage() {
           <p className="font-body text-lg text-[#9CA3AF] mb-8">
             {t.joinThousands || 'Join thousands of Indians making smarter borrowing decisions.'}
           </p>
-          <Link to="/register">
-            <Button className="bg-[#059669] text-white hover:bg-[#047857] rounded-full px-10 py-3 font-body font-semibold h-14 text-base btn-glow" data-testid="cta-signup-button">
-              {t.getStartedFree || 'Get Started Free'}
+          {isLoggedIn ? (
+            <Button
+              onClick={() => navigate(user?.has_profile ? '/dashboard' : '/onboarding')}
+              className="bg-[#059669] text-white hover:bg-[#047857] rounded-full px-10 py-3 font-body font-semibold h-14 text-base btn-glow"
+              data-testid="cta-action-button"
+            >
+              {user?.has_profile
+                ? (language === 'hi' ? 'मेरी सिफारिशें देखें' : 'View My Recommendations')
+                : (language === 'hi' ? 'प्रोफाइल पूरी करें' : 'Complete Profile')}
               <ArrowRight className="w-5 h-5 ml-2" />
             </Button>
-          </Link>
+          ) : (
+            <Link to="/register">
+              <Button className="bg-[#059669] text-white hover:bg-[#047857] rounded-full px-10 py-3 font-body font-semibold h-14 text-base btn-glow" data-testid="cta-signup-button">
+                {t.getStartedFree || 'Get Started Free'}
+                <ArrowRight className="w-5 h-5 ml-2" />
+              </Button>
+            </Link>
+          )}
         </div>
       </section>
 

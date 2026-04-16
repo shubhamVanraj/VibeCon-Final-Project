@@ -19,7 +19,7 @@ export default function RegisterPage() {
   const navigate = useNavigate();
 
   if (authLoading) return null;
-  if (user) return <Navigate to="/dashboard" replace />;
+  if (user) return <Navigate to="/" replace />;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -32,7 +32,7 @@ export default function RegisterPage() {
     try {
       await register(name, email, password);
       toast.success('Account created!');
-      navigate('/onboarding');
+      navigate('/');
     } catch (err) {
       setError(formatApiErrorDetail(err.response?.data?.detail) || err.message);
     } finally {

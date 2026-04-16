@@ -30,7 +30,7 @@ export default function LoginPage() {
   const { track } = useAnalytics();
 
   if (authLoading) return null;
-  if (user) return <Navigate to="/dashboard" replace />;
+  if (user) return <Navigate to="/" replace />;
 
   const handlePasswordLogin = async (e) => {
     e.preventDefault();
@@ -41,7 +41,7 @@ export default function LoginPage() {
       const data = await login(email, password);
       sounds.success();
       toast.success(t.welcomeBack + '!');
-      navigate(data.has_profile ? '/dashboard' : '/onboarding');
+      navigate('/');
     } catch (err) {
       sounds.error();
       setError(formatApiErrorDetail(err.response?.data?.detail) || err.message);
@@ -77,7 +77,7 @@ export default function LoginPage() {
       const { data } = await api.post('/auth/login-otp-verify', { identifier: otpIdentifier, otp });
       sounds.success();
       toast.success(t.welcomeBack + '!');
-      navigate(data.has_profile ? '/dashboard' : '/onboarding');
+      navigate('/');
       window.location.reload();
     } catch (err) {
       sounds.error();
@@ -89,7 +89,7 @@ export default function LoginPage() {
 
   const handleGoogleLogin = () => {
     sounds.click();
-    const redirectUrl = window.location.origin + '/dashboard';
+    const redirectUrl = window.location.origin + '/';
     window.location.href = `https://auth.emergentagent.com/?redirect=${encodeURIComponent(redirectUrl)}`;
   };
 
