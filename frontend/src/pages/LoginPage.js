@@ -82,6 +82,11 @@ export default function LoginPage() {
                 data-testid="login-submit-button">
                 {loading ? 'Signing in...' : 'Sign In'}
               </Button>
+              <div className="text-center">
+                <Link to="/forgot-password" className="text-sm text-[#059669] hover:underline font-body" data-testid="forgot-password-link">
+                  Forgot password?
+                </Link>
+              </div>
             </form>
 
             <div className="relative my-4">

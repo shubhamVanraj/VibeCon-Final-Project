@@ -261,8 +261,55 @@ class RinkoshAPITester:
             return True
         return False
 
+    def test_forgot_password_flow(self):
+        """Test forgot password flow"""
+        # Test forgot password request
+        success, response = self.run_test(
+            "Forgot Password Request",
+            "POST",
+            "auth/forgot-password",
+            200,
+            data={"email": "admin@rinkosh.com"}
+        )
+        if not success:
+            return False
+        
+        debug_otp = response.get('debug_otp')
+        if not debug_otp:
+            self.log("❌ No debug OTP returned")
+            return False
+        
+        self.log(f"   Debug OTP: {debug_otp}")
+        
+        # Test reset password with OTP
+        success, response = self.run_test(
+            "Reset Password",
+            "POST",
+            "auth/reset-password",
+            200,
+            data={
+                "email": "admin@rinkosh.com",
+                "otp": debug_otp,
+                "new_password": "Admin@123"  # Reset to same password
+            }
+        )
+        if success:
+            self.log("   Password reset successful")
+            return True
+        return False
+
+    def test_credit_score_check(self):
+        """Test credit score check placeholder"""
+        success, response = self.run_test("Credit Score Check", "GET", "credit-score/check", 200)
+        if success:
+            status = response.get('status')
+            providers = response.get('providers', [])
+            self.log(f"   Status: {status}, Providers: {len(providers)}")
+            return True
+        return False
+
 def main():
-    print("🚀 Starting Rinkosh API Testing...")
+    print("🚀 Starting Rinkosh API Testing (Iteration 2)...")
     print("=" * 60)
     
     tester = RinkoshAPITester()
@@ -281,6 +328,11 @@ def main():
             print(f"\n❌ Critical test failed: {test_name}")
             print(f"📊 Tests passed: {tester.tests_passed}/{tester.tests_run}")
             return 1
+    
+    # Test new forgot password flow
+    print("\n🔐 Testing Forgot Password Flow...")
+    if not tester.test_forgot_password_flow():
+        print("❌ Forgot password flow failed")
     
     # Test user flow
     print("\n🔄 Testing User Registration & Onboarding Flow...")
@@ -309,6 +361,11 @@ def main():
     for test_name, test_func in loan_tests:
         if not test_func():
             print(f"❌ {test_name} test failed")
+    
+    # Test new credit score check
+    print("\n📊 Testing Credit Score Check...")
+    if not tester.test_credit_score_check():
+        print("❌ Credit score check failed")
     
     # Test AI features
     print("\n🤖 Testing AI Features...")

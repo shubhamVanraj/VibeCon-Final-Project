@@ -7,6 +7,7 @@ import RegisterPage from './pages/RegisterPage';
 import AuthCallback from './pages/AuthCallback';
 import OnboardingPage from './pages/OnboardingPage';
 import DashboardPage from './pages/DashboardPage';
+import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import './App.css';
 
 function ProtectedRoute({ children }) {
@@ -40,6 +41,7 @@ function AppRouter() {
       <Route path="/" element={<LandingPage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
+      <Route path="/forgot-password" element={<ForgotPasswordPage />} />
       <Route path="/onboarding" element={<ProtectedRoute><OnboardingPage /></ProtectedRoute>} />
       <Route path="/dashboard" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
       <Route path="*" element={<Navigate to="/" replace />} />

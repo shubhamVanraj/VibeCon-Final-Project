@@ -55,8 +55,8 @@ export default function LandingPage() {
 
       {/* Hero */}
       <section className="pt-32 pb-20 md:pt-40 md:pb-32 px-6 lg:px-8" data-testid="hero-section">
-        <div className="max-w-7xl mx-auto">
-          <div className="max-w-3xl">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          <div>
             <div className="inline-flex items-center gap-2 bg-[#059669]/10 text-[#059669] rounded-full px-4 py-1.5 mb-8 animate-fade-in-up">
               <Lock className="w-3.5 h-3.5" strokeWidth={2} />
               <span className="text-xs font-body font-bold uppercase tracking-wider">Your data is surakshit (safe)</span>
@@ -79,6 +79,28 @@ export default function LandingPage() {
                   I have an account
                 </Button>
               </Link>
+            </div>
+          </div>
+          <div className="hidden lg:block animate-fade-in-up-delay-2">
+            <div className="relative">
+              <div className="absolute -inset-4 bg-[#059669]/5 rounded-3xl blur-2xl" />
+              <img
+                src="https://images.unsplash.com/photo-1658480023495-dc8cae9e781e?crop=entropy&cs=srgb&fm=jpg&ixlib=rb-4.1.0&q=85&w=600&h=500&fit=crop"
+                alt="Indian professional using smartphone for banking"
+                className="relative rounded-3xl shadow-2xl object-cover w-full h-[480px]"
+                loading="lazy"
+              />
+              <div className="absolute -bottom-6 -left-6 bg-white rounded-2xl p-4 shadow-xl border border-black/5 animate-fade-in-up-delay-2">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-[#059669]/10 flex items-center justify-center">
+                    <TrendingUp className="w-5 h-5 text-[#059669]" />
+                  </div>
+                  <div>
+                    <div className="font-heading font-bold text-[#0A0A0A] text-sm">Avg. Savings</div>
+                    <div className="font-heading font-bold text-[#059669] text-lg">Rs. 2,34,000</div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -145,27 +167,39 @@ export default function LandingPage() {
       {/* Trust */}
       <section className="py-20 md:py-32 px-6 lg:px-8" data-testid="trust-section">
         <div className="max-w-7xl mx-auto">
-          <div className="max-w-2xl mx-auto text-center">
-            <div className="w-16 h-16 rounded-2xl bg-[#059669]/10 flex items-center justify-center mx-auto mb-6">
-              <Lock className="w-8 h-8 text-[#059669]" strokeWidth={1.5} />
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div className="order-2 lg:order-1">
+              <div className="relative">
+                <img
+                  src="https://images.unsplash.com/photo-1534951009808-766178b47a4f?crop=entropy&cs=srgb&fm=jpg&ixlib=rb-4.1.0&q=85&w=500&h=400&fit=crop"
+                  alt="Financial growth and savings"
+                  className="rounded-3xl shadow-lg object-cover w-full h-[360px]"
+                  loading="lazy"
+                />
+              </div>
             </div>
-            <h2 className="font-heading text-3xl md:text-4xl font-bold text-[#0A0A0A] tracking-tight mb-4">
-              Your privacy is sacred
-            </h2>
-            <p className="font-body text-lg text-[#4B5563] mb-10">
-              We never share your data without explicit consent. No third-party selling. No hidden clauses.
-            </p>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              {[
-                { icon: CheckCircle, text: "Explicit consent before sharing" },
-                { icon: Users, text: "You choose who contacts you" },
-                { icon: IndianRupee, text: "No hidden fees or charges" },
-              ].map((item, i) => (
-                <div key={i} className="flex items-center gap-3 bg-[#F9F9FB] rounded-xl p-4 text-left">
-                  <item.icon className="w-5 h-5 text-[#059669] flex-shrink-0" strokeWidth={1.5} />
-                  <span className="font-body text-sm text-[#0A0A0A]">{item.text}</span>
-                </div>
-              ))}
+            <div className="order-1 lg:order-2">
+              <div className="w-16 h-16 rounded-2xl bg-[#059669]/10 flex items-center justify-center mb-6">
+                <Lock className="w-8 h-8 text-[#059669]" strokeWidth={1.5} />
+              </div>
+              <h2 className="font-heading text-3xl md:text-4xl font-bold text-[#0A0A0A] tracking-tight mb-4">
+                Your privacy is sacred
+              </h2>
+              <p className="font-body text-lg text-[#4B5563] mb-10">
+                We never share your data without explicit consent. No third-party selling. No hidden clauses.
+              </p>
+              <div className="space-y-3">
+                {[
+                  { icon: CheckCircle, text: "Explicit consent before sharing" },
+                  { icon: Users, text: "You choose who contacts you" },
+                  { icon: IndianRupee, text: "No hidden fees or charges" },
+                ].map((item, i) => (
+                  <div key={i} className="flex items-center gap-3 bg-[#F9F9FB] rounded-xl p-4 text-left loan-card">
+                    <item.icon className="w-5 h-5 text-[#059669] flex-shrink-0" strokeWidth={1.5} />
+                    <span className="font-body text-sm text-[#0A0A0A]">{item.text}</span>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </div>

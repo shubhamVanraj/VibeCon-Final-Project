@@ -3,6 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import api, { formatCurrency } from '../lib/api';
 import { translations } from '../lib/translations';
+import { ProfileEditor } from '../components/ProfileEditor';
+import { LoanComparison } from '../components/LoanComparison';
+import { CreditScoreChecker } from '../components/CreditScoreChecker';
 import { Button } from '../components/ui/button';
 import { Card, CardContent } from '../components/ui/card';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '../components/ui/tabs';
@@ -11,10 +14,11 @@ import { Progress } from '../components/ui/progress';
 import { Input } from '../components/ui/input';
 import { Switch } from '../components/ui/switch';
 import { Separator } from '../components/ui/separator';
+import { Checkbox } from '../components/ui/checkbox';
 import {
-  Shield, LogOut, Send, Mic, MicOff, Star, TrendingDown,
+  Shield, LogOut, Send, Mic, MicOff, TrendingDown,
   ArrowRight, Ban, CreditCard, Target, Lightbulb, CheckCircle,
-  XCircle, Clock, Sparkles, ChevronRight, Loader2
+  XCircle, Sparkles, ChevronRight, Loader2, Settings, Scale
 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -49,6 +53,9 @@ export default function DashboardPage() {
   const [chatInput, setChatInput] = useState('');
   const [chatLoading, setChatLoading] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
+  const [compareList, setCompareList] = useState([]);
+  const [compareOpen, setCompareOpen] = useState(false);
+  const [profileOpen, setProfileOpen] = useState(false);
   const mediaRecorderRef = useRef(null);
   const chunksRef = useRef([]);
   const chatEndRef = useRef(null);
@@ -159,6 +166,15 @@ export default function DashboardPage() {
     }
   };
 
+  const toggleCompare = (rec) => {
+    setCompareList(prev => {
+      const exists = prev.find(r => r.product_id === rec.product_id);
+      if (exists) return prev.filter(r => r.product_id !== rec.product_id);
+      if (prev.length >= 4) return prev;
+      return [...prev, rec];
+    });
+  };
+
   const handleLogout = async () => {
     await logout();
     navigate('/');
@@ -190,6 +206,9 @@ export default function DashboardPage() {
               <span className={language === 'hi' ? 'text-[#0A0A0A] font-semibold' : 'text-[#9CA3AF]'}>HI</span>
             </div>
             <Separator orientation="vertical" className="h-6" />
+            <Button variant="ghost" size="sm" onClick={() => setProfileOpen(true)} className="text-[#4B5563] hover:text-[#059669]" data-testid="edit-profile-button">
+              <Settings className="w-4 h-4" />
+            </Button>
             <span className="font-body text-sm text-[#4B5563] hidden md:inline">{user?.name}</span>
             <Button variant="ghost" size="sm" onClick={handleLogout} className="text-[#4B5563] hover:text-red-500" data-testid="logout-button">
               <LogOut className="w-4 h-4" />
@@ -232,12 +251,20 @@ export default function DashboardPage() {
                   <Card key={rec.product_id} className="rounded-2xl border border-black/5 shadow-[0_4px_24px_rgba(0,0,0,0.02)] loan-card overflow-hidden" data-testid={`rec-card-${rec.product_id}`}>
                     <CardContent className="p-6">
                       <div className="flex items-start justify-between mb-4">
-                        <div>
+                        <div className="flex items-start gap-3">
+                          <Checkbox
+                            checked={compareList.some(r => r.product_id === rec.product_id)}
+                            onCheckedChange={() => toggleCompare(rec)}
+                            className="mt-1 border-[#E5E7EB] data-[state=checked]:bg-[#059669] data-[state=checked]:border-[#059669]"
+                            data-testid={`compare-check-${rec.product_id}`}
+                          />
+                          <div>
                           <div className="flex items-center gap-2">
                             <h3 className="font-heading font-bold text-[#0A0A0A]">{rec.bank_name}</h3>
                             {idx === 0 && <Badge className="bg-[#059669] text-white text-xs">Best</Badge>}
                           </div>
                           <p className="font-body text-sm text-[#4B5563]">{rec.product_name}</p>
+                          </div>
                         </div>
                         <div className="text-right">
                           <div className="font-heading text-2xl font-bold text-[#059669]">{rec.interest_rate}%</div>
@@ -308,6 +335,20 @@ export default function DashboardPage() {
                 ))}
               </div>
             )}
+
+            {/* Floating Compare Bar */}
+            {compareList.length >= 2 && (
+              <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 animate-fade-in-up">
+                <Button
+                  onClick={() => setCompareOpen(true)}
+                  className="bg-[#111827] hover:bg-[#000000] text-white rounded-full px-8 py-3 font-body font-semibold shadow-2xl h-12"
+                  data-testid="open-compare-button"
+                >
+                  <Scale className="w-4 h-4 mr-2" />
+                  Compare ({compareList.length})
+                </Button>
+              </div>
+            )}
           </TabsContent>
 
           {/* Leads Tab */}
@@ -351,6 +392,7 @@ export default function DashboardPage() {
 
           {/* Credit Builder Tab */}
           <TabsContent value="credit" className="space-y-4" data-testid="credit-content">
+            <CreditScoreChecker />
             <div className="grid gap-4 md:grid-cols-2">
               {creditSuggestions.map((s) => (
                 <Card key={s.id} className="rounded-2xl border border-black/5 p-6 loan-card" data-testid={`credit-${s.id}`}>
@@ -468,6 +510,12 @@ export default function DashboardPage() {
           </TabsContent>
         </Tabs>
       </main>
+
+      {/* Profile Editor Sheet */}
+      <ProfileEditor open={profileOpen} onOpenChange={setProfileOpen} onSaved={fetchData} />
+
+      {/* Loan Comparison Dialog */}
+      <LoanComparison open={compareOpen} onOpenChange={setCompareOpen} loans={compareList} />
     </div>
   );
 }

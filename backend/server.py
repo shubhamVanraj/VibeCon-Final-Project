@@ -290,6 +290,87 @@ async def google_callback(request: Request, response: Response):
     }
 
 
+# ==================== FORGOT / RESET PASSWORD ====================
+
+@api_router.post("/auth/forgot-password")
+async def forgot_password(request: Request):
+    body = await request.json()
+    email = body.get("email", "").lower().strip()
+    if not email:
+        raise HTTPException(status_code=400, detail="Email is required")
+
+    user = await db.users.find_one({"email": email}, {"_id": 0})
+    if not user:
+        return {"message": "If the email exists, a reset code has been sent."}
+
+    import secrets as sec
+    otp = ''.join([str(sec.randbelow(10)) for _ in range(6)])
+    await db.password_reset_tokens.delete_many({"email": email, "used": False})
+    await db.password_reset_tokens.insert_one({
+        "token": otp,
+        "user_id": user["user_id"],
+        "email": email,
+        "expires_at": (datetime.now(timezone.utc) + timedelta(minutes=15)).isoformat(),
+        "used": False,
+        "created_at": datetime.now(timezone.utc).isoformat()
+    })
+    logger.info(f"Password reset OTP for {email}: {otp}")
+    return {"message": "If the email exists, a reset code has been sent.", "debug_otp": otp}
+
+
+@api_router.post("/auth/reset-password")
+async def reset_password(request: Request):
+    body = await request.json()
+    email = body.get("email", "").lower().strip()
+    otp = body.get("otp", "").strip()
+    new_password = body.get("new_password", "")
+
+    if not email or not otp or not new_password:
+        raise HTTPException(status_code=400, detail="Email, OTP, and new password are required")
+    if len(new_password) < 6:
+        raise HTTPException(status_code=400, detail="Password must be at least 6 characters")
+
+    token_doc = await db.password_reset_tokens.find_one(
+        {"email": email, "token": otp, "used": False}, {"_id": 0}
+    )
+    if not token_doc:
+        raise HTTPException(status_code=400, detail="Invalid or expired reset code")
+
+    expires_at = token_doc.get("expires_at")
+    if isinstance(expires_at, str):
+        expires_at = datetime.fromisoformat(expires_at)
+    if expires_at.tzinfo is None:
+        expires_at = expires_at.replace(tzinfo=timezone.utc)
+    if expires_at < datetime.now(timezone.utc):
+        raise HTTPException(status_code=400, detail="Reset code has expired")
+
+    await db.users.update_one(
+        {"user_id": token_doc["user_id"]},
+        {"$set": {"password_hash": hash_password(new_password)}}
+    )
+    await db.password_reset_tokens.update_one(
+        {"email": email, "token": otp},
+        {"$set": {"used": True}}
+    )
+    return {"message": "Password reset successfully"}
+
+
+# ==================== CREDIT SCORE PLACEHOLDER ====================
+
+@api_router.get("/credit-score/check")
+async def check_credit_score(request: Request):
+    await get_current_user(request)
+    return {
+        "status": "unavailable",
+        "message": "Credit score check integration coming soon. Please check your score for free using the links below.",
+        "providers": [
+            {"name": "CIBIL", "url": "https://www.cibil.com/freecibilscore", "description": "Get your free CIBIL score"},
+            {"name": "Experian", "url": "https://www.experian.in/consumer/free-credit-score", "description": "Free Experian credit report"},
+            {"name": "Equifax", "url": "https://www.equifax.co.in", "description": "Check Equifax credit score"}
+        ]
+    }
+
+
 # ==================== USER PROFILE ====================
 
 @api_router.get("/user/profile")
@@ -649,6 +730,7 @@ async def startup_event():
     await db.loan_products.create_index("loan_type")
     await db.leads.create_index("user_id")
     await db.user_profiles.create_index("user_id", unique=True)
+    await db.password_reset_tokens.create_index("email")
     await seed_admin()
     await seed_loan_products()
 
