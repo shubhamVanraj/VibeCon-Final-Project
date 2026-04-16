@@ -94,3 +94,20 @@
   - iOS font-size 16px fix to prevent zoom
   - Tab horizontal scroll on mobile
   - Haptic-ready CSS classes
+
+### Phase 7 - Login Redesign, Story, EMI Calculator & CTAs (April 16, 2026)
+- [x] Login page redesigned with Password/OTP tabbed interface
+- [x] OTP-based passwordless login (request + verify endpoints)
+- [x] Input fields with icons (Mail, KeyRound), soft shadows, focus glow
+- [x] "Our Story" section: Shubham from Bokaro founder story
+- [x] Savings stats tiles: 0.10% rate diff = Rs.5K-75K savings over 5/10/20 years
+- [x] Interactive EMI Calculator: sliders + pie chart (Principal vs Interest) + real-time calc
+- [x] EMI Calculator placed on landing page AND dashboard (new 5th tab)
+- [x] "See Best Loans for This EMI" contextual CTA
+- [x] Feature cards expandable (click to reveal more details)
+- [x] How It Works steps clickable with accordion detail
+- [x] Labeled onboarding step tracker (4 numbered circles with step names)
+- [x] Sticky mobile CTA bottom bar
+- [x] Mobile responsive fixes: text overflow, padding, Hindi line-height
+- [x] All new content translated to Hindi
+- [x] 35 loan products across 18+ banks
