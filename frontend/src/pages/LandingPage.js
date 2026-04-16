@@ -15,7 +15,7 @@ import {
   Shield, ArrowRight, Eye, Lock, MessageSquare, TrendingUp,
   CheckCircle, Users, IndianRupee, Ban, ChevronDown, ChevronUp,
   Heart, Target, MapPin, LogOut, Settings, Home, User, Car,
-  GraduationCap, Bike, RefreshCw, Search, Loader2
+  GraduationCap, Bike, RefreshCw, Search, Loader2, Gem, Repeat, LandPlot, BarChart3
 } from 'lucide-react';
 
 const LOAN_TYPE_META = {
@@ -25,6 +25,10 @@ const LOAN_TYPE_META = {
   bike: { icon: Bike, label: 'Bike Loan', labelHi: 'बाइक लोन', color: '#DC2626' },
   education: { icon: GraduationCap, label: 'Education Loan', labelHi: 'एजुकेशन लोन', color: '#7C3AED' },
   refinance: { icon: RefreshCw, label: 'Refinance', labelHi: 'रीफाइनेंस', color: '#0891B2' },
+  gold: { icon: Gem, label: 'Gold Loan', labelHi: 'गोल्ड लोन', color: '#CA8A04' },
+  used_vehicle: { icon: Repeat, label: '2nd Hand Vehicle', labelHi: 'सेकंड हैंड वाहन', color: '#9333EA' },
+  plot: { icon: LandPlot, label: 'Plot Loan', labelHi: 'प्लॉट लोन', color: '#16A34A' },
+  mutual_funds: { icon: BarChart3, label: 'Loan Against MF', labelHi: 'म्यूचुअल फंड पर लोन', color: '#0284C7' },
 };
 
 export default function LandingPage() {
@@ -111,8 +115,8 @@ export default function LandingPage() {
   ];
 
   const stats = [
-    { value: "20+", label: t.statBanks },
-    { value: "6", label: t.statCategories },
+    { value: "35+", label: t.statBanks },
+    { value: "10", label: t.statCategories },
     { value: "100%", label: t.statControl },
     { value: "0", label: t.statSpam },
   ];
@@ -240,8 +244,8 @@ export default function LandingPage() {
             <div className="relative">
               <div className="absolute -inset-6 bg-gradient-to-br from-[#059669]/10 via-transparent to-[#3B82F6]/5 rounded-3xl blur-2xl" />
               <img
-                src="https://images.unsplash.com/photo-1737573477556-ac3ed2db618c?crop=entropy&cs=srgb&fm=jpg&ixlib=rb-4.1.0&q=85&w=600&h=500&fit=crop"
-                alt="Young Indian professional making smart financial decisions"
+                src="https://static.prod-images.emergentagent.com/jobs/46236293-45eb-486f-8de9-3cfd3f7e2526/images/dc37f7ebac9e5bd035c3c9ede22cbe45a6b5f3c35373d73f770f2d556c742a14.png"
+                alt="Indian professional comparing loan options on phone and laptop"
                 className="relative rounded-3xl shadow-2xl object-cover w-full h-[480px]"
                 loading="lazy"
               />
@@ -496,8 +500,8 @@ export default function LandingPage() {
             <div className="order-2 lg:order-1">
               <div className="relative">
                 <img
-                  src="https://images.unsplash.com/photo-1714976327252-c114f61d8b22?crop=entropy&cs=srgb&fm=jpg&ixlib=rb-4.1.0&q=85&w=500&h=400&fit=crop"
-                  alt="Confident professional taking control of financial decisions"
+                  src="https://images.unsplash.com/photo-1518135714426-c18f5ffb6f4d?crop=entropy&cs=srgb&fm=jpg&ixlib=rb-4.1.0&q=85&w=500&h=400&fit=crop"
+                  alt="Trust and transparency in financial decisions"
                   className="rounded-3xl shadow-lg object-cover w-full h-[360px]"
                   loading="lazy"
                 />

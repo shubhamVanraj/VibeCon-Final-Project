@@ -12,7 +12,7 @@ import { Card } from '../components/ui/card';
 import { RadioGroup, RadioGroupItem } from '../components/ui/radio-group';
 import { Switch } from '../components/ui/switch';
 import { Progress } from '../components/ui/progress';
-import { Shield, ArrowLeft, ArrowRight, Home, User, Car, GraduationCap, Bike, RefreshCw, Briefcase, Building2, Store, BookOpen, CheckCircle } from 'lucide-react';
+import { Shield, ArrowLeft, ArrowRight, Home, User, Car, GraduationCap, Bike, RefreshCw, Briefcase, Building2, Store, BookOpen, CheckCircle, Gem, Repeat, LandPlot, BarChart3 } from 'lucide-react';
 import { toast } from 'sonner';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -32,6 +32,10 @@ export default function OnboardingPage() {
     { value: "bike", label: t.bikeLoan, icon: Bike, desc: t.twoWheeler },
     { value: "education", label: t.educationLoan, icon: GraduationCap, desc: t.studyAbroad },
     { value: "refinance", label: t.refinance, icon: RefreshCw, desc: t.lowerRate },
+    { value: "gold", label: t.goldLoan || 'Gold Loan', icon: Gem, desc: t.goldLoanDesc || 'Loan against your gold' },
+    { value: "used_vehicle", label: t.usedVehicleLoan || '2nd Hand Vehicle', icon: Repeat, desc: t.usedVehicleDesc || 'Pre-owned car or bike' },
+    { value: "plot", label: t.plotLoan || 'Plot Loan', icon: LandPlot, desc: t.plotLoanDesc || 'Buy land or plot' },
+    { value: "mutual_funds", label: t.mfLoan || 'Loan Against MF', icon: BarChart3, desc: t.mfLoanDesc || 'Loan against mutual funds' },
   ];
 
   const employmentTypes = [

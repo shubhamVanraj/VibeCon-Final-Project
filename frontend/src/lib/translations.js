@@ -89,6 +89,9 @@ export const translations = {
     salaried: "Salaried", selfEmployed: "Self Employed", businessOwner: "Business Owner", student: "Student",
     personalLoan: "Personal Loan", homeLoan: "Home Loan", carLoan: "Car Loan",
     bikeLoan: "Bike Loan", educationLoan: "Education Loan", refinance: "Refinance",
+    goldLoan: "Gold Loan", usedVehicleLoan: "2nd Hand Vehicle", plotLoan: "Plot Loan", mfLoan: "Loan Against MF",
+    goldLoanDesc: "Loan against your gold jewellery", usedVehicleDesc: "Pre-owned car or bike finance",
+    plotLoanDesc: "Buy land or plot", mfLoanDesc: "Loan against mutual funds",
     yr1: "1 Year", yr3: "3 Years", yr5: "5 Years", yr10: "10 Years",
     yr15: "15 Years", yr20: "20 Years", yr25: "25 Years", yr30: "30 Years",
     // Dashboard extras
@@ -205,6 +208,9 @@ export const translations = {
     salaried: "वेतनभोगी", selfEmployed: "स्वरोजगार", businessOwner: "व्यापार मालिक", student: "विद्यार्थी",
     personalLoan: "पर्सनल लोन", homeLoan: "होम लोन", carLoan: "कार लोन",
     bikeLoan: "बाइक लोन", educationLoan: "एजुकेशन लोन", refinance: "रीफाइनेंस",
+    goldLoan: "गोल्ड लोन", usedVehicleLoan: "सेकंड हैंड वाहन", plotLoan: "प्लॉट लोन", mfLoan: "म्यूचुअल फंड पर लोन",
+    goldLoanDesc: "अपने सोने के गहनों पर लोन", usedVehicleDesc: "पुरानी कार या बाइक फाइनेंस",
+    plotLoanDesc: "जमीन या प्लॉट खरीदें", mfLoanDesc: "म्यूचुअल फंड पर लोन",
     yr1: "1 साल", yr3: "3 साल", yr5: "5 साल", yr10: "10 साल",
     yr15: "15 साल", yr20: "20 साल", yr25: "25 साल", yr30: "30 साल",
     // Dashboard extras

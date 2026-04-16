@@ -17,6 +17,8 @@ const BANK_DATA = {
   'Yes Bank': { color: '#0039A6', text: 'YES' },
   'Federal Bank': { color: '#003366', text: 'FED' },
   'Canara Bank': { color: '#FFD700', text: 'CAN', textColor: '#333' },
+  'Muthoot Finance': { color: '#8B6914', text: 'MUT' },
+  'Manappuram Finance': { color: '#C41E3A', text: 'MAN' },
 };
 
 export function BankLogo({ bankName, size = 'md' }) {
