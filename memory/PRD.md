@@ -53,3 +53,26 @@
 - EMI calculator widget
 - Referral system
 - Mobile app (React Native)
+
+### Phase 5 - Visual Overhaul (April 16, 2026)
+- [x] New distinctive logo: R with eye/transparency motif (green on white)
+- [x] Font upgrade: Sora (headings - geometric, modern) + DM Sans (body - clean, friendly)
+- [x] Hero section: Radial gradient glow behind content
+- [x] Stats section: Glass-effect background with emerald tints
+- [x] Feature cards: Gradient shading with hover glow effects  
+- [x] How It Works: Gradient step numbers, mesh gradient background
+- [x] Trust section: Image + content layout with hover animations
+- [x] CTA section: Rich dark gradient with emerald overlay + glow button
+- [x] Login/Register: Mesh gradient backgrounds + glass-effect frosted cards
+- [x] Dashboard: Mesh gradient background + premium card shading
+- [x] All buttons: Glow hover effects (green glow + dark glow variants)
+- [x] Text accents: Gradient text for key numbers and stats
+- [x] Savings card: Floating animation on hero section
+- [x] Logo used across all pages (navbar, footer, auth cards)
+
+## Brand Assets
+- Logo Mark (Green): https://static.prod-images.emergentagent.com/jobs/46236293-45eb-486f-8de9-3cfd3f7e2526/images/251ac3f41bd806cd53ef74f0a949d1a3be51ac19219729fbf89fb0dba4f12b85.png
+- Logo Dark Circle: https://static.prod-images.emergentagent.com/jobs/46236293-45eb-486f-8de9-3cfd3f7e2526/images/29d0afa0dec15d58082a3eb4c6d06677aff8a7d281584133a362b02c9a16dae5.png
+- Motto: "No Spam. No Secrets. Just Savings."
+- Fonts: Sora (headings) + DM Sans (body)
+- Brand Color: #059669 (Emerald Green)
