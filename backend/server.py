@@ -596,12 +596,33 @@ def calculate_approval_probability(profile, product):
             score -= 5
             reasons.append("Requesting near maximum limit")
 
-    # Product-specific boosts
-    if product.get("interest_rate", 0) <= 9:
-        score -= 3  # Stricter for lower-rate products
+    # Product-specific boosts — creates variance between banks
+    rate = product.get("interest_rate", 0)
+    if rate <= 9:
+        score -= 3
         reasons.append("Premium product - stricter criteria")
-    if product.get("processing_fee_pct", 0) == 0:
-        score += 2
+    elif rate >= 12:
+        score += 4
+        reasons.append("Easier approval - higher rate product")
+
+    fee = product.get("processing_fee_pct", 0)
+    if fee == 0:
+        score += 3
+        reasons.append("Zero processing fee product")
+    elif fee >= 2:
+        score -= 2
+
+    # Bank trust factor (public sector banks are more lenient)
+    public_banks = {"SBI", "PNB", "Bank of Baroda", "Canara Bank", "Union Bank", "LIC Housing"}
+    if product.get("bank_name") in public_banks:
+        score += 4
+        reasons.append("Public sector bank - broader eligibility")
+
+    # Min amount check
+    min_amt = product.get("min_amount", 0)
+    if desired and min_amt and desired < min_amt:
+        score -= 5
+        reasons.append(f"Amount below bank's minimum Rs.{min_amt:,}")
 
     final_score = max(10, min(95, score))
     return {"score": final_score, "reasons": reasons[:3]}
