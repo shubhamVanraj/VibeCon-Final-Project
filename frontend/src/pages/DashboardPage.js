@@ -320,7 +320,14 @@ export default function DashboardPage() {
                       {rec.approval_reasons && rec.approval_reasons.length > 0 && (
                         <div className="flex flex-wrap gap-1 mb-3">
                           {rec.approval_reasons.map((r, ri) => (
-                            <span key={ri} className="font-body text-[10px] bg-[#F3F4F6] text-[#4B5563] px-2 py-0.5 rounded-full">{r}</span>
+                            <span key={ri} className={`font-body text-[10px] px-2 py-0.5 rounded-full ${r.includes('tie-up') ? 'bg-[#059669]/15 text-[#059669] font-semibold' : 'bg-[#F3F4F6] text-[#4B5563]'}`}>{r}</span>
+                          ))}
+                        </div>
+                      )}
+                      {rec.corporate_tieups && rec.corporate_tieups.length > 0 && (
+                        <div className="flex flex-wrap gap-1 mb-3">
+                          {rec.corporate_tieups.map((t, ti) => (
+                            <span key={ti} className="font-body text-[9px] bg-[#059669]/10 text-[#059669] rounded-full px-2 py-0.5 font-bold uppercase">{t}</span>
                           ))}
                         </div>
                       )}

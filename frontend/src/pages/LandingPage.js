@@ -19,7 +19,7 @@ import {
   CheckCircle, Users, IndianRupee, Ban, ChevronDown, ChevronUp,
   Heart, Target, MapPin, LogOut, Settings, Home, User, Car,
   GraduationCap, Bike, RefreshCw, Search, Loader2, Gem, Repeat, LandPlot, BarChart3,
-  Linkedin, Mail, Phone, Headphones, ExternalLink
+  Linkedin, Mail, Phone, Headphones, ExternalLink, Briefcase, Store, Building2
 } from 'lucide-react';
 
 const LOAN_TYPE_META = {
@@ -33,6 +33,10 @@ const LOAN_TYPE_META = {
   used_vehicle: { icon: Repeat, label: '2nd Hand Vehicle', labelHi: 'सेकंड हैंड वाहन', color: '#9333EA' },
   plot: { icon: LandPlot, label: 'Plot Loan', labelHi: 'प्लॉट लोन', color: '#16A34A' },
   mutual_funds: { icon: BarChart3, label: 'Loan Against MF', labelHi: 'म्यूचुअल फंड पर लोन', color: '#0284C7' },
+  business: { icon: Briefcase, label: 'Business Loan', labelHi: 'बिज़नेस लोन', color: '#B45309' },
+  msme: { icon: Store, label: 'MSME/Mudra', labelHi: 'MSME/मुद्रा लोन', color: '#059669' },
+  working_capital: { icon: TrendingUp, label: 'Working Capital', labelHi: 'वर्किंग कैपिटल', color: '#EA580C' },
+  lap: { icon: Building2, label: 'Loan Against Property', labelHi: 'प्रॉपर्टी पर लोन', color: '#4338CA' },
 };
 
 export default function LandingPage() {
@@ -136,7 +140,7 @@ export default function LandingPage() {
 
   const stats = [
     { value: "35+", label: t.statBanks },
-    { value: "10", label: t.statCategories },
+    { value: "14", label: t.statCategories },
     { value: "100%", label: t.statControl },
     { value: "0", label: t.statSpam },
   ];
@@ -344,7 +348,7 @@ export default function LandingPage() {
               {language === 'hi' ? 'लोन ब्राउज़ करें' : 'Browse Loans'}
             </span>
             <h2 className="font-heading text-3xl md:text-4xl font-bold text-[#0A0A0A] tracking-tight mt-3">
-              {language === 'hi' ? '35+ लोन विकल्प, 18+ बैंक' : '35+ loan options, 18+ banks'}
+              {language === 'hi' ? '72+ लोन विकल्प, 20+ बैंक' : '72+ loan options, 20+ banks'}
             </h2>
             <p className="font-body text-[#4B5563] mt-2 max-w-xl">
               {language === 'hi' ? 'श्रेणी के अनुसार सभी उपलब्ध लोन विकल्प ब्राउज़ करें। अपने लिए सबसे अच्छा चुनें।' : 'Explore all available loan options by category. Find what works best for you.'}
@@ -425,6 +429,19 @@ export default function LandingPage() {
                         {product.features.slice(0, 2).map((f, fi) => (
                           <span key={fi} className="font-body text-[10px] bg-[#F3F4F6] text-[#4B5563] rounded-full px-2.5 py-1">{f}</span>
                         ))}
+                      </div>
+                    )}
+                    {product.corporate_tieups && product.corporate_tieups.length > 0 && (
+                      <div className="flex flex-wrap gap-1 mb-3">
+                        {product.corporate_tieups.slice(0, 3).map((t, ti) => (
+                          <span key={ti} className="font-body text-[9px] bg-[#059669]/10 text-[#059669] rounded-full px-2 py-0.5 font-semibold">{t.toUpperCase()}</span>
+                        ))}
+                      </div>
+                    )}
+                    {product.available_regions && !product.available_regions.includes('pan_india') && (
+                      <div className="flex items-center gap-1 mb-3">
+                        <MapPin className="w-3 h-3 text-[#9CA3AF]" />
+                        <span className="font-body text-[9px] text-[#9CA3AF]">{product.available_regions.slice(0, 3).join(', ')}</span>
                       </div>
                     )}
                     <div className="flex items-center justify-between pt-3 border-t border-black/5">

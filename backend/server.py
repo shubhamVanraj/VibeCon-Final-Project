@@ -51,6 +51,10 @@ class UserProfileUpdate(BaseModel):
     loan_type: Optional[str] = None
     monthly_income: Optional[float] = None
     employment_type: Optional[str] = None
+    employer_name: Optional[str] = None
+    employer_type: Optional[str] = None  # psu, gcc, private, govt, defence
+    city: Optional[str] = None
+    state: Optional[str] = None
     existing_loans: Optional[bool] = None
     existing_loan_emi: Optional[float] = None
     credit_score_known: Optional[bool] = None
@@ -624,16 +628,56 @@ def calculate_approval_probability(profile, product):
         score -= 5
         reasons.append(f"Amount below bank's minimum Rs.{min_amt:,}")
 
+    # Corporate tie-up boost
+    employer_type = profile.get("employer_type", "")
+    employer_name = (profile.get("employer_name") or "").upper()
+    tieups = product.get("corporate_tieups", [])
+    if tieups:
+        matched = False
+        for t in tieups:
+            t_upper = t.upper()
+            if t_upper == employer_type.upper() or t_upper in employer_name or employer_name in t_upper:
+                matched = True
+                break
+        if matched:
+            score += 12
+            reasons.append("Corporate tie-up - preferential rates")
+        elif employer_type in ("psu", "govt", "defence"):
+            # PSU/Govt employees generally get better treatment
+            score += 6
+            reasons.append("Govt/PSU employee - favorable terms")
+
+    # Region availability check
+    regions = product.get("available_regions", [])
+    user_state = (profile.get("state") or "").lower()
+    user_city = (profile.get("city") or "").lower()
+    if regions and user_state:
+        region_match = False
+        for r in regions:
+            r_lower = r.lower()
+            if r_lower == "pan_india" or r_lower in user_state or r_lower in user_city or user_state in r_lower or user_city in r_lower:
+                region_match = True
+                break
+        if not region_match:
+            score -= 8
+            reasons.append("Limited availability in your region")
+
     final_score = max(10, min(95, score))
-    return {"score": final_score, "reasons": reasons[:3]}
+    return {"score": final_score, "reasons": reasons[:4]}
 
 
 @api_router.get("/loans/products")
-async def get_loan_products(loan_type: Optional[str] = None):
+async def get_loan_products(loan_type: Optional[str] = None, region: Optional[str] = None):
     query = {"is_active": True}
     if loan_type:
         query["loan_type"] = loan_type
-    products = await db.loan_products.find(query, {"_id": 0}).to_list(100)
+    products = await db.loan_products.find(query, {"_id": 0}).to_list(200)
+    if region:
+        r_lower = region.lower()
+        products = [p for p in products if not p.get("available_regions") or any(
+            r.lower() == "pan_india" or r_lower in r.lower() or r.lower() in r_lower
+            for r in p.get("available_regions", [])
+        )]
     return products
 
 
@@ -686,6 +730,23 @@ async def get_recommendations(request: Request):
     desired_tenure = profile.get("desired_tenure_months", 60)
 
     products = await db.loan_products.find({"loan_type": loan_type, "is_active": True}, {"_id": 0}).to_list(100)
+
+    # Filter by region if user has location
+    user_state = (profile.get("state") or "").lower()
+    user_city = (profile.get("city") or "").lower()
+    if user_state or user_city:
+        region_filtered = []
+        for p in products:
+            regions = p.get("available_regions", [])
+            if not regions:  # No region restriction = available everywhere
+                region_filtered.append(p)
+            else:
+                for r in regions:
+                    r_lower = r.lower()
+                    if r_lower == "pan_india" or r_lower in user_state or r_lower in user_city or user_state in r_lower or user_city in r_lower:
+                        region_filtered.append(p)
+                        break
+        products = region_filtered if region_filtered else products  # Fallback to all if no matches
 
     recommendations = []
     for product in products:
@@ -1102,7 +1163,69 @@ LOAN_PRODUCTS = [
     {"product_id": "hdfc_refinance", "bank_name": "HDFC Bank", "product_name": "HDFC Balance Transfer", "loan_type": "refinance", "interest_rate": 8.75, "processing_fee_pct": 0.5, "max_amount": 50000000, "min_amount": 200000, "max_tenure_months": 360, "min_tenure_months": 12, "foreclosure_charge_pct": 0, "min_income": 25000, "min_credit_score": 675, "features": ["Switch in 7 days", "No hidden charges", "Online tracking"], "is_active": True},
     {"product_id": "icici_refinance", "bank_name": "ICICI Bank", "product_name": "ICICI Balance Transfer", "loan_type": "refinance", "interest_rate": 8.65, "processing_fee_pct": 0.5, "max_amount": 50000000, "min_amount": 200000, "max_tenure_months": 360, "min_tenure_months": 12, "foreclosure_charge_pct": 0, "min_income": 25000, "min_credit_score": 675, "features": ["Quick processing", "Rate match guarantee", "Doorstep service"], "is_active": True},
     {"product_id": "axis_refinance", "bank_name": "Axis Bank", "product_name": "Axis Balance Transfer", "loan_type": "refinance", "interest_rate": 8.70, "processing_fee_pct": 1.0, "max_amount": 50000000, "min_amount": 200000, "max_tenure_months": 360, "min_tenure_months": 12, "foreclosure_charge_pct": 0, "min_income": 25000, "min_credit_score": 675, "features": ["Easy switch process", "Top-up option", "EMI reduction"], "is_active": True},
+    # Business Term Loans
+    {"product_id": "sbi_business", "bank_name": "SBI", "product_name": "SBI SME Business Loan", "loan_type": "business", "interest_rate": 10.0, "processing_fee_pct": 1.0, "max_amount": 50000000, "min_amount": 500000, "max_tenure_months": 84, "min_tenure_months": 12, "foreclosure_charge_pct": 2.0, "min_income": 30000, "min_credit_score": 650, "features": ["Govt scheme benefits", "Collateral-free up to 1Cr", "Stand-Up India eligible"], "is_active": True, "corporate_tieups": ["psu", "SAIL", "govt"], "available_regions": ["pan_india"]},
+    {"product_id": "hdfc_business", "bank_name": "HDFC Bank", "product_name": "HDFC Business Growth Loan", "loan_type": "business", "interest_rate": 11.5, "processing_fee_pct": 2.0, "max_amount": 75000000, "min_amount": 500000, "max_tenure_months": 60, "min_tenure_months": 12, "foreclosure_charge_pct": 4.0, "min_income": 40000, "min_credit_score": 700, "features": ["Instant pre-approved", "Online application", "Flexible repayment"], "is_active": True, "corporate_tieups": ["gcc", "private"], "available_regions": ["pan_india"]},
+    {"product_id": "icici_business", "bank_name": "ICICI Bank", "product_name": "ICICI InstaBIZ Business Loan", "loan_type": "business", "interest_rate": 11.0, "processing_fee_pct": 2.0, "max_amount": 50000000, "min_amount": 300000, "max_tenure_months": 60, "min_tenure_months": 12, "foreclosure_charge_pct": 4.0, "min_income": 35000, "min_credit_score": 700, "features": ["Digital process", "Same-day disbursement", "No branch visit"], "is_active": True, "corporate_tieups": ["gcc", "private"], "available_regions": ["pan_india"]},
+    {"product_id": "axis_business", "bank_name": "Axis Bank", "product_name": "Axis Business Term Loan", "loan_type": "business", "interest_rate": 11.25, "processing_fee_pct": 1.5, "max_amount": 50000000, "min_amount": 500000, "max_tenure_months": 60, "min_tenure_months": 12, "foreclosure_charge_pct": 3.0, "min_income": 35000, "min_credit_score": 680, "features": ["End-use flexibility", "No collateral up to 75L", "Quick turnaround"], "is_active": True, "corporate_tieups": [], "available_regions": ["pan_india"]},
+    {"product_id": "bob_business", "bank_name": "Bank of Baroda", "product_name": "Baroda MSME Loan", "loan_type": "business", "interest_rate": 9.75, "processing_fee_pct": 0.5, "max_amount": 25000000, "min_amount": 200000, "max_tenure_months": 84, "min_tenure_months": 12, "foreclosure_charge_pct": 0, "min_income": 20000, "min_credit_score": 625, "features": ["Mudra scheme eligible", "Low processing fee", "Govt subsidy available"], "is_active": True, "corporate_tieups": ["psu", "SAIL", "govt"], "available_regions": ["pan_india"]},
+    # MSME / Mudra Loans
+    {"product_id": "sbi_mudra", "bank_name": "SBI", "product_name": "SBI Mudra Loan (Shishu/Kishore/Tarun)", "loan_type": "msme", "interest_rate": 8.5, "processing_fee_pct": 0, "max_amount": 1000000, "min_amount": 10000, "max_tenure_months": 60, "min_tenure_months": 12, "foreclosure_charge_pct": 0, "min_income": 0, "min_credit_score": 0, "features": ["Zero processing fee", "No collateral", "Shishu: up to 50K, Kishore: up to 5L, Tarun: up to 10L"], "is_active": True, "corporate_tieups": [], "available_regions": ["pan_india"]},
+    {"product_id": "pnb_mudra", "bank_name": "PNB", "product_name": "PNB Mudra Loan", "loan_type": "msme", "interest_rate": 9.0, "processing_fee_pct": 0, "max_amount": 1000000, "min_amount": 10000, "max_tenure_months": 60, "min_tenure_months": 12, "foreclosure_charge_pct": 0, "min_income": 0, "min_credit_score": 0, "features": ["Zero processing fee", "Govt backed scheme", "Quick approval"], "is_active": True, "corporate_tieups": ["psu", "govt"], "available_regions": ["pan_india"]},
+    {"product_id": "canara_msme", "bank_name": "Canara Bank", "product_name": "Canara MSME Loan", "loan_type": "msme", "interest_rate": 9.5, "processing_fee_pct": 0.25, "max_amount": 5000000, "min_amount": 100000, "max_tenure_months": 84, "min_tenure_months": 12, "foreclosure_charge_pct": 0, "min_income": 15000, "min_credit_score": 600, "features": ["CGTMSE coverage", "Low interest for women", "Priority sector benefits"], "is_active": True, "corporate_tieups": ["psu"], "available_regions": ["pan_india"]},
+    {"product_id": "sidbi_msme", "bank_name": "SIDBI", "product_name": "SIDBI MSME Assistance", "loan_type": "msme", "interest_rate": 9.25, "processing_fee_pct": 0.5, "max_amount": 25000000, "min_amount": 500000, "max_tenure_months": 84, "min_tenure_months": 24, "foreclosure_charge_pct": 0, "min_income": 25000, "min_credit_score": 650, "features": ["Direct MSME lender", "Technology upgrade loans", "Cluster development"], "is_active": True, "corporate_tieups": ["psu", "SAIL"], "available_regions": ["pan_india"]},
+    # Working Capital Loans
+    {"product_id": "sbi_wc", "bank_name": "SBI", "product_name": "SBI Working Capital Loan", "loan_type": "working_capital", "interest_rate": 9.5, "processing_fee_pct": 0.5, "max_amount": 50000000, "min_amount": 500000, "max_tenure_months": 12, "min_tenure_months": 3, "foreclosure_charge_pct": 0, "min_income": 30000, "min_credit_score": 650, "features": ["Cash credit facility", "Overdraft available", "Revolving credit line"], "is_active": True, "corporate_tieups": ["psu", "SAIL", "govt"], "available_regions": ["pan_india"]},
+    {"product_id": "hdfc_wc", "bank_name": "HDFC Bank", "product_name": "HDFC Working Capital", "loan_type": "working_capital", "interest_rate": 10.5, "processing_fee_pct": 1.0, "max_amount": 50000000, "min_amount": 500000, "max_tenure_months": 12, "min_tenure_months": 3, "foreclosure_charge_pct": 0, "min_income": 40000, "min_credit_score": 700, "features": ["Digital monitoring", "Flexible limits", "Quick renewal"], "is_active": True, "corporate_tieups": ["gcc", "private"], "available_regions": ["pan_india"]},
+    {"product_id": "icici_wc", "bank_name": "ICICI Bank", "product_name": "ICICI Working Capital Finance", "loan_type": "working_capital", "interest_rate": 10.25, "processing_fee_pct": 1.0, "max_amount": 50000000, "min_amount": 300000, "max_tenure_months": 12, "min_tenure_months": 3, "foreclosure_charge_pct": 0, "min_income": 35000, "min_credit_score": 680, "features": ["Online facility management", "Trade finance combo", "Supply chain finance"], "is_active": True, "corporate_tieups": ["gcc"], "available_regions": ["pan_india"]},
+    # Loan Against Property (LAP) for Business
+    {"product_id": "sbi_lap", "bank_name": "SBI", "product_name": "SBI Loan Against Property", "loan_type": "lap", "interest_rate": 8.75, "processing_fee_pct": 0.5, "max_amount": 75000000, "min_amount": 500000, "max_tenure_months": 180, "min_tenure_months": 60, "foreclosure_charge_pct": 0, "min_income": 25000, "min_credit_score": 650, "features": ["Lowest LAP rates", "Long tenure", "No end-use restriction"], "is_active": True, "corporate_tieups": ["psu", "SAIL", "govt"], "available_regions": ["pan_india"]},
+    {"product_id": "hdfc_lap", "bank_name": "HDFC Bank", "product_name": "HDFC Loan Against Property", "loan_type": "lap", "interest_rate": 9.5, "processing_fee_pct": 1.0, "max_amount": 100000000, "min_amount": 500000, "max_tenure_months": 180, "min_tenure_months": 60, "foreclosure_charge_pct": 2.0, "min_income": 30000, "min_credit_score": 700, "features": ["High LTV ratio", "Balance transfer option", "Doorstep service"], "is_active": True, "corporate_tieups": ["gcc", "private"], "available_regions": ["pan_india"]},
+    {"product_id": "axis_lap", "bank_name": "Axis Bank", "product_name": "Axis Loan Against Property", "loan_type": "lap", "interest_rate": 9.75, "processing_fee_pct": 1.0, "max_amount": 50000000, "min_amount": 500000, "max_tenure_months": 180, "min_tenure_months": 60, "foreclosure_charge_pct": 2.0, "min_income": 30000, "min_credit_score": 680, "features": ["Commercial & residential property", "Top-up facility", "Online tracking"], "is_active": True, "corporate_tieups": [], "available_regions": ["pan_india"]},
+    {"product_id": "pnb_lap", "bank_name": "PNB", "product_name": "PNB Loan Against Property", "loan_type": "lap", "interest_rate": 8.85, "processing_fee_pct": 0.5, "max_amount": 50000000, "min_amount": 300000, "max_tenure_months": 180, "min_tenure_months": 60, "foreclosure_charge_pct": 0, "min_income": 20000, "min_credit_score": 625, "features": ["No foreclosure on floating", "Govt bank trust", "Low processing fee"], "is_active": True, "corporate_tieups": ["psu", "SAIL", "govt"], "available_regions": ["pan_india"]},
 ]
+
+# Corporate tie-up and region metadata to patch onto existing products
+PRODUCT_METADATA = {
+    "sbi_personal": {"corporate_tieups": ["psu", "SAIL", "govt", "defence"], "available_regions": ["pan_india"]},
+    "hdfc_personal": {"corporate_tieups": ["gcc", "private", "TCS", "Infosys", "Wipro"], "available_regions": ["pan_india"]},
+    "icici_personal": {"corporate_tieups": ["gcc", "private", "Cognizant", "HCL"], "available_regions": ["pan_india"]},
+    "bajaj_personal": {"corporate_tieups": ["private"], "available_regions": ["pan_india"]},
+    "kotak_personal": {"corporate_tieups": ["gcc", "private"], "available_regions": ["Maharashtra", "Karnataka", "Delhi", "Tamil Nadu", "Telangana", "Gujarat"]},
+    "axis_personal": {"corporate_tieups": ["gcc", "private"], "available_regions": ["pan_india"]},
+    "indusind_personal": {"corporate_tieups": ["private"], "available_regions": ["Maharashtra", "Delhi", "Karnataka", "Tamil Nadu", "Telangana", "Gujarat", "West Bengal"]},
+    "idfc_personal": {"corporate_tieups": [], "available_regions": ["Maharashtra", "Delhi", "Karnataka", "Tamil Nadu", "Telangana", "Gujarat", "Rajasthan"]},
+    "yes_personal": {"corporate_tieups": ["private"], "available_regions": ["pan_india"]},
+    "pnb_personal": {"corporate_tieups": ["psu", "SAIL", "govt", "defence"], "available_regions": ["pan_india"]},
+    "bob_personal": {"corporate_tieups": ["psu", "SAIL", "govt"], "available_regions": ["pan_india"]},
+    "tata_personal": {"corporate_tieups": ["private", "Tata Group"], "available_regions": ["pan_india"]},
+    "canara_personal": {"corporate_tieups": ["psu", "govt"], "available_regions": ["pan_india"]},
+    "sbi_home": {"corporate_tieups": ["psu", "SAIL", "govt", "defence"], "available_regions": ["pan_india"]},
+    "hdfc_home": {"corporate_tieups": ["gcc", "private", "TCS", "Infosys"], "available_regions": ["pan_india"]},
+    "icici_home": {"corporate_tieups": ["gcc", "private"], "available_regions": ["pan_india"]},
+    "axis_home": {"corporate_tieups": ["gcc", "private"], "available_regions": ["pan_india"]},
+    "lic_home": {"corporate_tieups": ["psu", "govt", "LIC agents"], "available_regions": ["pan_india"]},
+    "pnb_home": {"corporate_tieups": ["psu", "SAIL", "govt", "defence"], "available_regions": ["pan_india"]},
+    "bob_home": {"corporate_tieups": ["psu", "govt"], "available_regions": ["pan_india"]},
+    "canara_home": {"corporate_tieups": ["psu", "govt"], "available_regions": ["pan_india"]},
+    "federal_home": {"corporate_tieups": [], "available_regions": ["Kerala", "Karnataka", "Tamil Nadu", "Maharashtra", "Delhi", "Gujarat"]},
+    "union_home": {"corporate_tieups": ["psu", "govt"], "available_regions": ["pan_india"]},
+    "sbi_car": {"corporate_tieups": ["psu", "SAIL", "govt", "defence"], "available_regions": ["pan_india"]},
+    "hdfc_car": {"corporate_tieups": ["gcc", "private", "TCS"], "available_regions": ["pan_india"]},
+    "icici_car": {"corporate_tieups": ["gcc", "private"], "available_regions": ["pan_india"]},
+    "axis_car": {"corporate_tieups": ["private"], "available_regions": ["pan_india"]},
+    "tata_car": {"corporate_tieups": ["Tata Group", "private"], "available_regions": ["pan_india"]},
+    "pnb_car": {"corporate_tieups": ["psu", "SAIL", "govt"], "available_regions": ["pan_india"]},
+    "sbi_gold": {"corporate_tieups": [], "available_regions": ["pan_india"]},
+    "hdfc_gold": {"corporate_tieups": [], "available_regions": ["pan_india"]},
+    "muthoot_gold": {"corporate_tieups": [], "available_regions": ["Kerala", "Tamil Nadu", "Karnataka", "Andhra Pradesh", "Telangana", "Maharashtra", "Delhi", "Gujarat"]},
+    "manappuram_gold": {"corporate_tieups": [], "available_regions": ["Kerala", "Tamil Nadu", "Karnataka", "Andhra Pradesh", "Telangana", "Maharashtra"]},
+    "canara_gold": {"corporate_tieups": [], "available_regions": ["pan_india"]},
+    "sbi_refinance": {"corporate_tieups": ["psu", "govt"], "available_regions": ["pan_india"]},
+    "hdfc_refinance": {"corporate_tieups": ["gcc", "private"], "available_regions": ["pan_india"]},
+    "icici_refinance": {"corporate_tieups": ["gcc", "private"], "available_regions": ["pan_india"]},
+    "axis_refinance": {"corporate_tieups": ["private"], "available_regions": ["pan_india"]},
+}
 
 
 async def seed_loan_products():
@@ -1114,6 +1237,14 @@ async def seed_loan_products():
         )
     count = await db.loan_products.count_documents({"is_active": True})
     logger.info(f"Seeded/updated {len(LOAN_PRODUCTS)} loan products (total active: {count})")
+
+    # Apply corporate tie-up and region metadata to all products
+    for pid, meta in PRODUCT_METADATA.items():
+        await db.loan_products.update_one(
+            {"product_id": pid},
+            {"$set": meta}
+        )
+    logger.info(f"Applied metadata (tieups/regions) to {len(PRODUCT_METADATA)} products")
 
 
 async def seed_admin():

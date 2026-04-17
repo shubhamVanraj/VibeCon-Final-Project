@@ -37,6 +37,10 @@ export default function OnboardingPage() {
     { value: "used_vehicle", label: t.usedVehicleLoan || '2nd Hand Vehicle', icon: Repeat, desc: t.usedVehicleDesc || 'Pre-owned car or bike' },
     { value: "plot", label: t.plotLoan || 'Plot Loan', icon: LandPlot, desc: t.plotLoanDesc || 'Buy land or plot' },
     { value: "mutual_funds", label: t.mfLoan || 'Loan Against MF', icon: BarChart3, desc: t.mfLoanDesc || 'Loan against mutual funds' },
+    { value: "business", label: language === 'hi' ? 'बिज़नेस लोन' : 'Business Loan', icon: Building2, desc: language === 'hi' ? 'व्यापार विस्तार हेतु' : 'For business expansion' },
+    { value: "msme", label: language === 'hi' ? 'MSME/मुद्रा लोन' : 'MSME/Mudra Loan', icon: Store, desc: language === 'hi' ? 'सूक्ष्म एवं लघु उद्यम' : 'Micro & small enterprise' },
+    { value: "working_capital", label: language === 'hi' ? 'वर्किंग कैपिटल' : 'Working Capital', icon: Briefcase, desc: language === 'hi' ? 'दैनिक व्यापार खर्चे' : 'Day-to-day operations' },
+    { value: "lap", label: language === 'hi' ? 'प्रॉपर्टी पर लोन' : 'Loan Against Property', icon: Home, desc: language === 'hi' ? 'प्रॉपर्टी गिरवी रखकर लोन' : 'Mortgage your property' },
   ];
 
   const employmentTypes = [
@@ -49,6 +53,10 @@ export default function OnboardingPage() {
   const [form, setForm] = useState({
     loan_type: '',
     employment_type: '',
+    employer_name: '',
+    employer_type: '',
+    city: '',
+    state: '',
     monthly_income: '',
     existing_loans: false,
     existing_loan_emi: '',
@@ -86,6 +94,10 @@ export default function OnboardingPage() {
       const payload = {
         loan_type: form.loan_type,
         employment_type: form.employment_type,
+        employer_name: form.employer_name || null,
+        employer_type: form.employer_type || null,
+        city: form.city || null,
+        state: form.state || null,
         monthly_income: parseFloat(parseIndianNumber(form.monthly_income)) || 0,
         existing_loans: form.existing_loans,
         existing_loan_emi: form.existing_loans ? (parseFloat(parseIndianNumber(form.existing_loan_emi)) || 0) : 0,
@@ -205,6 +217,58 @@ export default function OnboardingPage() {
                             <span className="font-body text-sm font-medium text-[#0A0A0A]">{et.label}</span>
                           </Card>
                         ))}
+                      </div>
+                    </div>
+                    <div>
+                      <Label htmlFor="employer" className="font-body font-semibold text-[#0A0A0A]">{language === 'hi' ? 'नियोक्ता / कंपनी' : 'Employer / Company'}</Label>
+                      <Input
+                        id="employer" type="text" value={form.employer_name}
+                        onChange={(e) => update('employer_name', e.target.value)}
+                        placeholder={language === 'hi' ? 'जैसे SAIL, TCS, SBI' : 'e.g. SAIL, TCS, SBI'}
+                        className="mt-2 rounded-xl bg-white border-[#E5E7EB] focus:border-[#059669] focus:ring-[#059669]"
+                        data-testid="employer-name-input"
+                      />
+                    </div>
+                    <div>
+                      <Label className="font-body font-semibold text-[#0A0A0A] mb-3 block">{language === 'hi' ? 'नियोक्ता प्रकार' : 'Employer Type'}</Label>
+                      <div className="grid grid-cols-3 md:grid-cols-5 gap-2">
+                        {[
+                          { value: 'psu', label: 'PSU' },
+                          { value: 'govt', label: language === 'hi' ? 'सरकारी' : 'Govt' },
+                          { value: 'gcc', label: 'GCC' },
+                          { value: 'private', label: language === 'hi' ? 'प्राइवेट' : 'Private' },
+                          { value: 'defence', label: language === 'hi' ? 'रक्षा' : 'Defence' },
+                        ].map((et) => (
+                          <button key={et.value}
+                            onClick={() => update('employer_type', et.value)}
+                            className={`px-3 py-2 rounded-lg font-body text-xs font-semibold transition-all ${
+                              form.employer_type === et.value ? 'bg-[#059669] text-white' : 'bg-[#F3F4F6] text-[#4B5563] hover:bg-[#059669]/10'
+                            }`}
+                            data-testid={`employer-type-${et.value}`}
+                          >{et.label}</button>
+                        ))}
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-2 gap-3">
+                      <div>
+                        <Label htmlFor="city" className="font-body font-semibold text-[#0A0A0A]">{language === 'hi' ? 'शहर' : 'City'}</Label>
+                        <Input
+                          id="city" type="text" value={form.city}
+                          onChange={(e) => update('city', e.target.value)}
+                          placeholder={language === 'hi' ? 'जैसे बोकारो, मुंबई' : 'e.g. Bokaro, Mumbai'}
+                          className="mt-2 rounded-xl bg-white border-[#E5E7EB] focus:border-[#059669] focus:ring-[#059669]"
+                          data-testid="city-input"
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="state" className="font-body font-semibold text-[#0A0A0A]">{language === 'hi' ? 'राज्य' : 'State'}</Label>
+                        <Input
+                          id="state" type="text" value={form.state}
+                          onChange={(e) => update('state', e.target.value)}
+                          placeholder={language === 'hi' ? 'जैसे झारखंड' : 'e.g. Jharkhand'}
+                          className="mt-2 rounded-xl bg-white border-[#E5E7EB] focus:border-[#059669] focus:ring-[#059669]"
+                          data-testid="state-input"
+                        />
                       </div>
                     </div>
                     <div>
