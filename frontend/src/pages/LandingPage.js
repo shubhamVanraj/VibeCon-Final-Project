@@ -290,6 +290,34 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* India Loan Market Stats */}
+      <section className="py-14 md:py-20 px-6 lg:px-8 reveal-on-scroll" data-testid="india-stats-section">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-10">
+            <span className="text-xs uppercase tracking-[0.2em] font-bold text-[#6B7280] font-body">
+              {language === 'hi' ? 'भारतीय लोन बाज़ार' : 'Indian Loan Market'}
+            </span>
+            <h2 className="font-heading text-2xl md:text-3xl font-bold text-[#0A0A0A] tracking-tight mt-3">
+              {language === 'hi' ? 'भारत में हर दिन लाखों लोन प्रोसेस होते हैं' : 'Millions of loans processed in India every day'}
+            </h2>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {[
+              { value: '2.8L+', label: language === 'hi' ? 'रोज़ाना लोन आवेदन' : 'Daily Loan Applications', sub: language === 'hi' ? 'पूरे भारत में' : 'Across India' },
+              { value: '85L+', label: language === 'hi' ? 'मासिक प्रोसेसिंग' : 'Monthly Processing', sub: language === 'hi' ? 'सभी बैंकों में' : 'All banks combined' },
+              { value: '10.2 Cr', label: language === 'hi' ? 'वार्षिक लोन' : 'Annual Loans', sub: 'FY 2025-26' },
+              { value: '38.6L Cr', label: language === 'hi' ? 'कुल ऋण राशि' : 'Total Credit Outstanding', sub: language === 'hi' ? 'आरबीआई डेटा' : 'RBI Data' },
+            ].map((s, i) => (
+              <div key={i} className="feature-card-shade rounded-2xl p-5 text-center" data-testid={`india-stat-${i}`}>
+                <div className="font-heading text-2xl md:text-3xl font-bold text-gradient tracking-tight">{s.value}</div>
+                <div className="font-body text-sm text-[#0A0A0A] font-medium mt-1">{s.label}</div>
+                <div className="font-body text-[10px] text-[#9CA3AF] mt-0.5">{s.sub}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Market Insights Charts */}
       <section className="py-16 md:py-24 px-6 lg:px-8 bg-mesh-light reveal-on-scroll" data-testid="market-insights-section">
         <div className="max-w-7xl mx-auto">

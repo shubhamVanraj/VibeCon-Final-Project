@@ -222,13 +222,24 @@ export default function DashboardPage() {
 
       <main className="pt-24 pb-12 px-4 md:px-6 lg:px-8 max-w-7xl mx-auto">
         {/* Welcome */}
-        <div className="mb-8">
-          <h1 className="font-heading text-2xl md:text-3xl font-bold text-[#0A0A0A] tracking-tight">
-            {t.welcome}, {user?.name?.split(' ')[0]}
-          </h1>
-          <p className="font-body text-[#4B5563] mt-1">
-            {recommendations.length} {t.recommendations.toLowerCase()} {t.found}
-          </p>
+        <div className="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+          <div>
+            <h1 className="font-heading text-2xl md:text-3xl font-bold text-[#0A0A0A] tracking-tight">
+              {t.welcome}, {user?.name?.split(' ')[0]}
+            </h1>
+            <p className="font-body text-[#4B5563] mt-1">
+              {recommendations.length} {t.recommendations.toLowerCase()} {t.found}
+            </p>
+          </div>
+          <Button
+            variant="outline"
+            onClick={() => navigate('/onboarding')}
+            className="rounded-full font-body text-sm border-[#E5E7EB] hover:border-[#059669] hover:text-[#059669] px-5"
+            data-testid="change-preferences-btn"
+          >
+            <Settings className="w-4 h-4 mr-2" />
+            {language === 'hi' ? 'प्राथमिकताएं बदलें' : 'Change Preferences'}
+          </Button>
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
@@ -298,14 +309,21 @@ export default function DashboardPage() {
                         </div>
                       </div>
 
-                      <div className="flex items-center justify-between mb-3">
+                      <div className="flex items-center justify-between mb-1">
                         <div className="flex items-center gap-2">
                           <Target className="w-4 h-4 text-[#059669]" strokeWidth={1.5} />
                           <span className="font-body text-sm text-[#4B5563]">{t.approvalChance}</span>
                         </div>
-                        <span className="font-heading font-bold text-sm text-[#059669]">{rec.approval_probability}%</span>
+                        <span className={`font-heading font-bold text-sm ${rec.approval_probability >= 70 ? 'text-[#059669]' : rec.approval_probability >= 40 ? 'text-[#D97706]' : 'text-[#DC2626]'}`}>{rec.approval_probability}%</span>
                       </div>
-                      <Progress value={rec.approval_probability} className="h-1.5 bg-[#E5E7EB] mb-3" />
+                      <Progress value={rec.approval_probability} className="h-1.5 bg-[#E5E7EB] mb-2" />
+                      {rec.approval_reasons && rec.approval_reasons.length > 0 && (
+                        <div className="flex flex-wrap gap-1 mb-3">
+                          {rec.approval_reasons.map((r, ri) => (
+                            <span key={ri} className="font-body text-[10px] bg-[#F3F4F6] text-[#4B5563] px-2 py-0.5 rounded-full">{r}</span>
+                          ))}
+                        </div>
+                      )}
 
                       {rec.savings > 0 && (
                         <div className="flex items-center gap-2 bg-[#059669]/5 rounded-lg p-2.5 mb-3">

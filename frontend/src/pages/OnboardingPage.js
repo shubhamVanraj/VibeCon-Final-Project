@@ -4,7 +4,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
 import { LanguageToggle } from '../components/LanguageToggle';
 import { useAnalytics, usePageView } from '../lib/analytics';
-import api from '../lib/api';
+import api, { formatIndianNumber, parseIndianNumber } from '../lib/api';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
@@ -74,12 +74,12 @@ export default function OnboardingPage() {
       const payload = {
         loan_type: form.loan_type,
         employment_type: form.employment_type,
-        monthly_income: parseFloat(form.monthly_income) || 0,
+        monthly_income: parseFloat(parseIndianNumber(form.monthly_income)) || 0,
         existing_loans: form.existing_loans,
-        existing_loan_emi: form.existing_loans ? (parseFloat(form.existing_loan_emi) || 0) : 0,
+        existing_loan_emi: form.existing_loans ? (parseFloat(parseIndianNumber(form.existing_loan_emi)) || 0) : 0,
         credit_score_known: form.credit_score_known,
         credit_score: form.credit_score_known ? (parseInt(form.credit_score) || 0) : null,
-        desired_amount: parseFloat(form.desired_amount) || 0,
+        desired_amount: parseFloat(parseIndianNumber(form.desired_amount)) || 0,
         desired_tenure_months: parseInt(form.desired_tenure_months) || 60,
       };
       await api.put('/user/profile', payload);
@@ -194,8 +194,8 @@ export default function OnboardingPage() {
                     <div>
                       <Label htmlFor="income" className="font-body font-semibold text-[#0A0A0A]">{t.monthlyIncome}</Label>
                       <Input
-                        id="income" type="number" value={form.monthly_income}
-                        onChange={(e) => update('monthly_income', e.target.value)}
+                        id="income" type="text" inputMode="numeric" value={formatIndianNumber(form.monthly_income)}
+                        onChange={(e) => { const raw = parseIndianNumber(e.target.value).replace(/[^0-9]/g, ''); update('monthly_income', raw); }}
                         placeholder="e.g. 50000"
                         className="mt-2 rounded-xl bg-white border-[#E5E7EB] focus:border-[#059669] focus:ring-[#059669]"
                         data-testid="monthly-income-input"
@@ -226,8 +226,8 @@ export default function OnboardingPage() {
                       <div>
                         <Label htmlFor="emi" className="font-body font-semibold text-[#0A0A0A]">Total Monthly EMI (Rs.)</Label>
                         <Input
-                          id="emi" type="number" value={form.existing_loan_emi}
-                          onChange={(e) => update('existing_loan_emi', e.target.value)}
+                          id="emi" type="text" inputMode="numeric" value={formatIndianNumber(form.existing_loan_emi)}
+                          onChange={(e) => { const raw = parseIndianNumber(e.target.value).replace(/[^0-9]/g, ''); update('existing_loan_emi', raw); }}
                           placeholder="e.g. 15000"
                           className="mt-2 rounded-xl bg-white border-[#E5E7EB] focus:border-[#059669] focus:ring-[#059669]"
                           data-testid="existing-emi-input"
@@ -278,9 +278,9 @@ export default function OnboardingPage() {
                     <div>
                       <Label htmlFor="amount" className="font-body font-semibold text-[#0A0A0A]">{t.loanAmount}</Label>
                       <Input
-                        id="amount" type="number" value={form.desired_amount}
-                        onChange={(e) => update('desired_amount', e.target.value)}
-                        placeholder="e.g. 500000"
+                        id="amount" type="text" inputMode="numeric" value={formatIndianNumber(form.desired_amount)}
+                        onChange={(e) => { const raw = parseIndianNumber(e.target.value).replace(/[^0-9]/g, ''); update('desired_amount', raw); }}
+                        placeholder="e.g. 5,00,000"
                         className="mt-2 rounded-xl bg-white border-[#E5E7EB] focus:border-[#059669] focus:ring-[#059669]"
                         data-testid="desired-amount-input"
                       />

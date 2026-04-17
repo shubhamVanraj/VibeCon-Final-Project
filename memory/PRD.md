@@ -4,58 +4,29 @@
 ## Architecture
 - Frontend: React 19 + Tailwind CSS + Shadcn UI + Framer Motion + Recharts
 - Backend: FastAPI + MongoDB (Motor async driver)
-- AI: Claude Sonnet 4.5 (suggestions/chatbot/translation) + OpenAI Whisper (voice)
-- Auth: JWT email/password + Emergent Google OAuth (HTTP-only cookies)
+- AI: Claude Sonnet 4.5 (chatbot/advisor) + OpenAI Whisper (voice)
+- Auth: JWT + Emergent Google OAuth (HTTP-only cookies)
 
-## What's Been Implemented
-
-### Phase 1-8 (Complete)
+## What's Been Implemented (Phases 1-14)
 - Full MVP: Landing, Auth, Onboarding, Recommendations, Leads, Credit Builder
-- AI Advisor (Claude 4.5), Voice (Whisper), EN/HI languages
-- Admin dashboard, dark mode, sounds, mobile touch, EMI calculator
-- OTP login, Our Story, analytics tracking
+- AI Advisor + Voice, EN/HI, Admin dashboard, dark mode, EMI Calculator
+- Exploration-first flow (login → landing page), Browse Loans (56 products, 10 categories, 20 banks)
+- Chatbot widget (Claude 4.5), Location picker, Market insight charts
+- Founder LinkedIn + Support email + Talk to Us toggle + Rich footer + Scroll shading
+- **Phase 14**: Indian number formatting (lakhs/crores), varied approval probability with reasons, change preferences from dashboard, India loan market stats
 
-### Phase 9 - Exploration-First Flow
-- [x] After login → land on Landing Page, not dashboard
-- [x] Browse All Loans section with 10 category filters
-- [x] Gentle onboarding nudge, location auto-detect
-
-### Phase 10 - Images & Expanded Loans
-- [x] AI-generated hero + handshake trust image
-- [x] 4 new categories: Gold, 2nd Hand Vehicle, Plot, Loan Against MF
-- [x] 52 products, 10 categories, 20 banks
-
-### Phase 11 - Chatbot, Location Picker, Charts (April 16, 2026)
-- [x] Chatbot widget (Claude 4.5): floating green bubble, opens panel with quick questions, session-based chat
-- [x] LocationPicker: navbar dropdown with search (Nominatim) + 15 popular Indian cities
-- [x] Market Insights section: 3 charts (Recharts)
-  - Category Distribution donut chart
-  - Interest Rate Comparison horizontal bar chart
-  - Top Bank Coverage vertical bar chart
-- [x] Public API: POST /api/ai/chat-public, GET /api/loans/stats
-- [x] EN/HI support for chatbot and all new sections
-
-## Key Endpoints
-- POST /api/ai/chat-public — Public chatbot (Claude 4.5, no auth required)
-- GET /api/loans/stats — Loan market stats for charts (public)
-- GET /api/loans/products — All 52 products (public)
-- POST /api/ai/suggest — Auth'd AI advisor
-- All other auth, loan, lead, credit, analytics endpoints
-
-## Brand
-- Logo: Green shield "R" motif
-- Fonts: Sora + DM Sans
-- Color: #059669
-- Hero: AI-generated (emergentagent CDN)
-- Trust: Handshake (Unsplash)
+## Key Features
+- 56 loan products: Personal(13), Home(10), Car(6), Bike(3), Education(3), Gold(5), Used Vehicle(4), Plot(4), Mutual Funds(4), Refinance(4)
+- 20 banks including Muthoot Finance, Manappuram Finance
+- Approval probability varies per bank based on credit score, income ratio, existing EMI burden, loan amount vs max — with contextual reasons
+- Indian number formatting: 5,00,000 (lakhs), 1,00,00,000 (crores)
+- "Change Preferences" button on dashboard to re-do onboarding
+- India loan stats: 2.8L+ daily applications, 85L+ monthly, 10.2 Cr annual, 38.6L Cr outstanding
 
 ## Prioritized Backlog
-
 ### P1
-- Email/SMS OTP delivery (currently dev mode, shows OTP in toast)
-- LLM budget top-up for chatbot to work live (currently returns fallback)
-
+- LLM budget top-up for live chatbot
+- Email/SMS OTP delivery (dev mode)
 ### P2
-- Real CIBIL/Experian API integration (currently MOCKED)
-- Whisper voice input end-to-end testing
-- Push notifications for lead status changes
+- Real CIBIL/Experian API integration (mocked)
+- Whisper voice e2e testing

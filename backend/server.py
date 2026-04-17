@@ -519,37 +519,92 @@ def calculate_total_cost(principal, annual_rate, tenure_months, processing_fee_p
 
 def calculate_approval_probability(profile, product):
     score = 50
+    reasons = []
+
+    # Credit score factor (biggest weight)
     if profile.get("credit_score"):
         cs = profile["credit_score"]
+        min_cs = product.get("min_credit_score", 0)
         if cs >= 750:
             score += 30
+            reasons.append("Excellent credit score")
         elif cs >= 700:
             score += 20
+            reasons.append("Good credit score")
         elif cs >= 650:
             score += 10
+            reasons.append("Fair credit score")
         else:
             score -= 10
+            reasons.append("Low credit score - may affect approval")
+        if min_cs > 0 and cs < min_cs:
+            score -= 15
+            reasons.append(f"Bank requires min {min_cs} CIBIL")
+    else:
+        reasons.append("Credit score not provided")
+
+    # Income vs bank minimum
     if profile.get("monthly_income") and product.get("min_income") and product["min_income"] > 0:
         ratio = profile["monthly_income"] / product["min_income"]
-        if ratio >= 2:
+        if ratio >= 3:
             score += 15
+            reasons.append("Income well above requirement")
+        elif ratio >= 2:
+            score += 12
+            reasons.append("Strong income-to-requirement ratio")
         elif ratio >= 1.5:
-            score += 10
+            score += 8
+            reasons.append("Income meets requirement comfortably")
         elif ratio >= 1:
-            score += 5
+            score += 3
+            reasons.append("Income just meets minimum")
         else:
             score -= 20
+            reasons.append(f"Income below bank's min Rs.{product['min_income']:,}")
+    elif product.get("min_income", 0) == 0:
+        score += 5
+        reasons.append("No income requirement for this product")
+
+    # Existing loan burden
     if profile.get("existing_loans"):
-        score -= 10
         if profile.get("existing_loan_emi") and profile.get("monthly_income") and profile["monthly_income"] > 0:
             emi_ratio = profile["existing_loan_emi"] / profile["monthly_income"]
             if emi_ratio > 0.5:
-                score -= 15
+                score -= 18
+                reasons.append("High existing EMI burden (>50% income)")
             elif emi_ratio > 0.3:
-                score -= 5
+                score -= 8
+                reasons.append("Moderate existing EMI load")
+            else:
+                score -= 3
+                reasons.append("Low existing EMI - manageable")
+        else:
+            score -= 10
+            reasons.append("Existing loans may reduce eligibility")
     else:
         score += 5
-    return max(5, min(95, score))
+        reasons.append("No existing loans - clean slate")
+
+    # Loan amount vs max
+    desired = profile.get("desired_amount", 0)
+    max_amt = product.get("max_amount", 0)
+    if desired and max_amt:
+        if desired > max_amt:
+            score -= 15
+            reasons.append(f"Amount exceeds bank's max Rs.{max_amt:,}")
+        elif desired > max_amt * 0.8:
+            score -= 5
+            reasons.append("Requesting near maximum limit")
+
+    # Product-specific boosts
+    if product.get("interest_rate", 0) <= 9:
+        score -= 3  # Stricter for lower-rate products
+        reasons.append("Premium product - stricter criteria")
+    if product.get("processing_fee_pct", 0) == 0:
+        score += 2
+
+    final_score = max(10, min(95, score))
+    return {"score": final_score, "reasons": reasons[:3]}
 
 
 @api_router.get("/loans/products")
@@ -614,10 +669,11 @@ async def get_recommendations(request: Request):
     recommendations = []
     for product in products:
         cost = calculate_total_cost(desired_amount, product["interest_rate"], desired_tenure, product["processing_fee_pct"], product.get("foreclosure_charge_pct", 0))
-        approval_prob = calculate_approval_probability(profile, product)
+        approval_data = calculate_approval_probability(profile, product)
         recommendations.append({
             **product, **cost,
-            "approval_probability": approval_prob,
+            "approval_probability": approval_data["score"],
+            "approval_reasons": approval_data["reasons"],
             "desired_amount": desired_amount,
             "desired_tenure_months": desired_tenure
         })
