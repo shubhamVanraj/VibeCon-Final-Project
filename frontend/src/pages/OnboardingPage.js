@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
 import { LanguageToggle } from '../components/LanguageToggle';
@@ -24,6 +24,7 @@ export default function OnboardingPage() {
   const { track } = useAnalytics();
   usePageView('onboarding');
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
 
   const loanTypes = [
     { value: "personal", label: t.personalLoan, icon: User, desc: t.forAnyNeed },
@@ -56,6 +57,17 @@ export default function OnboardingPage() {
     desired_amount: '',
     desired_tenure_months: '',
   });
+
+  // Auto-select loan type from URL param and skip to step 2
+  useEffect(() => {
+    const urlLoanType = searchParams.get('loan_type');
+    if (urlLoanType && loanTypes.some(lt => lt.value === urlLoanType)) {
+      setForm(prev => ({ ...prev, loan_type: urlLoanType }));
+      setStep(2);
+      track('onboarding_auto_select', { loan_type: urlLoanType });
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const update = (key, value) => setForm(prev => ({ ...prev, [key]: value }));
   const progress = (step / 4) * 100;
@@ -153,7 +165,11 @@ export default function OnboardingPage() {
                             ? 'border-[#059669] bg-[#059669]/5 shadow-md'
                             : 'border-black/5 hover:border-[#059669]/30 hover:shadow-sm'
                         }`}
-                        onClick={() => update('loan_type', lt.value)}
+                        onClick={() => {
+                          update('loan_type', lt.value);
+                          // Auto-advance to step 2 on selection
+                          setTimeout(() => setStep(2), 200);
+                        }}
                         data-testid={`loan-type-${lt.value}`}
                       >
                         <lt.icon className={`w-7 h-7 mb-3 ${form.loan_type === lt.value ? 'text-[#059669]' : 'text-[#4B5563]'}`} strokeWidth={1.5} />
@@ -327,13 +343,12 @@ export default function OnboardingPage() {
           <div className="flex justify-between mt-10">
             <Button
               variant="outline"
-              onClick={() => setStep(s => s - 1)}
-              disabled={step === 1}
+              onClick={() => step === 1 ? navigate('/') : setStep(s => s - 1)}
               className="rounded-full px-6 font-body border-[#E5E7EB] hover:border-[#111827]"
               data-testid="onboarding-back-button"
             >
               <ArrowLeft className="w-4 h-4 mr-2" />
-              {t.back}
+              {step === 1 ? (language === 'hi' ? 'होम पर वापस' : 'Back to Home') : t.back}
             </Button>
             {step < 4 ? (
               <Button

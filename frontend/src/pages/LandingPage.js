@@ -436,7 +436,7 @@ export default function LandingPage() {
                           size="sm"
                           onClick={() => {
                             track('browse_loan_interest', { product_id: product.product_id, bank: product.bank_name });
-                            navigate(user?.has_profile ? '/dashboard' : '/onboarding');
+                            navigate(user?.has_profile ? '/dashboard' : `/onboarding?loan_type=${product.loan_type}`);
                           }}
                           className="rounded-full bg-[#059669] hover:bg-[#047857] text-white text-xs px-4 font-body"
                           data-testid={`apply-${product.product_id}`}
@@ -447,7 +447,7 @@ export default function LandingPage() {
                           <ArrowRight className="w-3 h-3 ml-1" />
                         </Button>
                       ) : (
-                        <Link to="/register">
+                        <Link to={`/register?loan_type=${product.loan_type}`}>
                           <Button size="sm" className="rounded-full bg-[#059669] hover:bg-[#047857] text-white text-xs px-4 font-body" data-testid={`apply-${product.product_id}`}>
                             {language === 'hi' ? 'अभी अप्लाई करें' : 'Apply Now'}
                             <ArrowRight className="w-3 h-3 ml-1" />
