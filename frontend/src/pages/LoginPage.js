@@ -109,10 +109,10 @@ export default function LoginPage() {
 
         <Card className="rounded-2xl border border-black/5 shadow-[0_8px_32px_rgba(0,0,0,0.06)] bg-white/90 dark:bg-[hsl(240,6%,9%)]/90 backdrop-blur-md">
           <CardHeader className="text-center pb-2">
-            <div className="flex items-center justify-center gap-2.5 mb-3">
+            <a href="/" className="flex items-center justify-center gap-2.5 mb-3 cursor-pointer" data-testid="logo-home-link">
               <img src="https://static.prod-images.emergentagent.com/jobs/46236293-45eb-486f-8de9-3cfd3f7e2526/images/251ac3f41bd806cd53ef74f0a949d1a3be51ac19219729fbf89fb0dba4f12b85.png" alt="Rinkosh" className="w-8 h-8 object-contain" />
               <span className="font-heading font-bold text-xl text-[#0A0A0A] tracking-tight">Rinkosh</span>
-            </div>
+            </a>
             <CardTitle className="font-heading text-2xl tracking-tight">{t.welcomeBack}</CardTitle>
             <CardDescription className="font-body">{t.signInToAccount}</CardDescription>
           </CardHeader>

@@ -56,10 +56,10 @@ export default function RegisterPage() {
 
         <Card className="rounded-2xl border border-black/5 shadow-[0_4px_24px_rgba(0,0,0,0.04)] bg-white/80 backdrop-blur-sm">
           <CardHeader className="text-center pb-2">
-            <div className="flex items-center justify-center gap-2 mb-2">
+            <a href="/" className="flex items-center justify-center gap-2 mb-2 cursor-pointer" data-testid="logo-home-link">
               <img src="https://static.prod-images.emergentagent.com/jobs/46236293-45eb-486f-8de9-3cfd3f7e2526/images/251ac3f41bd806cd53ef74f0a949d1a3be51ac19219729fbf89fb0dba4f12b85.png" alt="Rinkosh" className="w-7 h-7 object-contain" />
               <span className="font-heading font-bold text-xl text-[#0A0A0A] tracking-tight">Rinkosh</span>
-            </div>
+            </a>
             <CardTitle className="font-heading text-2xl tracking-tight">Create account</CardTitle>
             <CardDescription className="font-body">Start finding the best loans</CardDescription>
           </CardHeader>

@@ -159,10 +159,10 @@ export default function LandingPage() {
       {/* Navbar */}
       <nav className="fixed top-0 w-full z-50 glass-nav" data-testid="landing-navbar">
         <div className="max-w-7xl mx-auto px-6 lg:px-8 flex items-center justify-between h-16">
-          <div className="flex items-center gap-2.5">
+          <a href="/" className="flex items-center gap-2.5 cursor-pointer" data-testid="logo-home-link">
             <img src="https://static.prod-images.emergentagent.com/jobs/46236293-45eb-486f-8de9-3cfd3f7e2526/images/251ac3f41bd806cd53ef74f0a949d1a3be51ac19219729fbf89fb0dba4f12b85.png" alt="Rinkosh" className="w-9 h-9 object-contain" />
             <span className="font-heading font-bold text-xl text-[#0A0A0A] tracking-tight">Rinkosh</span>
-          </div>
+          </a>
           <div className="flex items-center gap-2">
             <div className="hidden md:block">
               <LocationPicker location={userLocation} onLocationChange={handleLocationChange} loading={locationLoading} />
