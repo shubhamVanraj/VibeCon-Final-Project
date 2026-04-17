@@ -800,12 +800,18 @@ export default function LandingPage() {
                 <a href="#browse-loans" className="block font-body text-sm text-[#4B5563] hover:text-[#059669] transition-colors">{language === 'hi' ? 'लोन ब्राउज़ करें' : 'Browse Loans'}</a>
                 <a href="#" onClick={(e) => { e.preventDefault(); document.querySelector('[data-testid="emi-calculator-section"]')?.scrollIntoView({ behavior: 'smooth' }); }} className="block font-body text-sm text-[#4B5563] hover:text-[#059669] transition-colors">{language === 'hi' ? 'EMI कैलकुलेटर' : 'EMI Calculator'}</a>
                 <a href="#" onClick={(e) => { e.preventDefault(); document.querySelector('[data-testid="our-story-section"]')?.scrollIntoView({ behavior: 'smooth' }); }} className="block font-body text-sm text-[#4B5563] hover:text-[#059669] transition-colors">{language === 'hi' ? 'हमारी कहानी' : 'Our Story'}</a>
+                <Link to="/privacy" className="block font-body text-sm text-[#4B5563] hover:text-[#059669] transition-colors" data-testid="footer-privacy-link">{language === 'hi' ? 'गोपनीयता नीति' : 'Privacy Policy'}</Link>
+                <Link to="/terms" className="block font-body text-sm text-[#4B5563] hover:text-[#059669] transition-colors" data-testid="footer-terms-link">{language === 'hi' ? 'सेवा की शर्तें' : 'Terms of Service'}</Link>
               </div>
             </div>
           </div>
           <div className="border-t border-black/5 pt-6 flex flex-col md:flex-row items-center justify-between gap-3">
             <p className="font-body text-xs text-[#9CA3AF]">&copy; 2026 Rinkosh. {language === 'hi' ? 'सर्वाधिकार सुरक्षित।' : 'All rights reserved.'}</p>
-            <p className="font-body text-xs text-[#9CA3AF]">{language === 'hi' ? 'भारत में बनाया गया' : 'Made with purpose in India'}</p>
+            <div className="flex items-center gap-4">
+              <Link to="/privacy" className="font-body text-xs text-[#9CA3AF] hover:text-[#059669] transition-colors">{language === 'hi' ? 'गोपनीयता' : 'Privacy'}</Link>
+              <Link to="/terms" className="font-body text-xs text-[#9CA3AF] hover:text-[#059669] transition-colors">{language === 'hi' ? 'शर्तें' : 'Terms'}</Link>
+              <p className="font-body text-xs text-[#9CA3AF]">{language === 'hi' ? 'भारत में बनाया गया' : 'Made with purpose in India'}</p>
+            </div>
           </div>
         </div>
       </footer>

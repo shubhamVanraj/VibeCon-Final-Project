@@ -462,3 +462,42 @@ h1, h2, h3, p, span, label, a { max-width: 100%; }
   box-shadow: 0 8px 32px rgba(5, 150, 105, 0.08), 0 2px 8px rgba(0,0,0,0.04);
   transform: translateY(-2px);
 }
+
+
+/* ========== LEGAL PAGES PROSE ========== */
+.prose-custom h2 {
+  font-family: 'Sora', sans-serif;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #0A0A0A;
+  margin-bottom: 0.5rem;
+  letter-spacing: -0.02em;
+}
+.prose-custom p {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.9rem;
+  color: #4B5563;
+  line-height: 1.75;
+}
+.prose-custom ul {
+  list-style: none;
+  padding: 0;
+}
+.prose-custom ul li {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.9rem;
+  color: #4B5563;
+  line-height: 1.75;
+  padding-left: 1.25rem;
+  position: relative;
+}
+.prose-custom ul li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.7em;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #059669;
+}
