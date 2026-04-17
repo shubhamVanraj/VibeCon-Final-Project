@@ -10,7 +10,7 @@ import { LoanCharts } from '../components/LoanCharts';
 import { LocationPicker } from '../components/LocationPicker';
 import { BankLogo } from '../lib/bankLogos';
 import { usePageView, useAnalytics } from '../lib/analytics';
-import api, { formatCurrency } from '../lib/api';
+import api, { formatCurrency, formatAmountShort } from '../lib/api';
 import { Button } from '../components/ui/button';
 import { Badge } from '../components/ui/badge';
 import { Card } from '../components/ui/card';
@@ -54,6 +54,17 @@ export default function LandingPage() {
   const [userLocation, setUserLocation] = useState(null);
   const [locationLoading, setLocationLoading] = useState(false);
   const [contactOpen, setContactOpen] = useState(false);
+  const [compareList, setCompareList] = useState([]);
+  const [compareOpen, setCompareOpen] = useState(false);
+
+  const toggleCompare = (product) => {
+    setCompareList(prev => {
+      const exists = prev.find(p => p.product_id === product.product_id);
+      if (exists) return prev.filter(p => p.product_id !== product.product_id);
+      if (prev.length >= 4) return prev;
+      return [...prev, product];
+    });
+  };
 
   // Scroll reveal for sections
   useEffect(() => {
@@ -397,6 +408,19 @@ export default function LandingPage() {
                   <Card key={product.product_id} className="rounded-2xl border border-black/5 p-5 hover:shadow-lg hover:border-[#059669]/20 transition-all duration-300 group loan-card" data-testid={`product-card-${product.product_id}`}>
                     <div className="flex items-start justify-between mb-4">
                       <div className="flex items-center gap-3">
+                        <button
+                          onClick={(e) => { e.stopPropagation(); toggleCompare(product); }}
+                          className={`w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 transition-all ${
+                            compareList.find(p => p.product_id === product.product_id)
+                              ? 'bg-[#059669] border-[#059669]'
+                              : 'border-[#D1D5DB] hover:border-[#059669]'
+                          }`}
+                          data-testid={`compare-${product.product_id}`}
+                        >
+                          {compareList.find(p => p.product_id === product.product_id) && (
+                            <CheckCircle className="w-3.5 h-3.5 text-white" />
+                          )}
+                        </button>
                         <BankLogo bankName={product.bank_name} />
                         <div>
                           <h3 className="font-heading font-semibold text-[#0A0A0A] text-sm leading-tight">{product.product_name}</h3>
@@ -832,6 +856,114 @@ export default function LandingPage() {
           </div>
         </div>
       </footer>
+
+      {/* Compare Bar */}
+      {compareList.length >= 2 && !compareOpen && (
+        <div className="fixed bottom-0 left-0 right-0 z-[997] bg-[#111827] text-white py-3 px-6 flex items-center justify-between" data-testid="compare-bar">
+          <div className="flex items-center gap-3">
+            <span className="font-body text-sm">{compareList.length} {language === 'hi' ? 'लोन चुने गए' : 'loans selected'}</span>
+            <div className="flex gap-1">
+              {compareList.map(p => (
+                <span key={p.product_id} className="font-body text-[10px] bg-white/10 rounded-full px-2 py-0.5">{p.bank_name}</span>
+              ))}
+            </div>
+          </div>
+          <div className="flex gap-2">
+            <Button size="sm" variant="ghost" onClick={() => setCompareList([])} className="text-white/60 hover:text-white text-xs">{language === 'hi' ? 'साफ करें' : 'Clear'}</Button>
+            <Button size="sm" onClick={() => setCompareOpen(true)} className="bg-[#059669] hover:bg-[#047857] text-white rounded-full px-5 text-xs font-semibold" data-testid="open-compare-btn">
+              {language === 'hi' ? 'तुलना करें' : 'Compare Now'}
+            </Button>
+          </div>
+        </div>
+      )}
+
+      {/* Compare Sheet */}
+      {compareOpen && (
+        <div className="fixed inset-0 z-[9999] bg-black/60 flex items-center justify-center p-4" onClick={() => setCompareOpen(false)} data-testid="compare-overlay">
+          <div className="bg-white w-full max-w-4xl max-h-[85vh] rounded-t-2xl md:rounded-2xl overflow-y-auto" onClick={e => e.stopPropagation()} data-testid="compare-sheet">
+            <div className="sticky top-0 bg-white border-b border-black/5 px-6 py-4 flex items-center justify-between z-10">
+              <h3 className="font-heading font-bold text-lg text-[#0A0A0A]">{language === 'hi' ? 'लोन तुलना' : 'Loan Comparison'}</h3>
+              <button onClick={() => setCompareOpen(false)} className="text-[#9CA3AF] hover:text-[#0A0A0A]"><ChevronDown className="w-5 h-5" /></button>
+            </div>
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr className="border-b border-black/5">
+                    <th className="text-left px-4 py-3 font-body text-xs text-[#9CA3AF] font-medium w-36">{language === 'hi' ? 'विशेषता' : 'Feature'}</th>
+                    {compareList.map(p => (
+                      <th key={p.product_id} className="text-center px-4 py-3 min-w-[160px]">
+                        <div className="flex flex-col items-center gap-1">
+                          <BankLogo bankName={p.bank_name} />
+                          <span className="font-heading font-semibold text-xs text-[#0A0A0A]">{p.bank_name}</span>
+                          <span className="font-body text-[10px] text-[#9CA3AF]">{p.product_name}</span>
+                        </div>
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {[
+                    { label: language === 'hi' ? 'ब्याज दर' : 'Interest Rate', key: 'interest_rate', format: v => `${v}%`, best: 'lowest' },
+                    { label: language === 'hi' ? 'प्रोसेसिंग फीस' : 'Processing Fee', key: 'processing_fee_pct', format: v => v === 0 ? 'Zero' : `${v}%`, best: 'lowest' },
+                    { label: language === 'hi' ? 'अधिकतम राशि' : 'Max Amount', key: 'max_amount', format: v => `Rs.${formatAmountShort(v)}`, best: 'highest' },
+                    { label: language === 'hi' ? 'अधिकतम अवधि' : 'Max Tenure', key: 'max_tenure_months', format: v => `${Math.round(v/12)} yr`, best: 'highest' },
+                    { label: language === 'hi' ? 'फोरक्लोज़र' : 'Foreclosure', key: 'foreclosure_charge_pct', format: v => v === 0 ? 'Free' : `${v}%`, best: 'lowest' },
+                    { label: language === 'hi' ? 'न्यूनतम आय' : 'Min Income', key: 'min_income', format: v => v === 0 ? 'None' : `Rs.${formatAmountShort(v)}`, best: 'lowest' },
+                    { label: language === 'hi' ? 'न्यूनतम CIBIL' : 'Min CIBIL', key: 'min_credit_score', format: v => v === 0 ? 'None' : String(v), best: 'lowest' },
+                  ].map((metric) => {
+                    const values = compareList.map(p => p[metric.key]);
+                    const bestVal = metric.best === 'lowest' ? Math.min(...values) : Math.max(...values);
+                    return (
+                      <tr key={metric.key} className="border-b border-black/5 hover:bg-[#F9F9FB]">
+                        <td className="px-4 py-3 font-body text-xs text-[#4B5563] font-medium">{metric.label}</td>
+                        {compareList.map(p => {
+                          const val = p[metric.key];
+                          const isBest = val === bestVal && compareList.length > 1;
+                          return (
+                            <td key={p.product_id} className="text-center px-4 py-3">
+                              <span className={`font-heading font-bold text-sm ${isBest ? 'text-[#059669]' : 'text-[#0A0A0A]'}`}>
+                                {metric.format(val)}
+                              </span>
+                              {isBest && <span className="block font-body text-[9px] text-[#059669]">Best</span>}
+                            </td>
+                          );
+                        })}
+                      </tr>
+                    );
+                  })}
+                  <tr className="border-b border-black/5">
+                    <td className="px-4 py-3 font-body text-xs text-[#4B5563] font-medium">{language === 'hi' ? 'विशेषताएं' : 'Features'}</td>
+                    {compareList.map(p => (
+                      <td key={p.product_id} className="text-center px-4 py-3">
+                        <div className="flex flex-wrap justify-center gap-1">
+                          {(p.features || []).map((f, i) => (
+                            <span key={i} className="font-body text-[9px] bg-[#F3F4F6] text-[#4B5563] rounded-full px-2 py-0.5">{f}</span>
+                          ))}
+                        </div>
+                      </td>
+                    ))}
+                  </tr>
+                  {compareList.some(p => p.corporate_tieups?.length) && (
+                    <tr className="border-b border-black/5">
+                      <td className="px-4 py-3 font-body text-xs text-[#4B5563] font-medium">{language === 'hi' ? 'कॉर्पोरेट टाईअप' : 'Corporate Tie-ups'}</td>
+                      {compareList.map(p => (
+                        <td key={p.product_id} className="text-center px-4 py-3">
+                          <div className="flex flex-wrap justify-center gap-1">
+                            {(p.corporate_tieups || []).map((t, i) => (
+                              <span key={i} className="font-body text-[9px] bg-[#059669]/10 text-[#059669] rounded-full px-2 py-0.5 font-bold uppercase">{t}</span>
+                            ))}
+                            {(!p.corporate_tieups || !p.corporate_tieups.length) && <span className="font-body text-[9px] text-[#9CA3AF]">—</span>}
+                          </div>
+                        </td>
+                      ))}
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Chat Widget */}
       <ChatWidget />
