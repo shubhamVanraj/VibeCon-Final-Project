@@ -4,11 +4,20 @@
 .font-heading { font-family: 'Sora', sans-serif; }
 .font-body { font-family: 'DM Sans', sans-serif; }
 
+/* ========== BASE STYLES ========== */
+body {
+  background: #FDFBF7;
+  color: #0F172A;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
 /* ========== GRADIENT & SHADE UTILITIES ========== */
 
 /* Hero gradient glow */
 .hero-glow {
   position: relative;
+  background: linear-gradient(180deg, #FDFBF7 0%, #F0FDF4 40%, #FDFBF7 100%);
 }
 .hero-glow::before {
   content: '';
@@ -27,8 +36,8 @@
   background:
     radial-gradient(ellipse at 20% 50%, rgba(5,150,105,0.04) 0%, transparent 50%),
     radial-gradient(ellipse at 80% 20%, rgba(59,130,246,0.03) 0%, transparent 50%),
-    radial-gradient(ellipse at 50% 80%, rgba(245,158,11,0.03) 0%, transparent 50%),
-    #F9F9FB;
+    radial-gradient(ellipse at 50% 80%, rgba(245,158,11,0.02) 0%, transparent 50%),
+    #FDFBF7;
 }
 
 .bg-mesh-auth {
@@ -52,14 +61,16 @@
 
 /* Feature card shades */
 .feature-card-shade {
-  background: linear-gradient(180deg, #ffffff 0%, #fafbfc 100%);
-  border: 1px solid rgba(0,0,0,0.04);
-  box-shadow: 0 1px 3px rgba(0,0,0,0.02), 0 8px 24px rgba(0,0,0,0.03);
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  box-shadow: none;
+  transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
 }
 .feature-card-shade:hover {
-  background: linear-gradient(180deg, #ffffff 0%, #f5f7fa 100%);
-  box-shadow: 0 4px 12px rgba(5,150,105,0.08), 0 12px 36px rgba(0,0,0,0.06);
-  border-color: rgba(5,150,105,0.12);
+  background: #FFFFFF;
+  box-shadow: 0 4px 20px rgba(5,150,105,0.08), 0 1px 3px rgba(0,0,0,0.04);
+  border-color: rgba(5,150,105,0.2);
+  transform: translateY(-2px);
 }
 
 /* Button glow */
@@ -140,20 +151,22 @@
 
 /* Glassmorphism */
 .glass-nav {
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  background: rgba(255, 255, 255, 0.85);
-  border-bottom: 1px solid rgba(5,150,105,0.06);
-  box-shadow: 0 1px 8px rgba(0,0,0,0.03);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  background: rgba(253, 251, 247, 0.78);
+  border-bottom: 1px solid rgba(226,232,240,0.6);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.02);
 }
 
 /* Card hover */
 .loan-card {
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  border: 1px solid #E2E8F0;
 }
 .loan-card:hover {
   transform: translateY(-3px);
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 8px 30px rgba(5,150,105,0.1), 0 2px 6px rgba(0,0,0,0.04);
+  border-color: rgba(5,150,105,0.25);
 }
 
 /* Scrollbar */

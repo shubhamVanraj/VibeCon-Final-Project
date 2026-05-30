@@ -170,7 +170,7 @@ export default function LandingPage() {
   };
 
   return (
-    <div className="min-h-screen bg-white pb-16 md:pb-0" data-testid="landing-page">
+    <div className="min-h-screen bg-[#FDFBF7] pb-16 md:pb-0" data-testid="landing-page">
       {/* Navbar */}
       <nav className="fixed top-0 w-full z-50 glass-nav" data-testid="landing-navbar">
         <div className="max-w-7xl mx-auto px-6 lg:px-8 flex items-center justify-between h-16">

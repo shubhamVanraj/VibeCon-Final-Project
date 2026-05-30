@@ -23,7 +23,7 @@ import { Checkbox } from '../components/ui/checkbox';
 import {
   Shield, LogOut, Send, Mic, MicOff, TrendingDown,
   ArrowRight, Ban, CreditCard, Target, Lightbulb, CheckCircle,
-  XCircle, Sparkles, ChevronRight, Loader2, Settings, Scale
+  XCircle, Sparkles, ChevronRight, Loader2, Settings, Scale, Trash2
 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -65,6 +65,8 @@ export default function DashboardPage() {
   const [appFormLead, setAppFormLead] = useState(null);
   const [appForm, setAppForm] = useState({ full_name: '', phone: '', monthly_income: '', loan_amount_requested: '', loan_purpose: '', residence_type: 'owned', years_at_current_job: '' });
   const [appLoading, setAppLoading] = useState(false);
+  const [deleteConfirm, setDeleteConfirm] = useState(false);
+  const [deleteLoading, setDeleteLoading] = useState(false);
   const mediaRecorderRef = useRef(null);
   const chunksRef = useRef([]);
   const chatEndRef = useRef(null);
@@ -214,6 +216,9 @@ export default function DashboardPage() {
             )}
             <Button variant="ghost" size="sm" onClick={() => setProfileOpen(true)} className="text-[#4B5563] hover:text-[#059669]" data-testid="edit-profile-button">
               <Settings className="w-4 h-4" />
+            </Button>
+            <Button variant="ghost" size="sm" onClick={() => setDeleteConfirm(true)} className="text-[#9CA3AF] hover:text-red-500 hidden md:flex" data-testid="delete-account-nav" title={language === 'hi' ? 'खाता हटाएं' : 'Delete Account'}>
+              <Trash2 className="w-4 h-4" />
             </Button>
             <span className="font-body text-sm text-[#4B5563] hidden md:inline">{user?.name}</span>
             <Button variant="ghost" size="sm" onClick={handleLogout} className="text-[#4B5563] hover:text-red-500" data-testid="logout-button">
@@ -645,6 +650,47 @@ export default function DashboardPage() {
                 data-testid="submit-application-btn"
               >
                 {appLoading ? '...' : (language === 'hi' ? 'आवेदन जमा करें' : 'Submit Application')}
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Account Confirmation */}
+      {deleteConfirm && (
+        <div className="fixed inset-0 z-[9999] bg-black/60 flex items-center justify-center p-4" onClick={() => setDeleteConfirm(false)}>
+          <div className="bg-white w-full max-w-md rounded-2xl p-8" onClick={e => e.stopPropagation()} data-testid="delete-account-dialog">
+            <div className="w-14 h-14 rounded-2xl bg-red-50 flex items-center justify-center mx-auto mb-5">
+              <Trash2 className="w-7 h-7 text-red-500" />
+            </div>
+            <h3 className="font-heading font-bold text-xl text-[#0A0A0A] text-center mb-2">
+              {language === 'hi' ? 'खाता हटाएं?' : 'Delete Your Account?'}
+            </h3>
+            <p className="font-body text-sm text-[#4B5563] text-center mb-6 leading-relaxed">
+              {language === 'hi'
+                ? 'यह कार्रवाई अपरिवर्तनीय है। आपका सभी डेटा — प्रोफाइल, लीड, आवेदन, और एनालिटिक्स — स्थायी रूप से हटा दिया जाएगा। DPDP Act 2023 के अनुसार, इसे पूर्ववत नहीं किया जा सकता।'
+                : 'This action is irreversible. All your data — profile, leads, applications, and analytics — will be permanently deleted. As per DPDP Act 2023, this cannot be undone.'}
+            </p>
+            <div className="flex gap-3">
+              <Button variant="outline" onClick={() => setDeleteConfirm(false)} className="flex-1 rounded-full font-body" data-testid="cancel-delete-btn">
+                {language === 'hi' ? 'रद्द करें' : 'Cancel'}
+              </Button>
+              <Button
+                onClick={async () => {
+                  setDeleteLoading(true);
+                  try {
+                    await api.delete('/auth/delete-account');
+                    toast.success(language === 'hi' ? 'खाता सफलतापूर्वक हटाया गया' : 'Account deleted successfully');
+                    window.location.href = '/';
+                  } catch (err) {
+                    toast.error(err.response?.data?.detail || 'Failed to delete');
+                  } finally { setDeleteLoading(false); }
+                }}
+                disabled={deleteLoading}
+                className="flex-1 rounded-full bg-red-500 hover:bg-red-600 text-white font-body font-semibold"
+                data-testid="confirm-delete-btn"
+              >
+                {deleteLoading ? '...' : (language === 'hi' ? 'हां, खाता हटाएं' : 'Yes, Delete Account')}
               </Button>
             </div>
           </div>

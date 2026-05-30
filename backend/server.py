@@ -291,6 +291,29 @@ async def logout(response: Response):
     return {"message": "Logged out"}
 
 
+@api_router.delete("/auth/delete-account")
+async def delete_account(request: Request, response: Response):
+    user = await get_current_user(request)
+    uid = user["user_id"]
+
+    # Delete all user data (DPDP Act compliance)
+    await db.users.delete_one({"user_id": uid})
+    await db.user_profiles.delete_one({"user_id": uid})
+    await db.leads.delete_many({"user_id": uid})
+    await db.loan_applications.delete_many({"user_id": uid})
+    await db.analytics_events.delete_many({"user_id": uid})
+    await db.login_otps.delete_many({"email": user.get("email")})
+    await db.password_reset_tokens.delete_many({"email": user.get("email")})
+
+    await log_event(db, "account_deleted", {"user_id": uid, "email": user.get("email")})
+
+    response.delete_cookie("access_token", path="/")
+    response.delete_cookie("refresh_token", path="/")
+    return {"message": "Account and all data deleted successfully"}
+
+
+
+
 @api_router.get("/auth/me")
 async def get_me(request: Request):
     user = await get_current_user(request)
