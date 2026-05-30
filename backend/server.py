@@ -5,11 +5,12 @@ ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
 
 from fastapi import FastAPI, APIRouter, HTTPException, Request, Response, UploadFile, File
+from fastapi.responses import JSONResponse
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
 import os
 import logging
-from pydantic import BaseModel
+from pydantic import BaseModel, Field, validator
 from typing import List, Optional
 import uuid
 from datetime import datetime, timezone, timedelta
@@ -18,6 +19,9 @@ import jwt as pyjwt
 import httpx
 import math
 import tempfile
+from collections import defaultdict
+import time
+import re
 
 # MongoDB connection
 mongo_url = os.environ['MONGO_URL']
@@ -34,6 +38,116 @@ api_router = APIRouter(prefix="/api")
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
+
+# ==================== SECURITY: RATE LIMITER ====================
+class RateLimiter:
+    """In-memory rate limiter with sliding window."""
+    def __init__(self):
+        self.requests = defaultdict(list)
+
+    def check(self, key: str, max_requests: int, window_seconds: int) -> tuple:
+        now = time.time()
+        self.requests[key] = [t for t in self.requests[key] if now - t < window_seconds]
+        if len(self.requests[key]) >= max_requests:
+            retry_after = int(window_seconds - (now - self.requests[key][0]))
+            return False, max(1, retry_after)
+        self.requests[key].append(now)
+        return True, 0
+
+rate_limiter = RateLimiter()
+
+# Rate limit configs: (max_requests, window_seconds)
+RATE_LIMITS = {
+    "login": (5, 900),          # 5 per 15 min
+    "register": (10, 3600),     # 10 per hour
+    "otp": (5, 600),            # 5 per 10 min
+    "api_default": (60, 60),    # 60 per min
+    "export": (2, 86400),       # 2 per day
+    "chat": (20, 60),           # 20 per min
+}
+
+# ==================== SECURITY: INPUT SANITIZATION ====================
+DANGEROUS_PATTERNS = re.compile(
+    r"(\b(SELECT|INSERT|UPDATE|DELETE|DROP|UNION|ALTER|CREATE|EXEC|EXECUTE)\b.*\b(FROM|INTO|TABLE|WHERE|SET)\b)|"
+    r"(<script[\s>]|javascript:|on\w+\s*=)",
+    re.IGNORECASE
+)
+
+def sanitize_input(value: str) -> str:
+    if not isinstance(value, str):
+        return value
+    if len(value) > 10000:
+        raise HTTPException(status_code=400, detail="Input too long")
+    if DANGEROUS_PATTERNS.search(value):
+        raise HTTPException(status_code=400, detail="Invalid input")
+    return value.strip()
+
+# ==================== SECURITY: AUDIT LOGGER ====================
+async def audit_log(action: str, user_id: str = None, record_type: str = None,
+                    record_id: str = None, ip: str = None, details: dict = None):
+    """Append-only audit log. No update/delete operations on this collection."""
+    await db.audit_logs.insert_one({
+        "audit_id": f"aud_{uuid.uuid4().hex[:12]}",
+        "action": action,
+        "user_id": user_id,
+        "record_type": record_type,
+        "record_id": record_id,
+        "ip": ip,
+        "details": details or {},
+        "timestamp": datetime.now(timezone.utc).isoformat(),
+    })
+
+# ==================== MIDDLEWARE ====================
+@app.middleware("http")
+async def security_middleware(request: Request, call_next):
+    # Rate limit all API requests by IP
+    if request.url.path.startswith("/api"):
+        ip = request.headers.get("x-forwarded-for", request.client.host if request.client else "unknown").split(",")[0].strip()
+
+        # Skip health check
+        if request.url.path == "/api/health":
+            return await call_next(request)
+
+        # Apply endpoint-specific rate limits
+        limit_key = "api_default"
+        if "/auth/login" in request.url.path:
+            limit_key = "login"
+        elif "/auth/register" in request.url.path or "/bank/register" in request.url.path:
+            limit_key = "register"
+        elif "/auth/otp" in request.url.path or "/auth/login-otp" in request.url.path:
+            limit_key = "otp"
+        elif "/ai/chat" in request.url.path:
+            limit_key = "chat"
+        elif "/export" in request.url.path:
+            limit_key = "export"
+
+        max_req, window = RATE_LIMITS[limit_key]
+        allowed, retry_after = rate_limiter.check(f"{ip}:{limit_key}", max_req, window)
+        if not allowed:
+            return JSONResponse(
+                status_code=429,
+                content={"detail": "Too many requests. Please try again later."},
+                headers={"Retry-After": str(retry_after)}
+            )
+
+    response = await call_next(request)
+
+    # Security headers
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    response.headers["X-Frame-Options"] = "DENY"
+    response.headers["X-XSS-Protection"] = "1; mode=block"
+    response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+
+    return response
+
+# Global exception handler — never expose stack traces
+@app.exception_handler(Exception)
+async def global_exception_handler(request: Request, exc: Exception):
+    if isinstance(exc, HTTPException):
+        return JSONResponse(status_code=exc.status_code, content={"detail": exc.detail})
+    logger.error(f"Unhandled error on {request.url.path}: {type(exc).__name__}")
+    return JSONResponse(status_code=500, content={"detail": "An unexpected error occurred. Please try again."})
+
 
 
 # ==================== MODELS ====================
@@ -232,9 +346,9 @@ async def login(data: UserLogin, request: Request, response: Response):
     ip = request.client.host if request.client else "unknown"
     identifier = f"{ip}:{email}"
 
-    # Brute force check - 10 attempts, 5 min lockout
+    # Brute force check - 5 attempts, 15 min lockout
     attempt = await db.login_attempts.find_one({"identifier": identifier}, {"_id": 0})
-    if attempt and attempt.get("attempts", 0) >= 10:
+    if attempt and attempt.get("attempts", 0) >= 5:
         locked_until = attempt.get("locked_until")
         if locked_until:
             if isinstance(locked_until, str):
@@ -243,7 +357,7 @@ async def login(data: UserLogin, request: Request, response: Response):
                 locked_until = locked_until.replace(tzinfo=timezone.utc)
             if locked_until > datetime.now(timezone.utc):
                 await log_event(db, "login_blocked", {"email": email, "ip": ip, "reason": "brute_force"})
-                raise HTTPException(status_code=429, detail="Too many attempts. Please wait 5 minutes.")
+                raise HTTPException(status_code=429, detail="Too many attempts. Please wait 15 minutes.")
         # Lockout expired, clear it
         await db.login_attempts.delete_one({"identifier": identifier})
 
@@ -276,6 +390,7 @@ async def login(data: UserLogin, request: Request, response: Response):
     set_auth_cookies(response, access_token, refresh_token)
 
     await log_event(db, "login_success", {"email": email, "user_id": user["user_id"], "method": "password"})
+    await audit_log("login_success", user["user_id"], "user", user["user_id"], ip)
 
     return {
         "user_id": user["user_id"], "email": user["email"], "name": user["name"],
@@ -306,10 +421,75 @@ async def delete_account(request: Request, response: Response):
     await db.password_reset_tokens.delete_many({"email": user.get("email")})
 
     await log_event(db, "account_deleted", {"user_id": uid, "email": user.get("email")})
+    await audit_log("account_deleted", uid, "user", uid)
 
     response.delete_cookie("access_token", path="/")
     response.delete_cookie("refresh_token", path="/")
     return {"message": "Account and all data deleted successfully"}
+
+
+
+# ==================== CONSENT & DATA EXPORT (DPDP/GDPR) ====================
+
+@api_router.post("/consent")
+async def store_consent(request: Request):
+    body = await request.json()
+    ip = request.headers.get("x-forwarded-for", request.client.host if request.client else "unknown").split(",")[0].strip()
+    consent_doc = {
+        "consent_id": f"con_{uuid.uuid4().hex[:12]}",
+        "user_id": body.get("user_id"),
+        "consent_type": body.get("type", "cookies_analytics"),
+        "granted": body.get("granted", True),
+        "ip": ip,
+        "user_agent": request.headers.get("user-agent", "")[:200],
+        "timestamp": datetime.now(timezone.utc).isoformat(),
+    }
+    await db.consents.insert_one(consent_doc)
+    return {"status": "ok"}
+
+@api_router.get("/user/export-data")
+async def export_user_data(request: Request):
+    """DPDP Act: User can export all their data as JSON."""
+    user = await get_current_user(request)
+    uid = user["user_id"]
+
+    # Rate limit: 2 exports per day
+    ip = request.headers.get("x-forwarded-for", request.client.host if request.client else "unknown").split(",")[0].strip()
+    allowed, retry_after = rate_limiter.check(f"{uid}:export", 2, 86400)
+    if not allowed:
+        raise HTTPException(status_code=429, detail="Export limit reached. Try again tomorrow.", headers={"Retry-After": str(retry_after)})
+
+    profile = await db.user_profiles.find_one({"user_id": uid}, {"_id": 0})
+    leads = await db.leads.find({"user_id": uid}, {"_id": 0}).to_list(100)
+    applications = await db.loan_applications.find({"user_id": uid}, {"_id": 0}).to_list(100)
+    consents = await db.consents.find({"user_id": uid}, {"_id": 0}).to_list(100)
+
+    await audit_log("data_export", uid, "user", uid, ip)
+
+    return {
+        "export_date": datetime.now(timezone.utc).isoformat(),
+        "user": {k: v for k, v in user.items() if k != "password_hash"},
+        "profile": profile,
+        "leads": leads,
+        "applications": applications,
+        "consents": consents,
+    }
+
+# ==================== AUDIT LOG ADMIN ====================
+
+@api_router.get("/admin/audit-logs")
+async def get_audit_logs(request: Request, limit: int = 50, action: Optional[str] = None):
+    user = await get_current_user(request)
+    if user.get("role") != "admin":
+        raise HTTPException(status_code=403, detail="Admin access required")
+    query = {}
+    if action:
+        query["action"] = action
+    # Cap at 100 records per request (scraping protection)
+    safe_limit = min(limit, 100)
+    logs = await db.audit_logs.find(query, {"_id": 0}).sort("timestamp", -1).to_list(safe_limit)
+    total = await db.audit_logs.count_documents(query)
+    return {"logs": logs, "total": total, "limit": safe_limit}
 
 
 
@@ -406,7 +586,7 @@ async def login_otp_request(request: Request):
         "expires_at": (datetime.now(timezone.utc) + timedelta(minutes=10)).isoformat(),
         "used": False, "created_at": datetime.now(timezone.utc).isoformat()
     })
-    logger.info(f"Login OTP for {identifier}: {otp}")
+    logger.info(f"Login OTP generated for user_hash:{hash(identifier) % 10000}")
     return {"message": "If the account exists, an OTP has been sent.", "debug_otp": otp}
 
 
@@ -471,7 +651,7 @@ async def forgot_password(request: Request):
         "used": False,
         "created_at": datetime.now(timezone.utc).isoformat()
     })
-    logger.info(f"Password reset OTP for {email}: {otp}")
+    logger.info(f"Password reset OTP generated for user_hash:{hash(email) % 10000}")
     return {"message": "If the email exists, a reset code has been sent.", "debug_otp": otp}
 
 
@@ -1564,7 +1744,7 @@ async def seed_admin():
             "role": "admin", "language": "en",
             "created_at": datetime.now(timezone.utc).isoformat()
         })
-        logger.info(f"Admin seeded: {admin_email}")
+        logger.info("Admin account seeded")
     elif not verify_password(admin_password, existing.get("password_hash", "")):
         await db.users.update_one({"email": admin_email}, {"$set": {"password_hash": hash_password(admin_password)}})
         logger.info("Admin password updated")

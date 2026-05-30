@@ -13,6 +13,7 @@ import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
 import TermsOfServicePage from './pages/TermsOfServicePage';
 import BankOnboardingPage from './pages/BankOnboardingPage';
 import BankDashboardPage from './pages/BankDashboardPage';
+import { ConsentBanner } from './components/ConsentBanner';
 import { LanguageProvider } from './contexts/LanguageContext';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { StickyCta } from './components/StickyCta';
@@ -70,6 +71,7 @@ function App() {
           <AuthProvider>
             <AppRouter />
             <StickyCta />
+            <ConsentBanner />
             <Toaster position="top-right" richColors />
           </AuthProvider>
         </LanguageProvider>
