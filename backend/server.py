@@ -80,6 +80,49 @@ class PublicChatRequest(BaseModel):
     language: Optional[str] = "en"
     session_id: Optional[str] = None
 
+class BankRegister(BaseModel):
+    bank_name: str
+    contact_person: str
+    email: str
+    password: str
+    phone: Optional[str] = None
+    loan_types_offered: List[str] = []
+    branch_locations: List[str] = []
+    corporate_tieups: List[str] = []
+    min_rate: Optional[float] = None
+    max_rate: Optional[float] = None
+    commission_pct: Optional[float] = 1.0
+    description: Optional[str] = None
+
+class BankProductCreate(BaseModel):
+    product_name: str
+    loan_type: str
+    interest_rate: float
+    processing_fee_pct: float = 1.0
+    max_amount: float = 5000000
+    min_amount: float = 50000
+    max_tenure_months: int = 60
+    min_tenure_months: int = 12
+    foreclosure_charge_pct: float = 0
+    min_income: float = 0
+    min_credit_score: int = 0
+    features: List[str] = []
+    available_regions: List[str] = ["pan_india"]
+    corporate_tieups: List[str] = []
+
+class LoanApplicationCreate(BaseModel):
+    lead_id: str
+    full_name: str
+    phone: str
+    pan_number: Optional[str] = None
+    employment_details: Optional[str] = None
+    monthly_income: Optional[float] = None
+    loan_amount_requested: Optional[float] = None
+    loan_purpose: Optional[str] = None
+    residence_type: Optional[str] = None  # owned, rented, family
+    years_at_current_job: Optional[int] = None
+
+
 
 
 # ==================== AUTH HELPERS ====================
@@ -819,6 +862,244 @@ async def update_lead(lead_id: str, request: Request):
         )
     updated = await db.leads.find_one({"lead_id": lead_id}, {"_id": 0})
     return updated
+
+
+
+# ==================== BANK ONBOARDING & PORTAL ====================
+
+@api_router.post("/bank/register")
+async def register_bank(data: BankRegister, response: Response):
+    email = data.email.lower().strip()
+    existing = await db.users.find_one({"email": email})
+    if existing:
+        raise HTTPException(status_code=400, detail="Email already registered")
+
+    user_id = f"bank_{uuid.uuid4().hex[:12]}"
+    now = datetime.now(timezone.utc).isoformat()
+
+    # Create bank user account
+    await db.users.insert_one({
+        "user_id": user_id, "email": email,
+        "password_hash": hash_password(data.password),
+        "name": data.contact_person, "picture": None,
+        "auth_type": "email", "role": "bank",
+        "bank_name": data.bank_name, "language": "en",
+        "created_at": now
+    })
+
+    # Create bank registration details
+    bank_doc = {
+        "bank_id": user_id, "bank_name": data.bank_name,
+        "contact_person": data.contact_person, "email": email,
+        "phone": data.phone, "loan_types_offered": data.loan_types_offered,
+        "branch_locations": data.branch_locations,
+        "corporate_tieups": data.corporate_tieups,
+        "min_rate": data.min_rate, "max_rate": data.max_rate,
+        "commission_pct": data.commission_pct,
+        "description": data.description,
+        "status": "active", "created_at": now,
+        "products_count": 0
+    }
+    await db.bank_registrations.insert_one(bank_doc)
+
+    access_token = create_access_token(user_id, email)
+    refresh_token = create_refresh_token(user_id)
+    set_auth_cookies(response, access_token, refresh_token)
+
+    await log_event(db, "bank_registered", {"bank_name": data.bank_name, "bank_id": user_id})
+
+    return {"bank_id": user_id, "bank_name": data.bank_name, "email": email, "role": "bank"}
+
+
+@api_router.post("/bank/products")
+async def bank_add_product(data: BankProductCreate, request: Request):
+    user = await get_current_user(request)
+    if user.get("role") not in ("bank", "admin"):
+        raise HTTPException(status_code=403, detail="Bank access required")
+
+    bank_name = user.get("bank_name", "Unknown Bank")
+    bank_reg = await db.bank_registrations.find_one({"bank_id": user["user_id"]}, {"_id": 0})
+    if bank_reg:
+        bank_name = bank_reg.get("bank_name", bank_name)
+
+    product_id = f"{bank_name.lower().replace(' ', '_')}_{data.loan_type}_{uuid.uuid4().hex[:6]}"
+    now = datetime.now(timezone.utc).isoformat()
+
+    product_doc = {
+        "product_id": product_id, "bank_name": bank_name, "bank_id": user["user_id"],
+        "product_name": data.product_name, "loan_type": data.loan_type,
+        "interest_rate": data.interest_rate, "processing_fee_pct": data.processing_fee_pct,
+        "max_amount": data.max_amount, "min_amount": data.min_amount,
+        "max_tenure_months": data.max_tenure_months, "min_tenure_months": data.min_tenure_months,
+        "foreclosure_charge_pct": data.foreclosure_charge_pct,
+        "min_income": data.min_income, "min_credit_score": data.min_credit_score,
+        "features": data.features, "available_regions": data.available_regions,
+        "corporate_tieups": data.corporate_tieups,
+        "is_active": True, "created_at": now, "source": "bank_portal"
+    }
+    await db.loan_products.insert_one(product_doc)
+
+    # Update products count
+    count = await db.loan_products.count_documents({"bank_id": user["user_id"], "is_active": True})
+    await db.bank_registrations.update_one({"bank_id": user["user_id"]}, {"$set": {"products_count": count}})
+
+    return {"product_id": product_id, "message": "Product added successfully"}
+
+
+@api_router.get("/bank/products")
+async def bank_get_products(request: Request):
+    user = await get_current_user(request)
+    if user.get("role") not in ("bank", "admin"):
+        raise HTTPException(status_code=403, detail="Bank access required")
+
+    if user.get("role") == "admin":
+        products = await db.loan_products.find({"source": "bank_portal"}, {"_id": 0}).to_list(200)
+    else:
+        products = await db.loan_products.find({"bank_id": user["user_id"]}, {"_id": 0}).to_list(200)
+    return products
+
+
+@api_router.put("/bank/products/{product_id}")
+async def bank_update_product(product_id: str, request: Request):
+    user = await get_current_user(request)
+    if user.get("role") not in ("bank", "admin"):
+        raise HTTPException(status_code=403, detail="Bank access required")
+
+    body = await request.json()
+    query = {"product_id": product_id}
+    if user.get("role") == "bank":
+        query["bank_id"] = user["user_id"]
+
+    product = await db.loan_products.find_one(query, {"_id": 0})
+    if not product:
+        raise HTTPException(status_code=404, detail="Product not found")
+
+    allowed = {"interest_rate", "processing_fee_pct", "max_amount", "min_amount", "max_tenure_months",
+               "min_tenure_months", "foreclosure_charge_pct", "min_income", "min_credit_score",
+               "features", "available_regions", "corporate_tieups", "is_active", "product_name"}
+    updates = {k: v for k, v in body.items() if k in allowed}
+    if updates:
+        updates["updated_at"] = datetime.now(timezone.utc).isoformat()
+        await db.loan_products.update_one({"product_id": product_id}, {"$set": updates})
+
+    updated = await db.loan_products.find_one({"product_id": product_id}, {"_id": 0})
+    return updated
+
+
+@api_router.get("/bank/dashboard")
+async def bank_dashboard(request: Request):
+    user = await get_current_user(request)
+    if user.get("role") not in ("bank", "admin"):
+        raise HTTPException(status_code=403, detail="Bank access required")
+
+    bank_name = user.get("bank_name", "")
+    if user.get("role") == "bank":
+        bank_reg = await db.bank_registrations.find_one({"bank_id": user["user_id"]}, {"_id": 0})
+        if bank_reg:
+            bank_name = bank_reg.get("bank_name", bank_name)
+
+    # Bank's leads
+    lead_query = {"bank_name": bank_name} if user.get("role") == "bank" else {}
+    leads = await db.leads.find(lead_query, {"_id": 0}).to_list(500)
+
+    # Funnel counts
+    funnel = {"interested": 0, "applied": 0, "approved": 0, "disbursed": 0, "revoked": 0}
+    total_amount = 0
+    regions = {}
+    for lead in leads:
+        s = lead.get("status", "interested")
+        funnel[s] = funnel.get(s, 0) + 1
+        # Get user profile for region/amount data
+        profile = await db.user_profiles.find_one({"user_id": lead.get("user_id")}, {"_id": 0})
+        if profile:
+            total_amount += profile.get("desired_amount", 0)
+            state = profile.get("state", "Unknown")
+            if state:
+                regions[state] = regions.get(state, 0) + 1
+
+    total_leads = len(leads)
+    conversion = {
+        "interested_to_applied": round((funnel["applied"] / funnel["interested"] * 100) if funnel["interested"] > 0 else 0, 1),
+        "applied_to_approved": round((funnel["approved"] / funnel["applied"] * 100) if funnel["applied"] > 0 else 0, 1),
+        "approved_to_disbursed": round((funnel["disbursed"] / funnel["approved"] * 100) if funnel["approved"] > 0 else 0, 1),
+        "overall": round((funnel["disbursed"] / total_leads * 100) if total_leads > 0 else 0, 1),
+    }
+
+    # Platform averages (anonymized)
+    all_leads = await db.leads.count_documents({})
+    all_disbursed = await db.leads.count_documents({"status": "disbursed"})
+    platform_avg = {
+        "total_leads": all_leads,
+        "conversion_rate": round((all_disbursed / all_leads * 100) if all_leads > 0 else 0, 1),
+        "total_banks": await db.bank_registrations.count_documents({"status": "active"}),
+    }
+
+    # Applications for this bank
+    app_query = {"bank_name": bank_name} if user.get("role") == "bank" else {}
+    applications = await db.loan_applications.find(app_query, {"_id": 0}).sort("created_at", -1).to_list(50)
+
+    return {
+        "bank_name": bank_name,
+        "total_leads": total_leads,
+        "funnel": funnel,
+        "conversion": conversion,
+        "avg_loan_amount": round(total_amount / total_leads) if total_leads > 0 else 0,
+        "region_breakdown": regions,
+        "recent_leads": leads[:20],
+        "platform_comparison": platform_avg,
+        "applications": applications,
+        "products_count": await db.loan_products.count_documents(
+            {"bank_id": user["user_id"], "is_active": True} if user.get("role") == "bank" else {"source": "bank_portal"}
+        ),
+    }
+
+
+# ==================== DIGITAL LOAN APPLICATION ====================
+
+@api_router.post("/applications")
+async def create_application(data: LoanApplicationCreate, request: Request):
+    user = await get_current_user(request)
+
+    lead = await db.leads.find_one({"lead_id": data.lead_id, "user_id": user["user_id"]}, {"_id": 0})
+    if not lead:
+        raise HTTPException(status_code=404, detail="Lead not found")
+
+    existing = await db.loan_applications.find_one({"lead_id": data.lead_id}, {"_id": 0})
+    if existing:
+        raise HTTPException(status_code=400, detail="Application already submitted for this lead")
+
+    app_id = f"app_{uuid.uuid4().hex[:12]}"
+    now = datetime.now(timezone.utc).isoformat()
+
+    app_doc = {
+        "application_id": app_id, "lead_id": data.lead_id,
+        "user_id": user["user_id"], "bank_name": lead.get("bank_name"),
+        "product_name": lead.get("product_name"), "product_id": lead.get("product_id"),
+        "full_name": data.full_name, "phone": data.phone,
+        "pan_number": data.pan_number,
+        "employment_details": data.employment_details,
+        "monthly_income": data.monthly_income,
+        "loan_amount_requested": data.loan_amount_requested,
+        "loan_purpose": data.loan_purpose,
+        "residence_type": data.residence_type,
+        "years_at_current_job": data.years_at_current_job,
+        "status": "submitted", "created_at": now
+    }
+    await db.loan_applications.insert_one(app_doc)
+
+    # Update lead status to applied
+    await db.leads.update_one({"lead_id": data.lead_id}, {"$set": {"status": "applied", "updated_at": now}})
+
+    await log_event(db, "application_submitted", {"app_id": app_id, "bank": lead.get("bank_name")}, user["user_id"])
+    return {"application_id": app_id, "status": "submitted", "message": "Application submitted successfully"}
+
+
+@api_router.get("/applications")
+async def get_applications(request: Request):
+    user = await get_current_user(request)
+    apps = await db.loan_applications.find({"user_id": user["user_id"]}, {"_id": 0}).sort("created_at", -1).to_list(50)
+    return apps
+
 
 
 # ==================== AI ROUTES ====================

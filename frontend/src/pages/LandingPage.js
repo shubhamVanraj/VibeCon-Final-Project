@@ -843,6 +843,7 @@ export default function LandingPage() {
                 <a href="#" onClick={(e) => { e.preventDefault(); document.querySelector('[data-testid="our-story-section"]')?.scrollIntoView({ behavior: 'smooth' }); }} className="block font-body text-sm text-[#4B5563] hover:text-[#059669] transition-colors">{language === 'hi' ? 'हमारी कहानी' : 'Our Story'}</a>
                 <Link to="/privacy" className="block font-body text-sm text-[#4B5563] hover:text-[#059669] transition-colors" data-testid="footer-privacy-link">{language === 'hi' ? 'गोपनीयता नीति' : 'Privacy Policy'}</Link>
                 <Link to="/terms" className="block font-body text-sm text-[#4B5563] hover:text-[#059669] transition-colors" data-testid="footer-terms-link">{language === 'hi' ? 'सेवा की शर्तें' : 'Terms of Service'}</Link>
+                <Link to="/bank-onboarding" className="block font-body text-sm text-[#059669] hover:text-[#047857] font-semibold transition-colors" data-testid="footer-bank-partner-link">{language === 'hi' ? 'बैंक पार्टनर बनें' : 'Become a Bank Partner'}</Link>
               </div>
             </div>
           </div>

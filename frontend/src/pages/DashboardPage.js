@@ -62,6 +62,9 @@ export default function DashboardPage() {
   const [compareList, setCompareList] = useState([]);
   const [compareOpen, setCompareOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
+  const [appFormLead, setAppFormLead] = useState(null);
+  const [appForm, setAppForm] = useState({ full_name: '', phone: '', monthly_income: '', loan_amount_requested: '', loan_purpose: '', residence_type: 'owned', years_at_current_job: '' });
+  const [appLoading, setAppLoading] = useState(false);
   const mediaRecorderRef = useRef(null);
   const chunksRef = useRef([]);
   const chatEndRef = useRef(null);
@@ -410,14 +413,26 @@ export default function DashboardPage() {
                         </p>
                       </div>
                       {lead.status !== 'revoked' && (
-                        <Button
-                          variant="outline" size="sm"
-                          onClick={() => handleRevoke(lead.lead_id)}
-                          className="rounded-full text-red-500 border-red-200 hover:bg-red-50 hover:border-red-300 font-body text-xs"
-                          data-testid={`revoke-btn-${lead.lead_id}`}
-                        >
-                          <XCircle className="w-3.5 h-3.5 mr-1" /> {t.revoke}
-                        </Button>
+                        <div className="flex gap-2">
+                          {lead.status === 'interested' && (
+                            <Button
+                              size="sm"
+                              onClick={() => { setAppFormLead(lead); setAppForm(f => ({ ...f, full_name: user?.name || '' })); }}
+                              className="rounded-full bg-[#059669] hover:bg-[#047857] text-white font-body text-xs px-4"
+                              data-testid={`apply-digital-${lead.lead_id}`}
+                            >
+                              <ArrowRight className="w-3.5 h-3.5 mr-1" />{language === 'hi' ? 'डिजिटल आवेदन' : 'Apply Digitally'}
+                            </Button>
+                          )}
+                          <Button
+                            variant="outline" size="sm"
+                            onClick={() => handleRevoke(lead.lead_id)}
+                            className="rounded-full text-red-500 border-red-200 hover:bg-red-50 hover:border-red-300 font-body text-xs"
+                            data-testid={`revoke-btn-${lead.lead_id}`}
+                          >
+                            <XCircle className="w-3.5 h-3.5 mr-1" /> {t.revoke}
+                          </Button>
+                        </div>
                       )}
                     </div>
                   </Card>
@@ -558,6 +573,83 @@ export default function DashboardPage() {
 
       {/* Loan Comparison Dialog */}
       <LoanComparison open={compareOpen} onOpenChange={setCompareOpen} loans={compareList} />
+
+      {/* Digital Application Form Dialog */}
+      {appFormLead && (
+        <div className="fixed inset-0 z-[9999] bg-black/60 flex items-center justify-center p-4" onClick={() => setAppFormLead(null)}>
+          <div className="bg-white w-full max-w-lg rounded-2xl overflow-y-auto max-h-[85vh]" onClick={e => e.stopPropagation()} data-testid="application-form-dialog">
+            <div className="sticky top-0 bg-white border-b border-black/5 px-6 py-4">
+              <h3 className="font-heading font-bold text-lg text-[#0A0A0A]">{language === 'hi' ? 'डिजिटल लोन आवेदन' : 'Digital Loan Application'}</h3>
+              <p className="font-body text-xs text-[#9CA3AF]">{appFormLead.bank_name} — {appFormLead.product_name}</p>
+            </div>
+            <div className="p-6 space-y-4">
+              <div>
+                <Label className="font-body text-xs font-semibold">{language === 'hi' ? 'पूरा नाम' : 'Full Name'}</Label>
+                <Input value={appForm.full_name} onChange={e => setAppForm(f => ({...f, full_name: e.target.value}))} className="mt-1 rounded-xl" data-testid="app-name" />
+              </div>
+              <div>
+                <Label className="font-body text-xs font-semibold">{language === 'hi' ? 'फोन नंबर' : 'Phone Number'}</Label>
+                <Input value={appForm.phone} onChange={e => setAppForm(f => ({...f, phone: e.target.value}))} placeholder="9876543210" className="mt-1 rounded-xl" data-testid="app-phone" />
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <Label className="font-body text-xs font-semibold">{language === 'hi' ? 'मासिक आय' : 'Monthly Income'}</Label>
+                  <Input type="number" value={appForm.monthly_income} onChange={e => setAppForm(f => ({...f, monthly_income: e.target.value}))} className="mt-1 rounded-xl" data-testid="app-income" />
+                </div>
+                <div>
+                  <Label className="font-body text-xs font-semibold">{language === 'hi' ? 'लोन राशि' : 'Loan Amount'}</Label>
+                  <Input type="number" value={appForm.loan_amount_requested} onChange={e => setAppForm(f => ({...f, loan_amount_requested: e.target.value}))} className="mt-1 rounded-xl" data-testid="app-amount" />
+                </div>
+              </div>
+              <div>
+                <Label className="font-body text-xs font-semibold">{language === 'hi' ? 'लोन उद्देश्य' : 'Loan Purpose'}</Label>
+                <Input value={appForm.loan_purpose} onChange={e => setAppForm(f => ({...f, loan_purpose: e.target.value}))} placeholder={language === 'hi' ? 'जैसे घर नवीनीकरण' : 'e.g. Home renovation'} className="mt-1 rounded-xl" data-testid="app-purpose" />
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <Label className="font-body text-xs font-semibold">{language === 'hi' ? 'निवास प्रकार' : 'Residence'}</Label>
+                  <select value={appForm.residence_type} onChange={e => setAppForm(f => ({...f, residence_type: e.target.value}))} className="mt-1 w-full h-10 rounded-xl border border-[#E5E7EB] text-sm px-3 font-body" data-testid="app-residence">
+                    <option value="owned">{language === 'hi' ? 'स्वामित्व' : 'Owned'}</option>
+                    <option value="rented">{language === 'hi' ? 'किराए पर' : 'Rented'}</option>
+                    <option value="family">{language === 'hi' ? 'परिवार' : 'Family'}</option>
+                  </select>
+                </div>
+                <div>
+                  <Label className="font-body text-xs font-semibold">{language === 'hi' ? 'वर्तमान नौकरी (वर्ष)' : 'Years at Job'}</Label>
+                  <Input type="number" value={appForm.years_at_current_job} onChange={e => setAppForm(f => ({...f, years_at_current_job: e.target.value}))} className="mt-1 rounded-xl" data-testid="app-years" />
+                </div>
+              </div>
+              <Button
+                className="w-full rounded-full bg-[#059669] hover:bg-[#047857] text-white font-body font-semibold h-11 mt-2"
+                disabled={appLoading || !appForm.full_name || !appForm.phone}
+                onClick={async () => {
+                  setAppLoading(true);
+                  try {
+                    await api.post('/applications', {
+                      lead_id: appFormLead.lead_id,
+                      full_name: appForm.full_name,
+                      phone: appForm.phone,
+                      monthly_income: parseFloat(appForm.monthly_income) || null,
+                      loan_amount_requested: parseFloat(appForm.loan_amount_requested) || null,
+                      loan_purpose: appForm.loan_purpose || null,
+                      residence_type: appForm.residence_type,
+                      years_at_current_job: parseInt(appForm.years_at_current_job) || null,
+                    });
+                    toast.success(language === 'hi' ? 'आवेदन सफलतापूर्वक जमा!' : 'Application submitted successfully!');
+                    setAppFormLead(null);
+                    fetchData();
+                  } catch (err) {
+                    toast.error(err.response?.data?.detail || 'Failed');
+                  } finally { setAppLoading(false); }
+                }}
+                data-testid="submit-application-btn"
+              >
+                {appLoading ? '...' : (language === 'hi' ? 'आवेदन जमा करें' : 'Submit Application')}
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
