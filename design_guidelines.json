@@ -1,129 +1,114 @@
 {
-  "theme": "light",
-  "archetype": "Swiss & High-Contrast (Archetype 4) mixed with organic trust elements",
-  "mood": "Trustworthy, Transparent, Clean, Premium",
+  "project_name": "Rinkosh Loan Discovery Platform",
+  "theme_archetype": {
+    "theme": "light",
+    "archetype": "1 (Organic & Earthy)",
+    "rationale": "Finance requires trust and stability. A Light theme with warm, organic undertones (bone-white backgrounds, sage accents) prevents the app from feeling cold or intimidating. Glassmorphism is used strategically to represent 'transparency' in the loan discovery process."
+  },
   "colors": {
+    "primary": {
+      "DEFAULT": "#059669",
+      "hover": "#047857",
+      "light": "#E6F4EA"
+    },
     "background": {
-      "primary": "#FFFFFF",
-      "secondary": "#F9F9FB",
-      "tertiary": "#F3F4F6",
-      "overlay": "rgba(255, 255, 255, 0.8)"
+      "DEFAULT": "#FDFBF7",
+      "dashboard": "#F8FAFC"
+    },
+    "surface": {
+      "DEFAULT": "#FFFFFF",
+      "glass": "bg-white/70 backdrop-blur-xl border-white/40"
     },
     "text": {
-      "primary": "#0A0A0A",
-      "secondary": "#4B5563",
-      "tertiary": "#9CA3AF",
-      "inverse": "#FFFFFF"
-    },
-    "brand": {
-      "primary": "#059669",
-      "primary_hover": "#047857",
-      "secondary": "#111827",
-      "secondary_hover": "#1F2937",
-      "accent": "#F59E0B"
-    },
-    "status": {
-      "success": "#10B981",
-      "error": "#EF4444",
-      "warning": "#F59E0B",
-      "info": "#3B82F6"
+      "primary": "#0F172A",
+      "secondary": "#475569",
+      "muted": "#94A3B8"
     },
     "border": {
-      "default": "rgba(0, 0, 0, 0.08)",
+      "DEFAULT": "#E2E8F0",
       "focus": "#059669"
+    },
+    "danger": {
+      "DEFAULT": "#EF4444",
+      "hover": "#DC2626",
+      "bg": "#FEF2F2"
     }
   },
   "typography": {
     "fonts": {
-      "heading": "'Outfit', sans-serif",
-      "body": "'Manrope', sans-serif",
-      "mono": "'JetBrains Mono', monospace"
+      "heading": "'Sora', sans-serif",
+      "body": "'DM Sans', sans-serif",
+      "install_command": "Import Google Fonts for Sora and DM Sans in index.css"
     },
-    "scale": {
-      "h1": "text-5xl md:text-6xl tracking-tighter font-bold",
-      "h2": "text-3xl md:text-4xl tracking-tight font-bold",
-      "h3": "text-2xl tracking-tight font-semibold",
-      "h4": "text-xl font-semibold",
-      "body": "text-base leading-relaxed",
-      "small": "text-sm text-[#4B5563]",
-      "overline": "text-xs uppercase tracking-[0.2em] font-bold text-[#6B7280]"
+    "hierarchy": {
+      "h1": "text-4xl sm:text-5xl lg:text-6xl font-semibold tracking-tighter text-slate-900",
+      "h2": "text-2xl sm:text-3xl lg:text-4xl font-medium tracking-tight text-slate-900",
+      "h3": "text-xl sm:text-2xl font-medium text-slate-900",
+      "body": "text-base text-slate-600 leading-relaxed",
+      "overline": "text-xs font-bold uppercase tracking-[0.2em] text-emerald-700"
     }
   },
-  "layout": {
-    "spacing": {
-      "section_padding": "py-20 md:py-32",
-      "container": "max-w-7xl mx-auto px-6 lg:px-8",
-      "card_padding": "p-6 md:p-8"
-    },
-    "grid": {
-      "marketing": "grid grid-cols-1 md:grid-cols-12 gap-8",
-      "dashboard": "grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6"
-    },
-    "border_radius": {
-      "card": "rounded-2xl",
-      "button": "rounded-full",
-      "input": "rounded-xl"
-    }
+  "layout_and_grids": {
+    "spacing_system": "Generous spacing: use p-6, p-8, p-12 for containers. Cards must have internal padding (p-6) to prevent text collision.",
+    "landing_page": "Bento 'Tetris' grid (grid-cols-1 md:grid-cols-8 lg:grid-cols-12) for the 14 Browse Loans categories to create visual tension and interest.",
+    "dashboard": "Control Room grid (grid-cols-1 md:grid-cols-3 lg:grid-cols-4) with gap-6. Every pixel utilized. Summary cards span 1 col, main recommendations span 2 cols."
   },
-  "surfaces": {
-    "glassmorphism": "backdrop-blur-xl bg-white/70 border border-black/5 shadow-sm",
-    "neumorphism": "bg-white shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-black/5",
-    "grid_borders": "border-collapse border-b border-r border-black/5"
+  "component_guidelines": {
+    "buttons": "Use flat design with rounded-full geometry to feel approachable. Always explicitly set hover states.",
+    "cards": "Solid background, 1px border (#E2E8F0), no shadow by default. Hover: slight lift (-translate-y-1) and shadow-sm.",
+    "navigation": "Crystal Glass sticky header (backdrop-blur-xl bg-white/70) ensuring content underneath is visible but blurred.",
+    "emi_calculator": "Use Shadcn Slider for tactile input. Real-time visual feedback on repayment amounts. No hidden fees layout.",
+    "market_charts": "Use Recharts (AreaChart or LineChart). Monochromatic emerald scale for data visualization. Keep labels large and readable.",
+    "dpdp_delete": "Critical feature. Place prominently in account settings. Use Shadcn AlertDialog. Red destructive button. Plain language about data deletion (no dark patterns).",
+    "chatbot": "Floating widget in bottom right. Glassmorphism panel for the chat window."
   },
-  "animation": {
-    "hover": "transition-all duration-200 ease-out",
-    "active": "active:scale-[0.98]",
-    "focus": "focus:outline-none focus:ring-2 focus:ring-[#059669] focus:ring-offset-2",
-    "page_transition": "animate-in fade-in slide-in-from-bottom-4 duration-500"
-  },
-  "components": {
-    "button": {
-      "primary": "bg-[#111827] text-white hover:bg-[#000000] rounded-full px-8 py-3 font-semibold",
-      "accent": "bg-[#059669] text-white hover:bg-[#047857] rounded-full px-8 py-3 font-semibold",
-      "secondary": "bg-white text-[#111827] border border-[#E5E7EB] hover:border-[#111827] rounded-full px-8 py-3 font-semibold"
-    },
-    "card": "bg-white rounded-2xl border border-black/5 p-8 shadow-[0_4px_24px_rgba(0,0,0,0.02)]",
-    "input": "w-full bg-[#F9F9FB] border border-[#E5E7EB] rounded-xl px-4 py-3 focus:border-[#059669] focus:bg-white focus:ring-1 focus:ring-[#059669] transition-all",
-    "nav_bar": "fixed top-0 w-full z-50 backdrop-blur-xl bg-white/80 border-b border-black/5"
+  "icons_and_assets": {
+    "library": "lucide-react",
+    "style": "Clean, line-based, stroke-width 1.5. Matches the geometric nature of DM Sans."
   },
   "media": {
-    "images": [
-      {
-        "category": "hero_person",
-        "url": "https://images.unsplash.com/photo-1572079757625-132046cc8973?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA0MTJ8MHwxfHNlYXJjaHwxfHxpbmRpYW4lMjBwZXJzb24lMjB1c2luZyUyMHBob25lJTIwc21pbGluZ3xlbnwwfHx8fDE3NzYzMjQwNjd8MA&ixlib=rb-4.1.0&q=85",
-        "description": "Smiling Indian professional using phone, perfect for hero section trust building"
-      },
-      {
-        "category": "background_abstract",
-        "url": "https://images.unsplash.com/photo-1769541607705-3b3c5095679b?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjAzOTB8MHwxfHNlYXJjaHwxfHxhYnN0cmFjdCUyMGxpZ2h0JTIwZ2VvbWV0cmljJTIwbWluaW1hbCUyMGJhY2tncm91bmR8ZW58MHx8fHwxNzc2MzI0MDc1fDA&ixlib=rb-4.1.0&q=85",
-        "description": "Abstract white geometric background for landing page or marketing sections"
-      },
-      {
-        "category": "financial_chart",
-        "url": "https://images.unsplash.com/photo-1765046255462-198d49d07dd1?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2NzZ8MHwxfHNlYXJjaHwxfHxtaW5pbWFsaXN0JTIwYWJzdHJhY3QlMjBmaW5hbmNpYWwlMjBjaGFydHxlbnwwfHx8fDE3NzYzMjQwNjh8MA&ixlib=rb-4.1.0&q=85",
-        "description": "Minimalist financial chart abstract for the dashboard or loan recommendation engine"
-      },
-      {
-        "category": "user_avatar",
-        "url": "https://images.unsplash.com/photo-1629038152911-f899dbf8d639?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA0MTJ8MHwxfHNlYXJjaHwzfHxpbmRpYW4lMjBwZXJzb24lMjB1c2luZyUyMHBob25lJTIwc21pbGluZ3xlbnwwfHx8fDE3NzYzMjQwNjd8MA&ixlib=rb-4.1.0&q=85",
-        "description": "User profile avatar placeholder"
-      }
-    ],
-    "icons": {
-      "library": "lucide-react",
-      "style": "stroke-width: 1.5, solid and professional"
+    "hero_abstract": {
+      "url": "https://static.prod-images.emergentagent.com/jobs/46236293-45eb-486f-8de9-3cfd3f7e2526/images/85314c0f2e52b2e077303a61006d1b952753794444b5d0979dd2ee2c0620bc62.png",
+      "description": "Abstract 3D composition of pristine glass spheres and emerald green geometric shapes, conveying transparency.",
+      "usage": "Landing page hero section visual or abstract background"
+    },
+    "emi_3d_icon": {
+      "url": "https://static.prod-images.emergentagent.com/jobs/46236293-45eb-486f-8de9-3cfd3f7e2526/images/5f4d1996d5f2cf1334093d00c6f660fa0db5cdf4e19f4f7e71f7cc9eb0253943.png",
+      "description": "Minimalist 3D icon of a modern calculator with floating green percentages.",
+      "usage": "Beside the EMI calculator tool or in feature highlights"
+    },
+    "chatbot_3d": {
+      "url": "https://static.prod-images.emergentagent.com/jobs/46236293-45eb-486f-8de9-3cfd3f7e2526/images/35898335f8429edfbadaa98c8c2e03ed845ea2572db58f2f17b5aca8e20889ed.png",
+      "description": "Modern robotic AI chatbot assistant hovering above an emerald green base.",
+      "usage": "Chatbot widget trigger icon or header"
+    },
+    "lifestyle_family": {
+      "url": "https://images.pexels.com/photos/9346145/pexels-photo-9346145.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "description": "A joyful Indian family inside a home setting.",
+      "usage": "About us or 'Borrower-First' storytelling block"
+    },
+    "market_chart_bg": {
+      "url": "https://images.pexels.com/photos/6203470/pexels-photo-6203470.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "description": "Close-up of a neon blue line chart on a grid, symbolizing data trends.",
+      "usage": "Background for the Market Insights section"
     }
   },
+  "interactions_and_motion": {
+    "hover_states": "All interactive elements must change state on hover. Buttons lighten, cards translate-y-1, text links get an underline or color shift.",
+    "page_transitions": "Use framer-motion for staggered list entrance (e.g., the 72 products) to reduce cognitive overload."
+  },
+  "accessibility_and_testing": {
+    "contrast": "Ensure text over emerald green backgrounds is pure white. Avoid pale text on pale backgrounds.",
+    "testing_attributes": "CRITICAL: All buttons, links, inputs, and the Delete Account modal must include a `data-testid` attribute (e.g., `data-testid=\"delete-account-button\"`)."
+  },
   "instructions_to_main_agent": [
-    "Install `lucide-react` for crisp icons (1.5 stroke width).",
-    "Use Google Fonts for 'Outfit' and 'Manrope'. Add them via HTML link tags or standard imports.",
-    "Strictly follow the color palette. Backgrounds should be white or #F9F9FB. No generic gray borders; use black/5.",
-    "Headers must be sticky with glassmorphism (backdrop-blur-xl bg-white/80).",
-    "For multi-step onboarding, use Framer Motion for smooth slide transitions between steps. Keep the UI extremely clean with max width containers for focus.",
-    "Data-testid attributes MUST be added to all interactive elements.",
-    "Shadcn UI components should be heavily customized. Override standard Vercel borders and radiuses. Make them rounded-xl or rounded-2xl.",
-    "Do NOT use 'Inter' for headings. Use 'Outfit' for headings, with tight tracking.",
-    "For the Privacy & Trust Layer, use the Emerald Green accent and security icons to establish a safe environment.",
-    "For the AI Suggestion feature, use a subtle shimmering border or gradient text to indicate AI presence, avoiding full neon aesthetics."
+    "Use pure HTML/Tailwind for the landing page layout, allowing for complex bento grids.",
+    "Use Shadcn UI for the dashboard, EMI calculator, and data tables.",
+    "For the 14 Loan Categories, implement a masonry or bento layout, not a simple grid of identical squares.",
+    "For the DPDP 'Delete Account' feature, create a dedicated settings view or modal that strictly adheres to transparency (clear warnings, no confusing opt-outs).",
+    "Integrate the provided media URLs. Do not use placeholders.",
+    "Ensure 'Sora' and 'DM Sans' are loaded via Google Fonts in your main HTML/CSS.",
+    "Implement the dark/light mode toggle. Ensure dark mode variables in tailwind config map background to slate-950 and text to slate-50, but default to light mode.",
+    "For React components (.jsx/.js files), use Framer Motion for smooth transitions."
   ]
 }
