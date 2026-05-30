@@ -192,8 +192,8 @@ export default function BankDashboardPage() {
                     {data.recent_leads.length === 0 && (
                       <tr><td colSpan={4} className="text-center py-8 font-body text-sm text-[#9CA3AF]">{language === 'hi' ? 'अभी कोई लीड नहीं' : 'No leads yet'}</td></tr>
                     )}
-                    {data.recent_leads.map((lead, i) => (
-                      <tr key={i} className="border-t border-black/5 hover:bg-[#F9F9FB]">
+                    {data.recent_leads.map((lead) => (
+                      <tr key={lead.lead_id} className="border-t border-black/5 hover:bg-[#F9F9FB]">
                         <td className="px-4 py-3 font-body text-xs text-[#0A0A0A]">{lead.lead_id?.slice(-8)}</td>
                         <td className="px-4 py-3 font-body text-xs text-[#4B5563]">{lead.product_name}</td>
                         <td className="px-4 py-3">
@@ -229,8 +229,8 @@ export default function BankDashboardPage() {
                     {(!data.applications || data.applications.length === 0) && (
                       <tr><td colSpan={6} className="text-center py-8 font-body text-sm text-[#9CA3AF]">{language === 'hi' ? 'अभी कोई आवेदन नहीं' : 'No applications yet'}</td></tr>
                     )}
-                    {(data.applications || []).map((app, i) => (
-                      <tr key={i} className="border-t border-black/5 hover:bg-[#F9F9FB]">
+                    {(data.applications || []).map((app) => (
+                      <tr key={app.application_id} className="border-t border-black/5 hover:bg-[#F9F9FB]">
                         <td className="px-4 py-3 font-body text-xs text-[#0A0A0A]">{app.application_id?.slice(-8)}</td>
                         <td className="px-4 py-3 font-body text-xs text-[#0A0A0A] font-medium">{app.full_name}</td>
                         <td className="px-4 py-3 font-body text-xs text-[#4B5563]">{app.phone}</td>

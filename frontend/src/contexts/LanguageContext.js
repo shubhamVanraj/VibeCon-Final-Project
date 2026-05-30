@@ -18,9 +18,11 @@ export const LanguageProvider = ({ children }) => {
     localStorage.setItem('rinkosh_language', lang);
     try {
       await api.put('/user/language', { language: lang });
-    } catch {
+    } catch (err) {
       // Not logged in or failed - language still saved locally
+      console.debug('Language sync skipped:', err.message);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

@@ -20,7 +20,7 @@ function playTone(freq, duration, vol = 0.04, type = 'sine') {
     gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
     osc.start(ctx.currentTime);
     osc.stop(ctx.currentTime + duration);
-  } catch {}
+  } catch (err) { console.error('Audio context error:', err); }
 }
 
 export const sounds = {

@@ -66,7 +66,7 @@ export default function LandingPage() {
     });
   };
 
-  // Scroll reveal for sections
+  // Scroll reveal - runs once on mount
   useEffect(() => {
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
@@ -77,6 +77,7 @@ export default function LandingPage() {
     }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
     document.querySelectorAll('.reveal-on-scroll').forEach(el => observer.observe(el));
     return () => observer.disconnect();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Fetch all loan products for browse section
@@ -85,11 +86,12 @@ export default function LandingPage() {
     try {
       const { data } = await api.get('/loans/products');
       setAllProducts(data);
-    } catch {
-      // silent
+    } catch (err) {
+      console.error('Failed to fetch products:', err);
     } finally {
       setProductsLoading(false);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => { fetchProducts(); }, [fetchProducts]);
@@ -109,7 +111,7 @@ export default function LandingPage() {
             setUserLocation({ city, state, lat: pos.coords.latitude, lon: pos.coords.longitude });
             track('location_detected', { city, state });
           }
-        } catch { /* silent */ }
+        } catch (err) { console.error('Geolocation reverse geocode failed:', err); }
         finally { setLocationLoading(false); }
       },
       () => setLocationLoading(false),
