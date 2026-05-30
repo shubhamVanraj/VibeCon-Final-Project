@@ -19,6 +19,7 @@
 - Privacy Policy + Terms of Service pages
 - UI refresh: Organic warm theme (#FDFBF7), cleaner cards, refined glassmorphism
 - Scroll-reveal animations, dark mode, mobile responsive
+- **Landing Page UI Polish (Feb 2026)**: Sticky navbar with scroll-spy active highlighting (EMI Calculator / Browse Loans nav links highlight via bg-[#FEF3C7] as user scrolls); Logo click smooth-scrolls to top; all CTAs converted to solid navy/amber with shadows (no more ghost/disabled appearance); Hero preview card has amber left-border (border-l-4 border-l-[#C8860A]); Trust Cards in 3-col grid with colored icon circles (green/amber/navy); Founder Story relocated above Browse Loans context bar with 2-col layout (SK avatar left, quote right) on #FFFBF5 cream bg; Full Hindi translation mapping for all Landing Page strings (hero, CTAs, EMI calc, trust cards, founder, footer, categories) — language persists via localStorage. Verified PASS in test_reports/iteration_15.json (25/25 assertions).
 
 ## Key Endpoints
 - DELETE /api/auth/delete-account — DPDP compliant account+data deletion
