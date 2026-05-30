@@ -514,3 +514,7 @@ h1, h2, h3, p, span, label, a { max-width: 100%; }
   border-radius: 50%;
   background: #059669;
 }
+
+/* Hide scrollbar */
+.scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+.scrollbar-hide::-webkit-scrollbar { display: none; }
