@@ -1,0 +1,51 @@
+{
+  "summary": "Frontend-only validation for the Bazaar Bismuth + Dalal Street Light visual overhaul. Verified custom fonts, hero-headline rendering, bismuth tiles, details expander, Hindi toggle, navbar, EMI calculator, founder section, dark CTA band, footer, and clickability. 27 of 28 acceptance items PASS. One real font-related issue found: in Hindi mode, the hero-headline does NOT actually render with IBM Plex Sans Devanagari (it falls back through Chivo's stack to system Devanagari). Two English-only section headers in Hindi mode are flagged as missed translations.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [
+      {
+        "component": "HeroSection .hero-headline (Hindi mode)",
+        "issue": "When language is switched to Hindi, hero-headline computed font-family stays 'Chivo, system-ui, sans-serif'. Chivo has no Devanagari glyphs so the browser renders via system fallback. IBM Plex Sans Devanagari is loaded in index.html and registered as fontFamily.devanagari in tailwind, and an [lang=\"hi\"] rule exists in App.css line 12, but .hero-headline's explicit font-family (Chivo) takes precedence. document.fonts shows all IBM Plex Sans Devanagari weights as 'unloaded' even after the Hindi toggle. Visible glyphs render via OS fallback rather than the intended IBM Plex Sans Devanagari brand font.",
+        "selector": "[data-testid=\"hero-headline\"]",
+        "priority": "MEDIUM",
+        "suggested_fix": "Add in App.css: [lang=\"hi\"] .hero-headline, .lang-hi .hero-headline { font-family: 'IBM Plex Sans Devanagari', 'Chivo', system-ui, sans-serif; } AND ensure the same override for .data-large/.font-numbers if they should pick up Devanagari numerals. Confirm <html lang> attribute is being updated by LanguageToggle (or apply .lang-hi class to body)."
+      },
+      {
+        "component": "EmiCalculatorSection / TrustAndFounder section headers",
+        "issue": "Headers 'Know your monthly EMI in 30 seconds', 'Three promises. Zero exceptions.', and the 'WHY RINKOSH' kicker remain in English when site is switched to Hindi. Most other strings (nav, CTAs, sliders, founder quote, loan tiles, footer, cookie banner) translate correctly, so this looks like a missing t-key on these specific headers rather than an intentional choice.",
+        "selector": "#emi-calculator h2, #trust-section h2",
+        "priority": "LOW"
+      }
+    ],
+    "integration_issues": [],
+    "design_issues": [
+      {
+        "screen": "Cookie banner / Made-with-Emergent badge",
+        "issues": [
+          "Cookie banner overlaps the floating Emergent badge at the bottom-right; both are pinned to lower viewport. Does not block any user CTA (verified hero-compare-btn is the topmost element at its center), so functionally fine, just visually crowded on first paint."
+        ]
+      }
+    ]
+  },
+  "test_report_links": [],
+  "action_items": [
+    "Add a [lang=\"hi\"]/.lang-hi override that swaps .hero-headline (and ideally .font-heading) to IBM Plex Sans Devanagari, so the spec'd Devanagari brand font actually renders.",
+    "Verify <html lang> attribute is mutated when LanguageToggle flips (so that [lang=\"hi\"] rule on line 12 of App.css actually activates).",
+    "Translate the remaining English-only section headers ('Know your monthly EMI in 30 seconds', 'Three promises. Zero exceptions.', 'WHY RINKOSH') or confirm intentionally English-only."
+  ],
+  "critical_code_review_comments": [
+    "BrowseLoans.js LoanTile uses isBestValue flag from product object — make sure recommendation/sort flow sets exactly one product.isBestValue=true after each re-sort, else the bismuth-tile-best halo could appear on zero or multiple tiles (currently observed bismuth-tile-best count = 3 across the page: 1 hero preview + 1 EMI 'MONTHLY EMI' card + 1 best loan tile, which is correct).",
+    "HeroSection splits headline on first comma to apply .accent gradient. If a future copy edit removes the comma, the amber gradient on the second clause is silently lost. Consider switching to a structured t.heroHeadlineParts = {primary, accent} object.",
+    "App.css line 12 ([lang=\"hi\"]) sets body font but cannot override .hero-headline's explicit Chivo. Add specific .hero-headline override or use font-family: inherit on .hero-headline with body-level switching.",
+    "BrowseLoans.js renders 72 tiles directly without virtualization. Acceptable for 72, but if loan inventory grows, consider react-window. Each tile also re-renders on every compareList change due to the array.find pass — memoize with useMemo on isSelected per row.",
+    "Trust strip is now the dark band (verified bg=rgb(10,17,24)) — comment in LandingNavbar.js still says 'slim cream band' which is stale; update for future readers."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "n/a", "frontend": "96%"},
+  "test_credentials": "Not used — frontend-only landing page tested while logged out. Admin admin@rinkosh.com / Admin@123 available per test_credentials.md if needed.",
+  "seed_data_creation": "None.",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Live Playwright run against https://loan-compare-9.preview.emergentagent.com/ confirmed: 72 product cards render with data-testid=product-card-{id}, 72 details-toggle-{id} buttons each expand a details-panel-{id} chips region, language-switch[data-testid] toggles English<->Hindi (hero text becomes 'ब्याज दर नहीं,कुल लागत से अपना लोन चुनें'), sort-total-cost / sort-interest pills swap active state, hero-compare-btn is topmost interactive element at its center (cookie banner does NOT block CTAs), hero badge text is '72+ loans · 20 banks · Zero spam', trust-strip bg = #0A1118 dark, nav-cta-button has amber-pulse class, 4 bismuth-tile cards in #emi-calculator, 3 .bismuth-tile-best instances on the page (hero preview + EMI MONTHLY card + best loan tile = correct). Chivo+DM Sans Google Fonts confirmed loaded via document.fonts. IBM Plex Sans Devanagari is registered but never loaded because no rule actually requests it on visible text — see ui_bugs[0].",
+  "rca of the issue": "Devanagari font not used: App.css line 12 sets `[lang=\"hi\"], .lang-hi { font-family: 'IBM Plex Sans Devanagari', ... }` on body level. However .hero-headline (line 138) and .font-heading (Chivo) declare their own font-family with higher CSS specificity, so the body-level Hindi rule never wins on headings. As a result document.fonts reports all IBM Plex Sans Devanagari weights as 'unloaded' even in Hindi mode — the browser quietly renders the Devanagari glyphs via OS fallback. Repro: open the site, click [data-testid=\"language-switch\"], read getComputedStyle(document.querySelector('[data-testid=\"hero-headline\"]')).fontFamily → still 'Chivo, system-ui, sans-serif'. Fix: add `[lang=\"hi\"] .hero-headline, .lang-hi .hero-headline { font-family: 'IBM Plex Sans Devanagari', 'Chivo', system-ui, sans-serif; }` (and consider the same override for .font-heading & .font-numbers if those should also be Devanagari-aware) AND ensure the toggle actually mutates document.documentElement.lang."
+}
