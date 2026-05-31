@@ -11,7 +11,7 @@ export function TrustCards({ t }) {
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-12">
           <div className="cap text-[#C8860A] mb-2">{t.whyRinkoshKicker}</div>
-          <h2 className="font-heading font-bold text-3xl md:text-4xl text-[#0A1118] tracking-tight">{t.threePromisesHeader}</h2>
+          <h2 className="font-heading font-bold text-3xl md:text-4xl text-[#0A1118] dark:text-[#FFFBF5] tracking-tight">{t.threePromisesHeader}</h2>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5 snap-in-stagger">
           {cards.map((tc) => (
@@ -21,8 +21,8 @@ export function TrustCards({ t }) {
                      style={{ backgroundColor: tc.bgColor, boxShadow: `0 0 0 6px ${tc.ringColor}` }}>
                   <tc.icon className="w-6 h-6" style={{ color: tc.color }} strokeWidth={2.2} />
                 </div>
-                <h3 className="font-heading font-bold text-lg text-[#0A1118] mb-2 tracking-tight">{tc.title}</h3>
-                <p className="font-body text-sm text-[#334155] leading-relaxed">{tc.body}</p>
+                <h3 className="font-heading font-bold text-lg text-[#0A1118] dark:text-[#FFFBF5] mb-2 tracking-tight">{tc.title}</h3>
+                <p className="font-body text-sm text-[#334155] dark:text-[#CBD5E1] leading-relaxed">{tc.body}</p>
               </div>
             </div>
           ))}
@@ -34,8 +34,7 @@ export function TrustCards({ t }) {
 
 export function FounderStory({ t }) {
   return (
-    <section className="py-16 md:py-20 px-6 lg:px-8 relative overflow-hidden" data-testid="our-story-section"
-             style={{ background: 'linear-gradient(180deg, #FFFBF5 0%, #FFF8EE 100%)' }}>
+    <section className="py-16 md:py-20 px-6 lg:px-8 relative overflow-hidden bg-[#FFF8EE] dark:bg-[#0B121C]" data-testid="our-story-section">
       {/* Decorative grain */}
       <div className="absolute inset-0 opacity-30 pointer-events-none"
            style={{ background: 'radial-gradient(ellipse at 70% 30%, rgba(255,179,71,0.10) 0%, transparent 50%)' }} />
@@ -53,12 +52,12 @@ export function FounderStory({ t }) {
                    style={{ background: 'linear-gradient(135deg, #0A1118 0%, #1B2D45 100%)' }}>
                 SK
                 <div className="absolute -bottom-1 -right-1 w-7 h-7 bg-[#FFB347] rounded-full flex items-center justify-center shadow-md">
-                  <Heart className="w-3.5 h-3.5 text-[#0A1118]" fill="#0A1118" />
+                  <Heart className="w-3.5 h-3.5 text-[#0A1118] dark:text-[#FFFBF5]" fill="#0A1118" />
                 </div>
               </div>
               <div className="text-center md:text-left">
-                <div className="font-heading font-bold text-base text-[#0A1118]">{t.founderName}</div>
-                <div className="font-body text-xs text-[#64748B]">{t.founderTitle}</div>
+                <div className="font-heading font-bold text-base text-[#0A1118] dark:text-[#FFFBF5]">{t.founderName}</div>
+                <div className="font-body text-xs text-[#64748B] dark:text-[#94A3B8] dark:text-[#64748B]">{t.founderTitle}</div>
               </div>
               <a href="https://www.linkedin.com/in/shubhamkr0108/" target="_blank" rel="noopener noreferrer"
                  className="snap-press inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-[#0A66C2]/10 text-[#0A66C2] hover:bg-[#0A66C2]/20 transition-colors"
@@ -69,7 +68,7 @@ export function FounderStory({ t }) {
           </div>
           <div className="md:col-span-9">
             <div className="text-[#C8860A] text-7xl font-heading font-bold leading-none mb-2 select-none" aria-hidden>“</div>
-            <p className="font-body text-lg md:text-2xl text-[#0A1118] leading-relaxed font-normal" style={{ letterSpacing: '-0.01em' }}>
+            <p className="font-body text-lg md:text-2xl text-[#0A1118] dark:text-[#FFFBF5] leading-relaxed font-normal" style={{ letterSpacing: '-0.01em' }}>
               {t.founderQuote}
             </p>
           </div>

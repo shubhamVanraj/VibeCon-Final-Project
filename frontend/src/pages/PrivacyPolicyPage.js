@@ -7,14 +7,14 @@ export default function PrivacyPolicyPage() {
   const isHi = language === 'hi';
 
   return (
-    <div className="min-h-screen bg-white" data-testid="privacy-policy-page">
+    <div className="min-h-screen bg-[#FFFBF5] dark:bg-[#050810]" data-testid="privacy-policy-page">
       <nav className="fixed top-0 w-full z-50 glass-nav">
         <div className="max-w-7xl mx-auto px-6 lg:px-8 flex items-center justify-between h-16">
           <Link to="/" className="flex items-center gap-2.5">
             <img src="https://static.prod-images.emergentagent.com/jobs/46236293-45eb-486f-8de9-3cfd3f7e2526/images/251ac3f41bd806cd53ef74f0a949d1a3be51ac19219729fbf89fb0dba4f12b85.png" alt="Rinkosh" className="w-9 h-9 object-contain" />
-            <span className="font-heading font-bold text-xl text-[#0A0A0A] tracking-tight">Rinkosh</span>
+            <span className="font-heading font-bold text-xl text-[#0A1118] dark:text-[#FFFBF5] tracking-tight">Rinkosh</span>
           </Link>
-          <Link to="/" className="flex items-center gap-2 font-body text-sm text-[#4B5563] hover:text-[#059669] transition-colors">
+          <Link to="/" className="flex items-center gap-2 font-body text-sm text-[#334155] dark:text-[#CBD5E1] hover:text-[#059669] transition-colors">
             <ArrowLeft className="w-4 h-4" />
             {isHi ? 'होम पर वापस' : 'Back to Home'}
           </Link>
@@ -23,14 +23,14 @@ export default function PrivacyPolicyPage() {
 
       <div className="pt-28 pb-20 px-6 lg:px-8 max-w-3xl mx-auto">
         <div className="flex items-center gap-3 mb-8">
-          <div className="w-12 h-12 rounded-xl bg-[#059669]/10 flex items-center justify-center">
+          <div className="w-12 h-12 rounded-xl bg-[#10B981] dark:bg-[#34D399] dark:text-[#0A1118]/10 flex items-center justify-center">
             <Shield className="w-6 h-6 text-[#059669]" />
           </div>
           <div>
-            <h1 className="font-heading text-3xl md:text-4xl font-bold text-[#0A0A0A] tracking-tight" data-testid="privacy-title">
+            <h1 className="font-heading text-3xl md:text-4xl font-bold text-[#0A1118] dark:text-[#FFFBF5] tracking-tight" data-testid="privacy-title">
               {isHi ? 'गोपनीयता नीति' : 'Privacy Policy'}
             </h1>
-            <p className="font-body text-sm text-[#9CA3AF]">{isHi ? 'अंतिम अपडेट: अप्रैल 2026' : 'Last updated: April 2026'}</p>
+            <p className="font-body text-sm text-[#94A3B8] dark:text-[#64748B]">{isHi ? 'अंतिम अपडेट: अप्रैल 2026' : 'Last updated: April 2026'}</p>
           </div>
         </div>
 
@@ -54,7 +54,7 @@ export default function PrivacyPolicyPage() {
               <li><strong>{isHi ? 'उपयोग डेटा:' : 'Usage Data:'}</strong> {isHi ? 'पृष्ठ दृश्य, सत्र जानकारी, लॉगिन प्रयास (एनालिटिक्स के लिए)' : 'Page views, session information, login attempts (for analytics and security)'}</li>
               <li><strong>{isHi ? 'स्थान:' : 'Location:'}</strong> {isHi ? 'केवल आपकी अनुमति से ब्राउज़र जियोलोकेशन (शहर स्तर तक)' : 'Browser geolocation only with your permission (city-level only)'}</li>
             </ul>
-            <p className="bg-[#059669]/5 border border-[#059669]/10 rounded-xl p-4 text-sm">
+            <p className="bg-[#10B981] dark:bg-[#34D399] dark:text-[#0A1118]/5 border border-[#059669]/10 rounded-xl p-4 text-sm">
               <strong>{isHi ? 'हम क्या एकत्र नहीं करते:' : 'What we do NOT collect:'}</strong> {isHi
                 ? 'आधार नंबर, पैन कार्ड, बैंक खाता विवरण, वास्तविक क्रेडिट स्कोर, या कोई वित्तीय लेनदेन डेटा।'
                 : 'Aadhaar number, PAN card, bank account details, actual credit score, or any financial transaction data.'}
@@ -74,7 +74,7 @@ export default function PrivacyPolicyPage() {
 
           <section>
             <h2>{isHi ? '4. डेटा शेयरिंग — आपका नियंत्रण' : '4. Data Sharing — Your Control'}</h2>
-            <div className="bg-[#059669]/5 border border-[#059669]/10 rounded-xl p-5">
+            <div className="bg-[#10B981] dark:bg-[#34D399] dark:text-[#0A1118]/5 border border-[#059669]/10 rounded-xl p-5">
               <p className="font-semibold text-[#059669] mb-2">{isHi ? 'हमारी मुख्य प्रतिबद्धता:' : 'Our Core Promise:'}</p>
               <p>{isHi
                 ? 'आपका डेटा कभी भी किसी बैंक, NBFC, या तीसरे पक्ष के साथ साझा नहीं किया जाता — जब तक आप "I\'m Interested" बटन नहीं दबाते। यह पूरी तरह से आपके नियंत्रण में है।'
@@ -121,7 +121,7 @@ export default function PrivacyPolicyPage() {
           <section>
             <h2>{isHi ? '8. शिकायत निवारण' : '8. Grievance Redressal'}</h2>
             <p>{isHi ? 'किसी भी गोपनीयता संबंधित चिंता के लिए:' : 'For any privacy-related concern:'}</p>
-            <div className="bg-[#F3F4F6] rounded-xl p-4 text-sm">
+            <div className="bg-[#F3F4F6] dark:bg-[#141C2A] rounded-xl p-4 text-sm">
               <p><strong>{isHi ? 'शिकायत अधिकारी:' : 'Grievance Officer:'}</strong> Shubham Kumar</p>
               <p><strong>{isHi ? 'ईमेल:' : 'Email:'}</strong> support@rinkosh.com</p>
               <p><strong>{isHi ? 'प्रतिक्रिया समय:' : 'Response Time:'}</strong> {isHi ? '48 घंटों के भीतर स्वीकृति, 30 दिनों के भीतर समाधान' : 'Acknowledgment within 48 hours, resolution within 30 days'}</p>

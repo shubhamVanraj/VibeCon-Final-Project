@@ -66,7 +66,7 @@ export default function AdminDashboard() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#F9F9FB]">
+      <div className="min-h-screen flex items-center justify-center bg-[#FFFBF5] dark:bg-[#0B121C]">
         <Loader2 className="w-8 h-8 animate-spin text-[#059669]" />
       </div>
     );
@@ -86,24 +86,24 @@ export default function AdminDashboard() {
   const cs = analytics.commission_summary || {};
 
   return (
-    <div className="min-h-screen bg-[#F9F9FB]" data-testid="admin-dashboard">
+    <div className="min-h-screen bg-[#FFFBF5] dark:bg-[#0B121C]" data-testid="admin-dashboard">
       {/* Nav */}
       <nav className="glass-nav fixed top-0 w-full z-50">
         <div className="max-w-7xl mx-auto px-6 lg:px-8 flex items-center justify-between h-16">
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-2">
               <Shield className="w-5 h-5 text-[#059669]" strokeWidth={1.5} />
-              <span className="font-heading font-bold text-lg text-[#0A0A0A]">Rinkosh</span>
+              <span className="font-heading font-bold text-lg text-[#0A1118] dark:text-[#FFFBF5]">Rinkosh</span>
             </div>
-            <Badge className="bg-[#111827] text-white text-xs">Admin</Badge>
+            <Badge className="bg-[#0A1118] dark:bg-[#FFB347] dark:text-[#0A1118] text-white text-xs">Admin</Badge>
           </div>
           <div className="flex items-center gap-4">
             <LanguageToggle />
-            <Button variant="ghost" size="sm" onClick={() => navigate('/dashboard')} className="text-[#4B5563] font-body text-sm" data-testid="back-to-dashboard">
+            <Button variant="ghost" size="sm" onClick={() => navigate('/dashboard')} className="text-[#334155] dark:text-[#CBD5E1] font-body text-sm" data-testid="back-to-dashboard">
               <ArrowLeft className="w-4 h-4 mr-1" /> Dashboard
             </Button>
             <Separator orientation="vertical" className="h-6" />
-            <Button variant="ghost" size="sm" onClick={handleLogout} className="text-[#4B5563] hover:text-red-500" data-testid="admin-logout">
+            <Button variant="ghost" size="sm" onClick={handleLogout} className="text-[#334155] dark:text-[#CBD5E1] hover:text-red-500" data-testid="admin-logout">
               <LogOut className="w-4 h-4" />
             </Button>
           </div>
@@ -111,7 +111,7 @@ export default function AdminDashboard() {
       </nav>
 
       <main className="pt-24 pb-12 px-4 md:px-6 lg:px-8 max-w-7xl mx-auto">
-        <h1 className="font-heading text-2xl md:text-3xl font-bold text-[#0A0A0A] tracking-tight mb-8" data-testid="admin-title">
+        <h1 className="font-heading text-2xl md:text-3xl font-bold text-[#0A1118] dark:text-[#FFFBF5] tracking-tight mb-8" data-testid="admin-title">
           {t.adminDashboard || 'Admin Analytics'}
         </h1>
 
@@ -127,8 +127,8 @@ export default function AdminDashboard() {
               <CardContent className="p-5">
                 <div className="flex items-start justify-between">
                   <div>
-                    <p className="font-body text-xs text-[#9CA3AF] uppercase tracking-wider">{stat.label}</p>
-                    <p className="font-heading text-2xl font-bold text-[#0A0A0A] mt-1">{stat.value}</p>
+                    <p className="font-body text-xs text-[#94A3B8] dark:text-[#64748B] uppercase tracking-wider">{stat.label}</p>
+                    <p className="font-heading text-2xl font-bold text-[#0A1118] dark:text-[#FFFBF5] mt-1">{stat.value}</p>
                   </div>
                   <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ backgroundColor: `${stat.color}15` }}>
                     <stat.icon className="w-5 h-5" style={{ color: stat.color }} strokeWidth={1.5} />
@@ -188,7 +188,7 @@ export default function AdminDashboard() {
                   </PieChart>
                 </ResponsiveContainer>
               ) : (
-                <div className="flex items-center justify-center h-full text-[#9CA3AF] font-body text-sm">No lead data yet</div>
+                <div className="flex items-center justify-center h-full text-[#94A3B8] dark:text-[#64748B] font-body text-sm">No lead data yet</div>
               )}
             </div>
           </Card>
@@ -198,22 +198,22 @@ export default function AdminDashboard() {
         <Card className="rounded-2xl border border-black/5 p-6 mb-8 bg-gradient-to-r from-white to-[#059669]/5" data-testid="commission-card">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-2xl bg-[#059669]/10 flex items-center justify-center">
+              <div className="w-12 h-12 rounded-2xl bg-[#10B981] dark:bg-[#34D399] dark:text-[#0A1118]/10 flex items-center justify-center">
                 <Banknote className="w-6 h-6 text-[#059669]" strokeWidth={1.5} />
               </div>
               <div>
-                <h3 className="font-heading font-bold text-lg text-[#0A0A0A]">{t.commissionTracking || 'Commission Tracking'}</h3>
-                <p className="font-body text-sm text-[#4B5563]">Track revenue from successful loan disbursals (1% avg commission rate)</p>
+                <h3 className="font-heading font-bold text-lg text-[#0A1118] dark:text-[#FFFBF5]">{t.commissionTracking || 'Commission Tracking'}</h3>
+                <p className="font-body text-sm text-[#334155] dark:text-[#CBD5E1]">Track revenue from successful loan disbursals (1% avg commission rate)</p>
               </div>
             </div>
             <div className="flex gap-6">
               <div className="text-center">
                 <div className="font-heading text-2xl font-bold text-[#059669]">{formatCurrency(cs.estimated_commission || 0)}</div>
-                <div className="font-body text-xs text-[#9CA3AF]">Est. Revenue</div>
+                <div className="font-body text-xs text-[#94A3B8] dark:text-[#64748B]">Est. Revenue</div>
               </div>
               <div className="text-center">
-                <div className="font-heading text-2xl font-bold text-[#0A0A0A]">{cs.conversion_rate || 0}%</div>
-                <div className="font-body text-xs text-[#9CA3AF]">Conversion</div>
+                <div className="font-heading text-2xl font-bold text-[#0A1118] dark:text-[#FFFBF5]">{cs.conversion_rate || 0}%</div>
+                <div className="font-body text-xs text-[#94A3B8] dark:text-[#64748B]">Conversion</div>
               </div>
             </div>
           </div>
@@ -227,28 +227,28 @@ export default function AdminDashboard() {
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-t border-black/5 bg-[#F9F9FB]">
-                  <th className="text-left font-body text-xs text-[#9CA3AF] uppercase tracking-wider py-3 px-6">Lead ID</th>
-                  <th className="text-left font-body text-xs text-[#9CA3AF] uppercase tracking-wider py-3 px-4">Bank</th>
-                  <th className="text-left font-body text-xs text-[#9CA3AF] uppercase tracking-wider py-3 px-4">Product</th>
-                  <th className="text-left font-body text-xs text-[#9CA3AF] uppercase tracking-wider py-3 px-4">Status</th>
-                  <th className="text-left font-body text-xs text-[#9CA3AF] uppercase tracking-wider py-3 px-4">Date</th>
-                  <th className="text-left font-body text-xs text-[#9CA3AF] uppercase tracking-wider py-3 px-4">Action</th>
+                <tr className="border-t border-black/5 bg-[#FFFBF5] dark:bg-[#0B121C]">
+                  <th className="text-left font-body text-xs text-[#94A3B8] dark:text-[#64748B] uppercase tracking-wider py-3 px-6">Lead ID</th>
+                  <th className="text-left font-body text-xs text-[#94A3B8] dark:text-[#64748B] uppercase tracking-wider py-3 px-4">Bank</th>
+                  <th className="text-left font-body text-xs text-[#94A3B8] dark:text-[#64748B] uppercase tracking-wider py-3 px-4">Product</th>
+                  <th className="text-left font-body text-xs text-[#94A3B8] dark:text-[#64748B] uppercase tracking-wider py-3 px-4">Status</th>
+                  <th className="text-left font-body text-xs text-[#94A3B8] dark:text-[#64748B] uppercase tracking-wider py-3 px-4">Date</th>
+                  <th className="text-left font-body text-xs text-[#94A3B8] dark:text-[#64748B] uppercase tracking-wider py-3 px-4">Action</th>
                 </tr>
               </thead>
               <tbody>
                 {(analytics.recent_leads || []).map((lead) => (
-                  <tr key={lead.lead_id} className="border-t border-black/5 hover:bg-[#F9F9FB]/50 transition-colors" data-testid={`admin-lead-${lead.lead_id}`}>
-                    <td className="py-3 px-6 font-body text-xs text-[#4B5563]">{lead.lead_id}</td>
-                    <td className="py-3 px-4 font-heading font-semibold text-sm text-[#0A0A0A]">{lead.bank_name}</td>
-                    <td className="py-3 px-4 font-body text-sm text-[#4B5563]">{lead.product_name}</td>
+                  <tr key={lead.lead_id} className="border-t border-black/5 hover:bg-[#FFFBF5] dark:bg-[#0B121C]/50 transition-colors" data-testid={`admin-lead-${lead.lead_id}`}>
+                    <td className="py-3 px-6 font-body text-xs text-[#334155] dark:text-[#CBD5E1]">{lead.lead_id}</td>
+                    <td className="py-3 px-4 font-heading font-semibold text-sm text-[#0A1118] dark:text-[#FFFBF5]">{lead.bank_name}</td>
+                    <td className="py-3 px-4 font-body text-sm text-[#334155] dark:text-[#CBD5E1]">{lead.product_name}</td>
                     <td className="py-3 px-4">
                       <Badge className="text-xs" style={{
                         backgroundColor: `${STATUS_COLORS[lead.status]}20`,
                         color: STATUS_COLORS[lead.status]
                       }}>{lead.status}</Badge>
                     </td>
-                    <td className="py-3 px-4 font-body text-xs text-[#9CA3AF]">
+                    <td className="py-3 px-4 font-body text-xs text-[#94A3B8] dark:text-[#64748B]">
                       {new Date(lead.created_at).toLocaleDateString('en-IN')}
                     </td>
                     <td className="py-3 px-4">
@@ -269,7 +269,7 @@ export default function AdminDashboard() {
                   </tr>
                 ))}
                 {(!analytics.recent_leads || analytics.recent_leads.length === 0) && (
-                  <tr><td colSpan={6} className="py-12 text-center font-body text-[#9CA3AF]">No leads yet</td></tr>
+                  <tr><td colSpan={6} className="py-12 text-center font-body text-[#94A3B8] dark:text-[#64748B]">No leads yet</td></tr>
                 )}
               </tbody>
             </table>

@@ -16,8 +16,8 @@ function LoanTile({ product, t, compareList, toggleCompare, isLoggedIn, user, na
     (product.interest_rate <= 10 ? -5 : product.interest_rate <= 13 ? 0 : 10)
   ));
   const approvalColor = approvalScore >= 80
-    ? 'bg-[#DCFCE7] text-[#166534]'
-    : approvalScore >= 60 ? 'bg-[#FEF3C7] text-[#92400E]' : 'bg-[#F3F4F6] text-[#64748B]';
+    ? 'bg-[#DCFCE7] dark:bg-[#0E2818] text-[#166534]'
+    : approvalScore >= 60 ? 'bg-[#FEF3C7] dark:bg-[#3B2B0F] text-[#92400E]' : 'bg-[#F3F4F6] dark:bg-[#141C2A] text-[#64748B] dark:text-[#94A3B8] dark:text-[#64748B]';
   const isSelected = compareList.find(x => x.product_id === product.product_id);
   const isBest = product.isBestValue;
   const hasFeatures = product.features && product.features.length > 0;
@@ -32,15 +32,15 @@ function LoanTile({ product, t, compareList, toggleCompare, isLoggedIn, user, na
         <div className="flex items-center gap-3 md:w-56 flex-shrink-0">
           <button
             onClick={() => toggleCompare(product)}
-            className={`w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 transition-all duration-200 ${isSelected ? 'bg-[#0A1118] border-[#0A1118]' : 'border-[#D1D5DB] hover:border-[#0A1118] hover:scale-110'}`}
+            className={`w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 transition-all duration-200 ${isSelected ? 'bg-[#0A1118] border-[#0A1118]' : 'border-[#D1D5DB] dark:border-[#374151] hover:border-[#0A1118] hover:scale-110'}`}
             data-testid={`compare-${product.product_id}`}
           >
             {isSelected && <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6L5 9L10 3" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>}
           </button>
           <BankLogo bankName={product.bank_name} />
           <div className="min-w-0 flex-1">
-            <div className="font-heading font-bold text-sm text-[#0A1118] truncate">{product.bank_name}</div>
-            <div className="font-body text-xs text-[#64748B] truncate">{product.product_name}</div>
+            <div className="font-heading font-bold text-sm text-[#0A1118] dark:text-[#FFFBF5] truncate">{product.bank_name}</div>
+            <div className="font-body text-xs text-[#64748B] dark:text-[#94A3B8] dark:text-[#64748B] truncate">{product.product_name}</div>
           </div>
           {isBest && (
             <span className="bg-[#0A1118] text-[#FFB347] font-body text-[9px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full whitespace-nowrap shadow-sm">
@@ -53,15 +53,15 @@ function LoanTile({ product, t, compareList, toggleCompare, isLoggedIn, user, na
         <div className="flex-1 grid grid-cols-4 gap-3 md:gap-5">
           <div>
             <div className="cap">{t.ratePerAnnum}</div>
-            <div className="data-large text-base text-[#0A1118]">{product.interest_rate}<span className="text-xs text-[#94A3B8] font-medium">%</span></div>
+            <div className="data-large text-base text-[#0A1118] dark:text-[#FFFBF5]">{product.interest_rate}<span className="text-xs text-[#94A3B8] dark:text-[#64748B] font-medium">%</span></div>
           </div>
           <div>
             <div className="cap">{t.emiEst}</div>
-            <div className="font-numbers font-semibold text-sm text-[#0A1118]">{fmtRs(product.calc_emi)}<span className="text-[10px] text-[#94A3B8] font-normal">/mo</span></div>
+            <div className="font-numbers font-semibold text-sm text-[#0A1118] dark:text-[#FFFBF5]">{fmtRs(product.calc_emi)}<span className="text-[10px] text-[#94A3B8] dark:text-[#64748B] font-normal">/mo</span></div>
           </div>
           <div>
             <div className="cap">{t.totalCostLabel}</div>
-            <div className="data-large text-base text-[#0A1118]">{fmtRs(product.calc_total)}</div>
+            <div className="data-large text-base text-[#0A1118] dark:text-[#FFFBF5]">{fmtRs(product.calc_total)}</div>
           </div>
           <div>
             <div className="cap">{t.approvalOddsLabel}</div>
@@ -91,7 +91,7 @@ function LoanTile({ product, t, compareList, toggleCompare, isLoggedIn, user, na
               </Button>
             </Link>
           )}
-          <span className="font-body text-[10px] text-[#94A3B8]">{t.processingLabel} {product.processing_fee_pct}%</span>
+          <span className="font-body text-[10px] text-[#94A3B8] dark:text-[#64748B]">{t.processingLabel} {product.processing_fee_pct}%</span>
           {hasFeatures && (
             <button
               onClick={() => setShowDetails(s => !s)}
@@ -107,11 +107,11 @@ function LoanTile({ product, t, compareList, toggleCompare, isLoggedIn, user, na
 
       {/* Collapsible feature chips */}
       {hasFeatures && showDetails && (
-        <div className="relative z-10 mt-4 pt-4 border-t border-[#E5E7EB] snap-in" data-testid={`details-panel-${product.product_id}`}>
+        <div className="relative z-10 mt-4 pt-4 border-t border-[#E5E7EB] dark:border-[#1F2A3D] snap-in" data-testid={`details-panel-${product.product_id}`}>
           <div className="cap mb-2">Highlights</div>
           <div className="flex flex-wrap gap-1.5">
             {product.features.map((f, fi) => (
-              <span key={fi} className="font-body text-[11px] bg-[#FFFBF5] border border-[#FEF3C7] text-[#92400E] rounded-full px-2.5 py-1">{f}</span>
+              <span key={fi} className="font-body text-[11px] bg-[#FFFBF5] dark:bg-[#050810] border border-[#FEF3C7] dark:border-[#4A3614] text-[#92400E] rounded-full px-2.5 py-1">{f}</span>
             ))}
           </div>
         </div>
@@ -131,14 +131,14 @@ export function BrowseLoans({
 
         {/* Context bar */}
         <div className="flex flex-wrap items-center justify-between gap-3 mb-5" data-testid="loan-context-bar">
-          <div className="font-body text-sm text-[#334155]">
-            {t.showingLoansFor} <strong className="text-[#0A1118] font-numbers">{fmtRs(loanCtx.amount)}</strong> · <strong className="text-[#0A1118] font-numbers">{loanCtx.tenure} {t.months}</strong> · <strong className="text-[#0A1118]">{loanCtx.cibil === 'any' ? t.anyCibil : loanCtx.cibil}</strong>
+          <div className="font-body text-sm text-[#334155] dark:text-[#CBD5E1]">
+            {t.showingLoansFor} <strong className="text-[#0A1118] dark:text-[#FFFBF5] font-numbers">{fmtRs(loanCtx.amount)}</strong> · <strong className="text-[#0A1118] dark:text-[#FFFBF5] font-numbers">{loanCtx.tenure} {t.months}</strong> · <strong className="text-[#0A1118] dark:text-[#FFFBF5]">{loanCtx.cibil === 'any' ? t.anyCibil : loanCtx.cibil}</strong>
             <button onClick={() => setProfileModal(true)} className="text-[#C8860A] font-semibold ml-2 hover:text-[#A16207] underline-offset-2 hover:underline transition-colors" data-testid="change-context-btn">{t.change} ↗</button>
           </div>
-          <div className="flex items-center gap-2 font-body text-sm text-[#64748B]">
+          <div className="flex items-center gap-2 font-body text-sm text-[#64748B] dark:text-[#94A3B8] dark:text-[#64748B]">
             {t.sortByLabel}
-            <button onClick={() => setSortBy('total_cost')} className={`snap-press px-3 py-1 rounded-full text-xs font-semibold transition-colors ${sortBy === 'total_cost' ? 'bg-[#0A1118] text-white shadow-md' : 'bg-[#F3F4F6] text-[#64748B] hover:bg-[#E5E7EB]'}`} data-testid="sort-total-cost">{t.totalCostLabel}</button>
-            <button onClick={() => setSortBy('interest_rate')} className={`snap-press px-3 py-1 rounded-full text-xs font-semibold transition-colors ${sortBy === 'interest_rate' ? 'bg-[#0A1118] text-white shadow-md' : 'bg-[#F3F4F6] text-[#64748B] hover:bg-[#E5E7EB]'}`} data-testid="sort-interest">{t.interestRateSort}</button>
+            <button onClick={() => setSortBy('total_cost')} className={`snap-press px-3 py-1 rounded-full text-xs font-semibold transition-colors ${sortBy === 'total_cost' ? 'bg-[#0A1118] text-white shadow-md' : 'bg-[#F3F4F6] dark:bg-[#141C2A] text-[#64748B] dark:text-[#94A3B8] dark:text-[#64748B] hover:bg-[#E5E7EB]'}`} data-testid="sort-total-cost">{t.totalCostLabel}</button>
+            <button onClick={() => setSortBy('interest_rate')} className={`snap-press px-3 py-1 rounded-full text-xs font-semibold transition-colors ${sortBy === 'interest_rate' ? 'bg-[#0A1118] text-white shadow-md' : 'bg-[#F3F4F6] dark:bg-[#141C2A] text-[#64748B] dark:text-[#94A3B8] dark:text-[#64748B] hover:bg-[#E5E7EB]'}`} data-testid="sort-interest">{t.interestRateSort}</button>
           </div>
         </div>
 
@@ -151,7 +151,7 @@ export function BrowseLoans({
               <button
                 key={cat.key || 'all'}
                 onClick={() => { setSelectedCategory(cat.key); track('browse_category', { category: cat.key || 'all' }); }}
-                className={`snap-press flex-shrink-0 px-4 py-2 rounded-full font-body text-sm transition-colors ${selectedCategory === cat.key ? 'bg-[#0A1118] text-white font-semibold shadow-md' : 'bg-white border border-[#E5E7EB] text-[#334155] hover:border-[#C8860A] hover:text-[#0A1118]'}`}
+                className={`snap-press flex-shrink-0 px-4 py-2 rounded-full font-body text-sm transition-colors ${selectedCategory === cat.key ? 'bg-[#0A1118] text-white font-semibold shadow-md' : 'bg-white dark:bg-[#0B121C] border border-[#E5E7EB] dark:border-[#1F2A3D] text-[#334155] dark:text-[#CBD5E1] hover:border-[#C8860A] hover:text-[#0A1118] dark:text-[#FFFBF5]'}`}
                 data-testid={`category-${cat.key || 'all'}`}
               >
                 {t[cat.tKey]} <span className="font-numbers opacity-70">({count})</span>
@@ -187,7 +187,7 @@ export function BrowseLoans({
                 <Sparkles className="w-4 h-4 text-[#C8860A]" />
                 <span className="cap text-[#C8860A]">{t.getPersonalizedReco}</span>
               </div>
-              <p className="font-body text-sm text-[#334155]">{t.completeProfileBlurb}</p>
+              <p className="font-body text-sm text-[#334155] dark:text-[#CBD5E1]">{t.completeProfileBlurb}</p>
             </div>
             <Button onClick={() => navigate('/onboarding')} className="relative z-10 snap-press bg-[#0A1118] text-white hover:bg-[#1B2D45] rounded-xl px-6 h-11 font-body font-bold whitespace-nowrap shadow-md" data-testid="onboarding-nudge-btn">
               {t.completeProfileBtn} <ArrowRight className="w-4 h-4 ml-2" />
@@ -203,27 +203,27 @@ export function LoanContextModal({ t, open, onClose, loanCtx, setLoanCtx }) {
   if (!open) return null;
   return (
     <div className="fixed inset-0 z-[9999] bg-[#0A1118]/70 backdrop-blur-sm flex items-center justify-center p-4 snap-in" onClick={onClose}>
-      <div className="bg-white w-full max-w-md rounded-2xl p-7 shadow-2xl border border-[#E5E7EB]" onClick={e => e.stopPropagation()} data-testid="profile-modal">
+      <div className="bg-white dark:bg-[#0B121C] w-full max-w-md rounded-2xl p-7 shadow-2xl border border-[#E5E7EB] dark:border-[#1F2A3D]" onClick={e => e.stopPropagation()} data-testid="profile-modal">
         <div className="flex items-center justify-between mb-5">
-          <h3 className="font-heading font-bold text-lg text-[#0A1118]">{t.setLoanContext}</h3>
-          <button onClick={onClose} className="snap-press text-[#94A3B8] hover:text-[#0A1118]"><X className="w-5 h-5" /></button>
+          <h3 className="font-heading font-bold text-lg text-[#0A1118] dark:text-[#FFFBF5]">{t.setLoanContext}</h3>
+          <button onClick={onClose} className="snap-press text-[#94A3B8] dark:text-[#64748B] hover:text-[#0A1118] dark:text-[#FFFBF5]"><X className="w-5 h-5" /></button>
         </div>
         <div className="space-y-5">
           <div>
-            <label className="font-heading font-semibold text-sm text-[#0A1118] mb-2 block">{t.loanAmount}</label>
+            <label className="font-heading font-semibold text-sm text-[#0A1118] dark:text-[#FFFBF5] mb-2 block">{t.loanAmount}</label>
             <Slider value={[loanCtx.amount]} min={50000} max={10000000} step={50000} onValueChange={([v]) => setLoanCtx(p => ({...p, amount: v}))} />
-            <div className="font-numbers text-sm text-[#0A1118] mt-1 text-right font-semibold">{fmtRs(loanCtx.amount)}</div>
+            <div className="font-numbers text-sm text-[#0A1118] dark:text-[#FFFBF5] mt-1 text-right font-semibold">{fmtRs(loanCtx.amount)}</div>
           </div>
           <div>
-            <label className="font-heading font-semibold text-sm text-[#0A1118] mb-2 block">{t.tenure}</label>
+            <label className="font-heading font-semibold text-sm text-[#0A1118] dark:text-[#FFFBF5] mb-2 block">{t.tenure}</label>
             <div className="flex gap-2">{[12,24,36,48,60].map(m => (
-              <button key={m} onClick={() => setLoanCtx(p => ({...p, tenure: m}))} className={`snap-press flex-1 py-2 rounded-lg font-body text-sm font-semibold transition-colors ${loanCtx.tenure === m ? 'bg-[#0A1118] text-white shadow-md' : 'bg-[#F3F4F6] text-[#64748B] hover:bg-[#E5E7EB]'}`}>{m}mo</button>
+              <button key={m} onClick={() => setLoanCtx(p => ({...p, tenure: m}))} className={`snap-press flex-1 py-2 rounded-lg font-body text-sm font-semibold transition-colors ${loanCtx.tenure === m ? 'bg-[#0A1118] text-white shadow-md' : 'bg-[#F3F4F6] dark:bg-[#141C2A] text-[#64748B] dark:text-[#94A3B8] dark:text-[#64748B] hover:bg-[#E5E7EB]'}`}>{m}mo</button>
             ))}</div>
           </div>
           <div>
-            <label className="font-heading font-semibold text-sm text-[#0A1118] mb-2 block">{t.cibilScore}</label>
+            <label className="font-heading font-semibold text-sm text-[#0A1118] dark:text-[#FFFBF5] mb-2 block">{t.cibilScore}</label>
             <div className="flex gap-2">{[{v:'any',l:t.anyCibil},{v:'750+',l:'750+'},{v:'700-750',l:'700-750'},{v:'650-700',l:'650-700'},{v:'<650',l:'<650'}].map(c => (
-              <button key={c.v} onClick={() => setLoanCtx(p => ({...p, cibil: c.v}))} className={`snap-press flex-1 py-2 rounded-lg font-body text-xs font-semibold transition-colors ${loanCtx.cibil === c.v ? 'bg-[#0A1118] text-white shadow-md' : 'bg-[#F3F4F6] text-[#64748B] hover:bg-[#E5E7EB]'}`}>{c.l}</button>
+              <button key={c.v} onClick={() => setLoanCtx(p => ({...p, cibil: c.v}))} className={`snap-press flex-1 py-2 rounded-lg font-body text-xs font-semibold transition-colors ${loanCtx.cibil === c.v ? 'bg-[#0A1118] text-white shadow-md' : 'bg-[#F3F4F6] dark:bg-[#141C2A] text-[#64748B] dark:text-[#94A3B8] dark:text-[#64748B] hover:bg-[#E5E7EB]'}`}>{c.l}</button>
             ))}</div>
           </div>
           <Button onClick={onClose} className="snap-press w-full bg-[#0A1118] text-white hover:bg-[#1B2D45] rounded-xl h-11 font-body font-bold shadow-md">{t.applyUpdateCards}</Button>

@@ -16,14 +16,13 @@ export function EmiCalculatorSection({ t }) {
   ];
 
   return (
-    <section id="emi-calculator" className="py-20 px-6 lg:px-8 relative" data-testid="emi-calculator-section"
-             style={{ background: 'linear-gradient(180deg, #FAF5EA 0%, #FFFBF5 100%)' }}>
+    <section id="emi-calculator" className="py-20 px-6 lg:px-8 relative bg-[#FAF5EA] dark:bg-[#0B121C]" data-testid="emi-calculator-section">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-12">
           <div className="inline-flex items-center gap-2 cap text-[#C8860A] mb-2">
             <Calculator className="w-3.5 h-3.5" /> {t.emiCalcKicker}
           </div>
-          <h2 className="font-heading font-bold text-3xl md:text-4xl text-[#0A1118] tracking-tight">
+          <h2 className="font-heading font-bold text-3xl md:text-4xl text-[#0A1118] dark:text-[#FFFBF5] tracking-tight">
             {t.emiCalcHeader} <span className="hero-headline accent">{t.emiCalcHeaderAccent}</span>
           </h2>
         </div>
@@ -33,28 +32,28 @@ export function EmiCalculatorSection({ t }) {
           <div className="bismuth-tile p-8">
             <div className="relative z-10 space-y-7">
               <div>
-                <label className="font-heading font-semibold text-sm text-[#0A1118] mb-3 flex items-center justify-between">
+                <label className="font-heading font-semibold text-sm text-[#0A1118] dark:text-[#FFFBF5] mb-3 flex items-center justify-between">
                   <span>{t.howMuchNeed}</span>
                   <span className="data-large text-lg text-[#C8860A]">{fmtRs(calcAmt)}</span>
                 </label>
                 <Slider value={[calcAmt]} min={50000} max={10000000} step={50000} onValueChange={([v]) => setCalcAmt(v)} className="mb-2" />
-                <div className="flex justify-between font-body text-[10px] text-[#94A3B8]"><span>₹50K</span><span>₹1 Cr</span></div>
+                <div className="flex justify-between font-body text-[10px] text-[#94A3B8] dark:text-[#64748B]"><span>₹50K</span><span>₹1 Cr</span></div>
               </div>
               <div>
-                <label className="font-heading font-semibold text-sm text-[#0A1118] mb-3 flex items-center justify-between">
+                <label className="font-heading font-semibold text-sm text-[#0A1118] dark:text-[#FFFBF5] mb-3 flex items-center justify-between">
                   <span>{t.expectedRate}</span>
                   <span className="data-large text-lg text-[#C8860A]">{calcRate}%</span>
                 </label>
                 <Slider value={[calcRate]} min={5} max={24} step={0.25} onValueChange={([v]) => setCalcRate(v)} className="mb-2" />
-                <div className="flex justify-between font-body text-[10px] text-[#94A3B8]"><span>5%</span><span>24%</span></div>
+                <div className="flex justify-between font-body text-[10px] text-[#94A3B8] dark:text-[#64748B]"><span>5%</span><span>24%</span></div>
               </div>
               <div>
-                <label className="font-heading font-semibold text-sm text-[#0A1118] mb-3 flex items-center justify-between">
+                <label className="font-heading font-semibold text-sm text-[#0A1118] dark:text-[#FFFBF5] mb-3 flex items-center justify-between">
                   <span>{t.forHowLong}</span>
                   <span className="data-large text-lg text-[#C8860A]">{calcTenure >= 12 ? `${Math.round(calcTenure/12)} yr` : `${calcTenure} mo`}</span>
                 </label>
                 <Slider value={[calcTenure]} min={6} max={360} step={6} onValueChange={([v]) => setCalcTenure(v)} className="mb-2" />
-                <div className="flex justify-between font-body text-[10px] text-[#94A3B8]"><span>6 mo</span><span>30 yr</span></div>
+                <div className="flex justify-between font-body text-[10px] text-[#94A3B8] dark:text-[#64748B]"><span>6 mo</span><span>30 yr</span></div>
               </div>
 
               <div className="pt-2">
@@ -66,8 +65,8 @@ export function EmiCalculatorSection({ t }) {
                   </PieChart>
                 </ResponsiveContainer>
                 <div className="flex justify-center gap-6 mt-2">
-                  <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-[#0A1118]" /><span className="font-body text-xs text-[#334155]">{t.principal}</span></div>
-                  <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-[#FFB347]" /><span className="font-body text-xs text-[#334155]">{t.interest}</span></div>
+                  <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-[#0A1118]" /><span className="font-body text-xs text-[#334155] dark:text-[#CBD5E1]">{t.principal}</span></div>
+                  <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-[#FFB347]" /><span className="font-body text-xs text-[#334155] dark:text-[#CBD5E1]">{t.interest}</span></div>
                 </div>
               </div>
             </div>
@@ -78,7 +77,7 @@ export function EmiCalculatorSection({ t }) {
             <div className="bismuth-tile bismuth-tile-best p-7">
               <div className="relative z-10">
                 <div className="cap text-[#C8860A]">{t.monthlyEMI}</div>
-                <div className="data-large text-5xl text-[#0A1118] mt-1">{fmtRs(calcResult.emi)}</div>
+                <div className="data-large text-5xl text-[#0A1118] dark:text-[#FFFBF5] mt-1">{fmtRs(calcResult.emi)}</div>
               </div>
             </div>
             <div className="grid grid-cols-2 gap-4">
@@ -91,7 +90,7 @@ export function EmiCalculatorSection({ t }) {
               <div className="bismuth-tile p-6">
                 <div className="relative z-10">
                   <div className="cap">{t.totalRepayment}</div>
-                  <div className="data-large text-2xl text-[#0A1118] mt-1">{fmtRs(calcResult.total)}</div>
+                  <div className="data-large text-2xl text-[#0A1118] dark:text-[#FFFBF5] mt-1">{fmtRs(calcResult.total)}</div>
                 </div>
               </div>
             </div>

@@ -36,9 +36,9 @@ const statusColors = {
 };
 
 const impactColors = {
-  high: 'bg-[#059669]/10 text-[#059669]',
+  high: 'bg-[#10B981] dark:bg-[#34D399] dark:text-[#0A1118]/10 text-[#059669]',
   medium: 'bg-[#F59E0B]/10 text-[#F59E0B]',
-  low: 'bg-[#6B7280]/10 text-[#6B7280]',
+  low: 'bg-[#6B7280]/10 text-[#64748B] dark:text-[#94A3B8]',
 };
 
 export default function DashboardPage() {
@@ -189,7 +189,7 @@ export default function DashboardPage() {
 
   if (dataLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#F9F9FB]">
+      <div className="min-h-screen flex items-center justify-center bg-[#FFFBF5] dark:bg-[#0B121C]">
         <Loader2 className="w-8 h-8 animate-spin text-[#059669]" />
       </div>
     );
@@ -198,13 +198,13 @@ export default function DashboardPage() {
   const leadProductIds = new Set(leads.filter(l => l.status !== 'revoked').map(l => l.product_id));
 
   return (
-    <div className="min-h-screen bg-mesh-light" data-testid="dashboard-page">
+    <div className="min-h-screen bg-[#FFFBF5] dark:bg-[#050810]" data-testid="dashboard-page">
       {/* Nav */}
       <nav className="glass-nav fixed top-0 w-full z-50" data-testid="dashboard-navbar">
         <div className="max-w-7xl mx-auto px-6 lg:px-8 flex items-center justify-between h-16">
           <a href="/" className="flex items-center gap-2.5 cursor-pointer" data-testid="logo-home-link">
             <img src="https://static.prod-images.emergentagent.com/jobs/46236293-45eb-486f-8de9-3cfd3f7e2526/images/251ac3f41bd806cd53ef74f0a949d1a3be51ac19219729fbf89fb0dba4f12b85.png" alt="Rinkosh" className="w-7 h-7 object-contain" />
-            <span className="font-heading font-bold text-lg text-[#0A0A0A] tracking-tight">Rinkosh</span>
+            <span className="font-heading font-bold text-lg text-[#0A1118] dark:text-[#FFFBF5] tracking-tight">Rinkosh</span>
           </a>
           <div className="flex items-center gap-3">
             <LanguageToggle />
@@ -212,16 +212,16 @@ export default function DashboardPage() {
             <SoundToggle />
             <Separator orientation="vertical" className="h-6" />
             {user?.role === 'admin' && (
-              <Button variant="ghost" size="sm" onClick={() => navigate('/admin')} className="text-[#4B5563] hover:text-[#059669] font-body text-xs" data-testid="admin-link">Admin</Button>
+              <Button variant="ghost" size="sm" onClick={() => navigate('/admin')} className="text-[#334155] dark:text-[#CBD5E1] hover:text-[#059669] font-body text-xs" data-testid="admin-link">Admin</Button>
             )}
-            <Button variant="ghost" size="sm" onClick={() => setProfileOpen(true)} className="text-[#4B5563] hover:text-[#059669]" data-testid="edit-profile-button">
+            <Button variant="ghost" size="sm" onClick={() => setProfileOpen(true)} className="text-[#334155] dark:text-[#CBD5E1] hover:text-[#059669]" data-testid="edit-profile-button">
               <Settings className="w-4 h-4" />
             </Button>
-            <Button variant="ghost" size="sm" onClick={() => setDeleteConfirm(true)} className="text-[#9CA3AF] hover:text-red-500 hidden md:flex" data-testid="delete-account-nav" title={language === 'hi' ? 'खाता हटाएं' : 'Delete Account'}>
+            <Button variant="ghost" size="sm" onClick={() => setDeleteConfirm(true)} className="text-[#94A3B8] dark:text-[#64748B] hover:text-red-500 hidden md:flex" data-testid="delete-account-nav" title={language === 'hi' ? 'खाता हटाएं' : 'Delete Account'}>
               <Trash2 className="w-4 h-4" />
             </Button>
-            <span className="font-body text-sm text-[#4B5563] hidden md:inline">{user?.name}</span>
-            <Button variant="ghost" size="sm" onClick={handleLogout} className="text-[#4B5563] hover:text-red-500" data-testid="logout-button">
+            <span className="font-body text-sm text-[#334155] dark:text-[#CBD5E1] hidden md:inline">{user?.name}</span>
+            <Button variant="ghost" size="sm" onClick={handleLogout} className="text-[#334155] dark:text-[#CBD5E1] hover:text-red-500" data-testid="logout-button">
               <LogOut className="w-4 h-4" />
             </Button>
           </div>
@@ -232,17 +232,17 @@ export default function DashboardPage() {
         {/* Welcome */}
         <div className="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <div>
-            <h1 className="font-heading text-2xl md:text-3xl font-bold text-[#0A0A0A] tracking-tight">
+            <h1 className="font-heading text-2xl md:text-3xl font-bold text-[#0A1118] dark:text-[#FFFBF5] tracking-tight">
               {t.welcome}, {user?.name?.split(' ')[0]}
             </h1>
-            <p className="font-body text-[#4B5563] mt-1">
+            <p className="font-body text-[#334155] dark:text-[#CBD5E1] mt-1">
               {recommendations.length} {t.recommendations.toLowerCase()} {t.found}
             </p>
           </div>
           <Button
             variant="outline"
             onClick={() => navigate('/onboarding')}
-            className="rounded-full font-body text-sm border-[#E5E7EB] hover:border-[#059669] hover:text-[#059669] px-5"
+            className="rounded-full font-body text-sm border-[#E5E7EB] dark:border-[#1F2A3D] hover:border-[#059669] hover:text-[#059669] px-5"
             data-testid="change-preferences-btn"
           >
             <Settings className="w-4 h-4 mr-2" />
@@ -251,24 +251,24 @@ export default function DashboardPage() {
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="bg-white border border-black/5 rounded-full p-1 h-auto flex-wrap" data-testid="dashboard-tabs">
-            <TabsTrigger value="recommendations" className="rounded-full font-body data-[state=active]:bg-[#111827] data-[state=active]:text-white px-4 py-2 text-sm" data-testid="tab-recommendations">{t.recommendations}</TabsTrigger>
-            <TabsTrigger value="leads" className="rounded-full font-body data-[state=active]:bg-[#111827] data-[state=active]:text-white px-4 py-2 text-sm" data-testid="tab-leads">{t.myLeads} {leads.length > 0 && <Badge variant="secondary" className="ml-1 text-xs">{leads.length}</Badge>}</TabsTrigger>
-            <TabsTrigger value="credit" className="rounded-full font-body data-[state=active]:bg-[#111827] data-[state=active]:text-white px-4 py-2 text-sm" data-testid="tab-credit">{t.creditBuilder}</TabsTrigger>
-            <TabsTrigger value="ai" className="rounded-full font-body data-[state=active]:bg-[#111827] data-[state=active]:text-white px-4 py-2 text-sm" data-testid="tab-ai">{t.aiAdvisor}</TabsTrigger>
-            <TabsTrigger value="tools" className="rounded-full font-body data-[state=active]:bg-[#111827] data-[state=active]:text-white px-4 py-2 text-sm" data-testid="tab-tools">{t.emiCalcTitle || 'EMI Calculator'}</TabsTrigger>
+          <TabsList className="bg-white dark:bg-[#0B121C] border border-black/5 rounded-full p-1 h-auto flex-wrap" data-testid="dashboard-tabs">
+            <TabsTrigger value="recommendations" className="rounded-full font-body data-[state=active]:bg-[#0A1118] dark:bg-[#FFB347] dark:text-[#0A1118] data-[state=active]:text-white px-4 py-2 text-sm" data-testid="tab-recommendations">{t.recommendations}</TabsTrigger>
+            <TabsTrigger value="leads" className="rounded-full font-body data-[state=active]:bg-[#0A1118] dark:bg-[#FFB347] dark:text-[#0A1118] data-[state=active]:text-white px-4 py-2 text-sm" data-testid="tab-leads">{t.myLeads} {leads.length > 0 && <Badge variant="secondary" className="ml-1 text-xs">{leads.length}</Badge>}</TabsTrigger>
+            <TabsTrigger value="credit" className="rounded-full font-body data-[state=active]:bg-[#0A1118] dark:bg-[#FFB347] dark:text-[#0A1118] data-[state=active]:text-white px-4 py-2 text-sm" data-testid="tab-credit">{t.creditBuilder}</TabsTrigger>
+            <TabsTrigger value="ai" className="rounded-full font-body data-[state=active]:bg-[#0A1118] dark:bg-[#FFB347] dark:text-[#0A1118] data-[state=active]:text-white px-4 py-2 text-sm" data-testid="tab-ai">{t.aiAdvisor}</TabsTrigger>
+            <TabsTrigger value="tools" className="rounded-full font-body data-[state=active]:bg-[#0A1118] dark:bg-[#FFB347] dark:text-[#0A1118] data-[state=active]:text-white px-4 py-2 text-sm" data-testid="tab-tools">{t.emiCalcTitle || 'EMI Calculator'}</TabsTrigger>
           </TabsList>
 
           {/* Recommendations Tab */}
           <TabsContent value="recommendations" className="space-y-4" data-testid="recommendations-content">
             {recommendations.length === 0 ? (
               <Card className="rounded-2xl border border-black/5 p-12 text-center">
-                <p className="font-body text-[#4B5563]">
+                <p className="font-body text-[#334155] dark:text-[#CBD5E1]">
                   {user?.has_profile
                     ? (language === 'hi' ? 'इस लोन प्रकार के लिए अभी कोई मिलान नहीं मिला। अपनी प्रोफाइल अपडेट करें या अन्य विकल्प देखें।' : 'No matching loans found for your profile. Try updating your preferences or explore other options.')
                     : t.completeProfile}
                 </p>
-                <Button onClick={() => navigate(user?.has_profile ? '/onboarding' : '/onboarding')} className="mt-4 rounded-full bg-[#059669] hover:bg-[#047857] text-white font-body" data-testid="go-onboarding-btn">
+                <Button onClick={() => navigate(user?.has_profile ? '/onboarding' : '/onboarding')} className="mt-4 rounded-full bg-[#10B981] dark:bg-[#34D399] dark:text-[#0A1118] hover:bg-[#059669] dark:hover:bg-[#10B981] text-white font-body" data-testid="go-onboarding-btn">
                   {user?.has_profile
                     ? (language === 'hi' ? 'प्रोफाइल अपडेट करें' : 'Update Preferences')
                     : t.completeProfileBtn} <ArrowRight className="w-4 h-4 ml-2" />
@@ -284,43 +284,43 @@ export default function DashboardPage() {
                           <Checkbox
                             checked={compareList.some(r => r.product_id === rec.product_id)}
                             onCheckedChange={() => toggleCompare(rec)}
-                            className="mt-1 border-[#E5E7EB] data-[state=checked]:bg-[#059669] data-[state=checked]:border-[#059669]"
+                            className="mt-1 border-[#E5E7EB] dark:border-[#1F2A3D] data-[state=checked]:bg-[#10B981] dark:bg-[#34D399] dark:text-[#0A1118] data-[state=checked]:border-[#059669]"
                             data-testid={`compare-check-${rec.product_id}`}
                           />
                           <BankLogo bankName={rec.bank_name} />
                           <div>
                           <div className="flex items-center gap-2">
-                            <h3 className="font-heading font-bold text-[#0A0A0A]">{rec.bank_name}</h3>
-                            {idx === 0 && <Badge className="bg-[#059669] text-white text-xs">{t.best}</Badge>}
+                            <h3 className="font-heading font-bold text-[#0A1118] dark:text-[#FFFBF5]">{rec.bank_name}</h3>
+                            {idx === 0 && <Badge className="bg-[#10B981] dark:bg-[#34D399] dark:text-[#0A1118] text-white text-xs">{t.best}</Badge>}
                           </div>
-                          <p className="font-body text-sm text-[#4B5563]">{rec.product_name}</p>
+                          <p className="font-body text-sm text-[#334155] dark:text-[#CBD5E1]">{rec.product_name}</p>
                           </div>
                         </div>
                         <div className="text-right">
                           <div className="font-heading text-2xl font-bold text-[#059669]">{rec.interest_rate}%</div>
-                          <span className="font-body text-xs text-[#9CA3AF]">{t.interestRate}</span>
+                          <span className="font-body text-xs text-[#94A3B8] dark:text-[#64748B]">{t.interestRate}</span>
                         </div>
                       </div>
 
                       <div className="grid grid-cols-3 gap-3 mb-4">
-                        <div className="bg-[#F9F9FB] rounded-xl p-3 text-center">
-                          <div className="font-heading font-bold text-[#0A0A0A] text-sm">{formatCurrency(rec.emi)}</div>
-                          <div className="font-body text-xs text-[#9CA3AF]">{t.emi}</div>
+                        <div className="bg-[#FFFBF5] dark:bg-[#0B121C] rounded-xl p-3 text-center">
+                          <div className="font-heading font-bold text-[#0A1118] dark:text-[#FFFBF5] text-sm">{formatCurrency(rec.emi)}</div>
+                          <div className="font-body text-xs text-[#94A3B8] dark:text-[#64748B]">{t.emi}</div>
                         </div>
-                        <div className="bg-[#F9F9FB] rounded-xl p-3 text-center">
-                          <div className="font-heading font-bold text-[#0A0A0A] text-sm">{formatCurrency(rec.processing_fee)}</div>
-                          <div className="font-body text-xs text-[#9CA3AF]">{t.processingFee}</div>
+                        <div className="bg-[#FFFBF5] dark:bg-[#0B121C] rounded-xl p-3 text-center">
+                          <div className="font-heading font-bold text-[#0A1118] dark:text-[#FFFBF5] text-sm">{formatCurrency(rec.processing_fee)}</div>
+                          <div className="font-body text-xs text-[#94A3B8] dark:text-[#64748B]">{t.processingFee}</div>
                         </div>
-                        <div className="bg-[#F9F9FB] rounded-xl p-3 text-center">
-                          <div className="font-heading font-bold text-[#0A0A0A] text-sm">{formatCurrency(rec.total_cost)}</div>
-                          <div className="font-body text-xs text-[#9CA3AF]">{t.totalCost}</div>
+                        <div className="bg-[#FFFBF5] dark:bg-[#0B121C] rounded-xl p-3 text-center">
+                          <div className="font-heading font-bold text-[#0A1118] dark:text-[#FFFBF5] text-sm">{formatCurrency(rec.total_cost)}</div>
+                          <div className="font-body text-xs text-[#94A3B8] dark:text-[#64748B]">{t.totalCost}</div>
                         </div>
                       </div>
 
                       <div className="flex items-center justify-between mb-1">
                         <div className="flex items-center gap-2">
                           <Target className="w-4 h-4 text-[#059669]" strokeWidth={1.5} />
-                          <span className="font-body text-sm text-[#4B5563]">{t.approvalChance}</span>
+                          <span className="font-body text-sm text-[#334155] dark:text-[#CBD5E1]">{t.approvalChance}</span>
                         </div>
                         <span className={`font-heading font-bold text-sm ${rec.approval_probability >= 70 ? 'text-[#059669]' : rec.approval_probability >= 40 ? 'text-[#D97706]' : 'text-[#DC2626]'}`}>{rec.approval_probability}%</span>
                       </div>
@@ -328,20 +328,20 @@ export default function DashboardPage() {
                       {rec.approval_reasons && rec.approval_reasons.length > 0 && (
                         <div className="flex flex-wrap gap-1 mb-3">
                           {rec.approval_reasons.map((r, ri) => (
-                            <span key={ri} className={`font-body text-[10px] px-2 py-0.5 rounded-full ${r.includes('tie-up') ? 'bg-[#059669]/15 text-[#059669] font-semibold' : 'bg-[#F3F4F6] text-[#4B5563]'}`}>{r}</span>
+                            <span key={ri} className={`font-body text-[10px] px-2 py-0.5 rounded-full ${r.includes('tie-up') ? 'bg-[#10B981] dark:bg-[#34D399] dark:text-[#0A1118]/15 text-[#059669] font-semibold' : 'bg-[#F3F4F6] dark:bg-[#141C2A] text-[#334155] dark:text-[#CBD5E1]'}`}>{r}</span>
                           ))}
                         </div>
                       )}
                       {rec.corporate_tieups && rec.corporate_tieups.length > 0 && (
                         <div className="flex flex-wrap gap-1 mb-3">
                           {rec.corporate_tieups.map((t, ti) => (
-                            <span key={ti} className="font-body text-[9px] bg-[#059669]/10 text-[#059669] rounded-full px-2 py-0.5 font-bold uppercase">{t}</span>
+                            <span key={ti} className="font-body text-[9px] bg-[#10B981] dark:bg-[#34D399] dark:text-[#0A1118]/10 text-[#059669] rounded-full px-2 py-0.5 font-bold uppercase">{t}</span>
                           ))}
                         </div>
                       )}
 
                       {rec.savings > 0 && (
-                        <div className="flex items-center gap-2 bg-[#059669]/5 rounded-lg p-2.5 mb-3">
+                        <div className="flex items-center gap-2 bg-[#10B981] dark:bg-[#34D399] dark:text-[#0A1118]/5 rounded-lg p-2.5 mb-3">
                           <TrendingDown className="w-4 h-4 text-[#059669] flex-shrink-0" strokeWidth={1.5} />
                           <span className="font-body text-sm text-[#059669] font-medium">
                             {t.save} {formatCurrency(rec.savings)} {t.over} {rec.desired_tenure_months >= 12 ? `${Math.round(rec.desired_tenure_months / 12)} ${t.years}` : `${rec.desired_tenure_months} ${t.months}`} {t.vsWorst}
@@ -351,10 +351,10 @@ export default function DashboardPage() {
 
                       <div className="flex flex-wrap gap-1.5 mb-4">
                         {rec.features?.map((f, i) => (
-                          <span key={i} className="font-body text-xs bg-[#F3F4F6] text-[#4B5563] px-2 py-0.5 rounded-full">{f}</span>
+                          <span key={i} className="font-body text-xs bg-[#F3F4F6] dark:bg-[#141C2A] text-[#334155] dark:text-[#CBD5E1] px-2 py-0.5 rounded-full">{f}</span>
                         ))}
                         {rec.foreclosure_charge_pct === 0 && (
-                          <span className="font-body text-xs bg-[#059669]/10 text-[#059669] px-2 py-0.5 rounded-full">No foreclosure</span>
+                          <span className="font-body text-xs bg-[#10B981] dark:bg-[#34D399] dark:text-[#0A1118]/10 text-[#059669] px-2 py-0.5 rounded-full">No foreclosure</span>
                         )}
                       </div>
 
@@ -364,7 +364,7 @@ export default function DashboardPage() {
                         className={`w-full rounded-full font-body font-semibold h-10 transition-all ${
                           leadProductIds.has(rec.product_id)
                             ? 'bg-gray-100 text-gray-400'
-                            : 'bg-[#059669] hover:bg-[#047857] text-white btn-glow'
+                            : 'bg-[#10B981] dark:bg-[#34D399] dark:text-[#0A1118] hover:bg-[#059669] dark:hover:bg-[#10B981] text-white btn-glow'
                         }`}
                         data-testid={`interested-btn-${rec.product_id}`}
                       >
@@ -385,7 +385,7 @@ export default function DashboardPage() {
               <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 animate-fade-in-up">
                 <Button
                   onClick={() => setCompareOpen(true)}
-                  className="bg-[#111827] hover:bg-[#000000] text-white rounded-full px-8 py-3 font-body font-semibold shadow-2xl h-12"
+                  className="bg-[#0A1118] dark:bg-[#FFB347] dark:text-[#0A1118] hover:bg-[#000000] text-white rounded-full px-8 py-3 font-body font-semibold shadow-2xl h-12"
                   data-testid="open-compare-button"
                 >
                   <Scale className="w-4 h-4 mr-2" />
@@ -399,8 +399,8 @@ export default function DashboardPage() {
           <TabsContent value="leads" className="space-y-4" data-testid="leads-content">
             {leads.length === 0 ? (
               <Card className="rounded-2xl border border-black/5 p-12 text-center">
-                <Ban className="w-10 h-10 text-[#9CA3AF] mx-auto mb-4" />
-                <p className="font-body text-[#4B5563]">{t.noLeadsExpress}</p>
+                <Ban className="w-10 h-10 text-[#94A3B8] dark:text-[#64748B] mx-auto mb-4" />
+                <p className="font-body text-[#334155] dark:text-[#CBD5E1]">{t.noLeadsExpress}</p>
               </Card>
             ) : (
               <div className="space-y-3">
@@ -409,11 +409,11 @@ export default function DashboardPage() {
                     <div className="flex items-center justify-between">
                       <div className="flex-1">
                         <div className="flex items-center gap-3">
-                          <h3 className="font-heading font-semibold text-[#0A0A0A]">{lead.bank_name}</h3>
+                          <h3 className="font-heading font-semibold text-[#0A1118] dark:text-[#FFFBF5]">{lead.bank_name}</h3>
                           <Badge className={`text-xs ${statusColors[lead.status] || ''}`}>{lead.status}</Badge>
                         </div>
-                        <p className="font-body text-sm text-[#4B5563] mt-0.5">{lead.product_name}</p>
-                        <p className="font-body text-xs text-[#9CA3AF] mt-1">
+                        <p className="font-body text-sm text-[#334155] dark:text-[#CBD5E1] mt-0.5">{lead.product_name}</p>
+                        <p className="font-body text-xs text-[#94A3B8] dark:text-[#64748B] mt-1">
                           Lead ID: {lead.lead_id} | {new Date(lead.created_at).toLocaleDateString('en-IN')}
                         </p>
                       </div>
@@ -423,7 +423,7 @@ export default function DashboardPage() {
                             <Button
                               size="sm"
                               onClick={() => { setAppFormLead(lead); setAppForm(f => ({ ...f, full_name: user?.name || '' })); }}
-                              className="rounded-full bg-[#059669] hover:bg-[#047857] text-white font-body text-xs px-4"
+                              className="rounded-full bg-[#10B981] dark:bg-[#34D399] dark:text-[#0A1118] hover:bg-[#059669] dark:hover:bg-[#10B981] text-white font-body text-xs px-4"
                               data-testid={`apply-digital-${lead.lead_id}`}
                             >
                               <ArrowRight className="w-3.5 h-3.5 mr-1" />{language === 'hi' ? 'डिजिटल आवेदन' : 'Apply Digitally'}
@@ -453,7 +453,7 @@ export default function DashboardPage() {
               {creditSuggestions.map((s) => (
                 <Card key={s.id} className="rounded-2xl border border-black/5 p-6 loan-card" data-testid={`credit-${s.id}`}>
                   <div className="flex items-start gap-4">
-                    <div className="w-10 h-10 rounded-xl bg-[#059669]/10 flex items-center justify-center flex-shrink-0">
+                    <div className="w-10 h-10 rounded-xl bg-[#10B981] dark:bg-[#34D399] dark:text-[#0A1118]/10 flex items-center justify-center flex-shrink-0">
                       {s.category === 'credit_card' ? <CreditCard className="w-5 h-5 text-[#059669]" strokeWidth={1.5} /> :
                        s.category === 'habit' ? <Target className="w-5 h-5 text-[#059669]" strokeWidth={1.5} /> :
                        s.category === 'loan' ? <TrendingDown className="w-5 h-5 text-[#059669]" strokeWidth={1.5} /> :
@@ -461,9 +461,9 @@ export default function DashboardPage() {
                     </div>
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-1">
-                        <h3 className="font-heading font-semibold text-[#0A0A0A] text-sm">{s.title}</h3>
+                        <h3 className="font-heading font-semibold text-[#0A1118] dark:text-[#FFFBF5] text-sm">{s.title}</h3>
                       </div>
-                      <p className="font-body text-sm text-[#4B5563] leading-relaxed">{s.description}</p>
+                      <p className="font-body text-sm text-[#334155] dark:text-[#CBD5E1] leading-relaxed">{s.description}</p>
                       <div className="flex gap-2 mt-3">
                         <Badge className={`text-xs ${impactColors[s.impact] || ''}`}>{s.impact} impact</Badge>
                         <Badge variant="outline" className="text-xs">{s.difficulty}</Badge>
@@ -478,21 +478,21 @@ export default function DashboardPage() {
           {/* AI Advisor Tab */}
           <TabsContent value="ai" className="space-y-4" data-testid="ai-content">
             <Card className="rounded-2xl border border-black/5 overflow-hidden">
-              <div className="bg-white p-4 border-b border-black/5 flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full bg-[#059669]/10 flex items-center justify-center">
+              <div className="bg-white dark:bg-[#0B121C] p-4 border-b border-black/5 flex items-center gap-3">
+                <div className="w-8 h-8 rounded-full bg-[#10B981] dark:bg-[#34D399] dark:text-[#0A1118]/10 flex items-center justify-center">
                   <Sparkles className="w-4 h-4 text-[#059669]" />
                 </div>
                 <div>
-                  <h3 className="font-heading font-semibold text-sm text-[#0A0A0A]">{t.aiAdvisor}</h3>
-                  <p className="font-body text-xs text-[#9CA3AF]">Powered by Claude AI | {language === 'hi' ? 'हिंदी' : 'English'}</p>
+                  <h3 className="font-heading font-semibold text-sm text-[#0A1118] dark:text-[#FFFBF5]">{t.aiAdvisor}</h3>
+                  <p className="font-body text-xs text-[#94A3B8] dark:text-[#64748B]">Powered by Claude AI | {language === 'hi' ? 'हिंदी' : 'English'}</p>
                 </div>
               </div>
 
-              <div className="h-[400px] overflow-y-auto custom-scroll p-4 space-y-3 bg-[#F9F9FB]" data-testid="ai-messages">
+              <div className="h-[400px] overflow-y-auto custom-scroll p-4 space-y-3 bg-[#FFFBF5] dark:bg-[#0B121C]" data-testid="ai-messages">
                 {messages.length === 0 && (
                   <div className="text-center py-12">
                     <Sparkles className="w-8 h-8 text-[#059669]/30 mx-auto mb-3" />
-                    <p className="font-body text-sm text-[#9CA3AF]">
+                    <p className="font-body text-sm text-[#94A3B8] dark:text-[#64748B]">
                       {language === 'hi' ? 'कोई भी सवाल पूछें...' : t.askAnything}
                     </p>
                     <div className="flex flex-wrap gap-2 justify-center mt-4">
@@ -500,7 +500,7 @@ export default function DashboardPage() {
                         <button
                           key={q}
                           onClick={() => { setChatInput(q); }}
-                          className="font-body text-xs bg-white border border-black/5 rounded-full px-3 py-1.5 text-[#4B5563] hover:border-[#059669] transition-colors"
+                          className="font-body text-xs bg-white dark:bg-[#0B121C] border border-black/5 rounded-full px-3 py-1.5 text-[#334155] dark:text-[#CBD5E1] hover:border-[#059669] transition-colors"
                           data-testid={`suggestion-${q.split(' ').slice(0,3).join('-').toLowerCase()}`}
                         >
                           {q}
@@ -513,8 +513,8 @@ export default function DashboardPage() {
                   <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'} message-enter`}>
                     <div className={`max-w-[80%] rounded-2xl px-4 py-3 ${
                       msg.role === 'user'
-                        ? 'bg-[#111827] text-white'
-                        : 'bg-white border border-black/5 text-[#0A0A0A]'
+                        ? 'bg-[#0A1118] dark:bg-[#FFB347] dark:text-[#0A1118] text-white'
+                        : 'bg-white dark:bg-[#0B121C] border border-black/5 text-[#0A1118] dark:text-[#FFFBF5]'
                     }`}>
                       <p className="font-body text-sm whitespace-pre-wrap">{msg.text}</p>
                     </div>
@@ -522,11 +522,11 @@ export default function DashboardPage() {
                 ))}
                 {chatLoading && (
                   <div className="flex justify-start">
-                    <div className="bg-white border border-black/5 rounded-2xl px-4 py-3 ai-shimmer">
+                    <div className="bg-white dark:bg-[#0B121C] border border-black/5 rounded-2xl px-4 py-3 ai-shimmer">
                       <div className="flex gap-1.5">
-                        <div className="w-2 h-2 rounded-full bg-[#059669] animate-bounce" style={{animationDelay: '0ms'}} />
-                        <div className="w-2 h-2 rounded-full bg-[#059669] animate-bounce" style={{animationDelay: '150ms'}} />
-                        <div className="w-2 h-2 rounded-full bg-[#059669] animate-bounce" style={{animationDelay: '300ms'}} />
+                        <div className="w-2 h-2 rounded-full bg-[#10B981] dark:bg-[#34D399] dark:text-[#0A1118] animate-bounce" style={{animationDelay: '0ms'}} />
+                        <div className="w-2 h-2 rounded-full bg-[#10B981] dark:bg-[#34D399] dark:text-[#0A1118] animate-bounce" style={{animationDelay: '150ms'}} />
+                        <div className="w-2 h-2 rounded-full bg-[#10B981] dark:bg-[#34D399] dark:text-[#0A1118] animate-bounce" style={{animationDelay: '300ms'}} />
                       </div>
                     </div>
                   </div>
@@ -534,12 +534,12 @@ export default function DashboardPage() {
                 <div ref={chatEndRef} />
               </div>
 
-              <div className="p-4 bg-white border-t border-black/5">
+              <div className="p-4 bg-white dark:bg-[#0B121C] border-t border-black/5">
                 <div className="flex gap-2">
                   <Button
                     type="button" variant="outline" size="icon"
                     onClick={isRecording ? stopRecording : startRecording}
-                    className={`rounded-full flex-shrink-0 ${isRecording ? 'bg-red-50 border-red-200 text-red-500 recording-pulse' : 'border-[#E5E7EB]'}`}
+                    className={`rounded-full flex-shrink-0 ${isRecording ? 'bg-red-50 border-red-200 text-red-500 recording-pulse' : 'border-[#E5E7EB] dark:border-[#1F2A3D]'}`}
                     data-testid="voice-button"
                   >
                     {isRecording ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
@@ -549,14 +549,14 @@ export default function DashboardPage() {
                     onChange={(e) => setChatInput(e.target.value)}
                     onKeyDown={(e) => e.key === 'Enter' && !e.shiftKey && handleAiSend()}
                     placeholder={t.typeQuestion}
-                    className="rounded-full bg-[#F9F9FB] border-[#E5E7EB] focus:border-[#059669] focus:ring-[#059669]"
+                    className="rounded-full bg-[#FFFBF5] dark:bg-[#0B121C] border-[#E5E7EB] dark:border-[#1F2A3D] focus:border-[#059669] focus:ring-[#059669]"
                     lang={language === 'hi' ? 'hi' : 'en'}
                     data-testid="ai-chat-input"
                   />
                   <Button
                     onClick={handleAiSend}
                     disabled={!chatInput.trim() || chatLoading}
-                    className="rounded-full bg-[#059669] hover:bg-[#047857] text-white flex-shrink-0"
+                    className="rounded-full bg-[#10B981] dark:bg-[#34D399] dark:text-[#0A1118] hover:bg-[#059669] dark:hover:bg-[#10B981] text-white flex-shrink-0"
                     data-testid="ai-send-button"
                   >
                     <Send className="w-4 h-4" />
@@ -582,10 +582,10 @@ export default function DashboardPage() {
       {/* Digital Application Form Dialog */}
       {appFormLead && (
         <div className="fixed inset-0 z-[9999] bg-black/60 flex items-center justify-center p-4" onClick={() => setAppFormLead(null)}>
-          <div className="bg-white w-full max-w-lg rounded-2xl overflow-y-auto max-h-[85vh]" onClick={e => e.stopPropagation()} data-testid="application-form-dialog">
-            <div className="sticky top-0 bg-white border-b border-black/5 px-6 py-4">
-              <h3 className="font-heading font-bold text-lg text-[#0A0A0A]">{language === 'hi' ? 'डिजिटल लोन आवेदन' : 'Digital Loan Application'}</h3>
-              <p className="font-body text-xs text-[#9CA3AF]">{appFormLead.bank_name} — {appFormLead.product_name}</p>
+          <div className="bg-white dark:bg-[#0B121C] w-full max-w-lg rounded-2xl overflow-y-auto max-h-[85vh]" onClick={e => e.stopPropagation()} data-testid="application-form-dialog">
+            <div className="sticky top-0 bg-white dark:bg-[#0B121C] border-b border-black/5 px-6 py-4">
+              <h3 className="font-heading font-bold text-lg text-[#0A1118] dark:text-[#FFFBF5]">{language === 'hi' ? 'डिजिटल लोन आवेदन' : 'Digital Loan Application'}</h3>
+              <p className="font-body text-xs text-[#94A3B8] dark:text-[#64748B]">{appFormLead.bank_name} — {appFormLead.product_name}</p>
             </div>
             <div className="p-6 space-y-4">
               <div>
@@ -613,7 +613,7 @@ export default function DashboardPage() {
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <Label className="font-body text-xs font-semibold">{language === 'hi' ? 'निवास प्रकार' : 'Residence'}</Label>
-                  <select value={appForm.residence_type} onChange={e => setAppForm(f => ({...f, residence_type: e.target.value}))} className="mt-1 w-full h-10 rounded-xl border border-[#E5E7EB] text-sm px-3 font-body" data-testid="app-residence">
+                  <select value={appForm.residence_type} onChange={e => setAppForm(f => ({...f, residence_type: e.target.value}))} className="mt-1 w-full h-10 rounded-xl border border-[#E5E7EB] dark:border-[#1F2A3D] text-sm px-3 font-body" data-testid="app-residence">
                     <option value="owned">{language === 'hi' ? 'स्वामित्व' : 'Owned'}</option>
                     <option value="rented">{language === 'hi' ? 'किराए पर' : 'Rented'}</option>
                     <option value="family">{language === 'hi' ? 'परिवार' : 'Family'}</option>
@@ -625,7 +625,7 @@ export default function DashboardPage() {
                 </div>
               </div>
               <Button
-                className="w-full rounded-full bg-[#059669] hover:bg-[#047857] text-white font-body font-semibold h-11 mt-2"
+                className="w-full rounded-full bg-[#10B981] dark:bg-[#34D399] dark:text-[#0A1118] hover:bg-[#059669] dark:hover:bg-[#10B981] text-white font-body font-semibold h-11 mt-2"
                 disabled={appLoading || !appForm.full_name || !appForm.phone}
                 onClick={async () => {
                   setAppLoading(true);
@@ -659,14 +659,14 @@ export default function DashboardPage() {
       {/* Delete Account Confirmation */}
       {deleteConfirm && (
         <div className="fixed inset-0 z-[9999] bg-black/60 flex items-center justify-center p-4" onClick={() => setDeleteConfirm(false)}>
-          <div className="bg-white w-full max-w-md rounded-2xl p-8" onClick={e => e.stopPropagation()} data-testid="delete-account-dialog">
+          <div className="bg-white dark:bg-[#0B121C] w-full max-w-md rounded-2xl p-8" onClick={e => e.stopPropagation()} data-testid="delete-account-dialog">
             <div className="w-14 h-14 rounded-2xl bg-red-50 flex items-center justify-center mx-auto mb-5">
               <Trash2 className="w-7 h-7 text-red-500" />
             </div>
-            <h3 className="font-heading font-bold text-xl text-[#0A0A0A] text-center mb-2">
+            <h3 className="font-heading font-bold text-xl text-[#0A1118] dark:text-[#FFFBF5] text-center mb-2">
               {language === 'hi' ? 'खाता हटाएं?' : 'Delete Your Account?'}
             </h3>
-            <p className="font-body text-sm text-[#4B5563] text-center mb-6 leading-relaxed">
+            <p className="font-body text-sm text-[#334155] dark:text-[#CBD5E1] text-center mb-6 leading-relaxed">
               {language === 'hi'
                 ? 'यह कार्रवाई अपरिवर्तनीय है। आपका सभी डेटा — प्रोफाइल, लीड, आवेदन, और एनालिटिक्स — स्थायी रूप से हटा दिया जाएगा। DPDP Act 2023 के अनुसार, इसे पूर्ववत नहीं किया जा सकता।'
                 : 'This action is irreversible. All your data — profile, leads, applications, and analytics — will be permanently deleted. As per DPDP Act 2023, this cannot be undone.'}

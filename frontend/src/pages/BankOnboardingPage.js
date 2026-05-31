@@ -47,28 +47,28 @@ export default function BankOnboardingPage() {
   };
 
   return (
-    <div className="min-h-screen bg-mesh-light py-20 px-4" data-testid="bank-onboarding-page">
+    <div className="min-h-screen bg-[#FFFBF5] dark:bg-[#050810] py-20 px-4" data-testid="bank-onboarding-page">
       <div className="max-w-2xl mx-auto">
-        <Link to="/" className="inline-flex items-center gap-2 text-[#4B5563] hover:text-[#059669] mb-8 font-body text-sm transition-colors">
+        <Link to="/" className="inline-flex items-center gap-2 text-[#334155] dark:text-[#CBD5E1] hover:text-[#059669] mb-8 font-body text-sm transition-colors">
           <ArrowLeft className="w-4 h-4" /> {language === 'hi' ? 'होम पर वापस' : 'Back to Home'}
         </Link>
 
         <div className="flex items-center gap-3 mb-8">
-          <div className="w-12 h-12 rounded-xl bg-[#059669]/10 flex items-center justify-center">
+          <div className="w-12 h-12 rounded-xl bg-[#10B981] dark:bg-[#34D399] dark:text-[#0A1118]/10 flex items-center justify-center">
             <Building2 className="w-6 h-6 text-[#059669]" />
           </div>
           <div>
-            <h1 className="font-heading text-2xl font-bold text-[#0A0A0A] tracking-tight" data-testid="bank-onboarding-title">
+            <h1 className="font-heading text-2xl font-bold text-[#0A1118] dark:text-[#FFFBF5] tracking-tight" data-testid="bank-onboarding-title">
               {language === 'hi' ? 'बैंक पार्टनर बनें' : 'Become a Bank Partner'}
             </h1>
-            <p className="font-body text-sm text-[#9CA3AF]">{language === 'hi' ? 'रिंकोश पर अपने लोन प्रोडक्ट लिस्ट करें' : 'List your loan products on Rinkosh'}</p>
+            <p className="font-body text-sm text-[#94A3B8] dark:text-[#64748B]">{language === 'hi' ? 'रिंकोश पर अपने लोन प्रोडक्ट लिस्ट करें' : 'List your loan products on Rinkosh'}</p>
           </div>
         </div>
 
         {/* Progress */}
         <div className="flex gap-2 mb-8">
           {[1, 2, 3].map(s => (
-            <div key={s} className={`h-1.5 flex-1 rounded-full transition-colors ${step >= s ? 'bg-[#059669]' : 'bg-[#E5E7EB]'}`} />
+            <div key={s} className={`h-1.5 flex-1 rounded-full transition-colors ${step >= s ? 'bg-[#10B981] dark:bg-[#34D399] dark:text-[#0A1118]' : 'bg-[#E5E7EB]'}`} />
           ))}
         </div>
 
@@ -76,27 +76,27 @@ export default function BankOnboardingPage() {
           <CardContent className="p-6 md:p-8">
             {step === 1 && (
               <div className="space-y-5">
-                <h2 className="font-heading text-lg font-bold text-[#0A0A0A]">{language === 'hi' ? 'बुनियादी जानकारी' : 'Basic Information'}</h2>
+                <h2 className="font-heading text-lg font-bold text-[#0A1118] dark:text-[#FFFBF5]">{language === 'hi' ? 'बुनियादी जानकारी' : 'Basic Information'}</h2>
                 <div>
-                  <Label className="font-body font-semibold text-[#0A0A0A]">{language === 'hi' ? 'बैंक का नाम' : 'Bank Name'}</Label>
+                  <Label className="font-body font-semibold text-[#0A1118] dark:text-[#FFFBF5]">{language === 'hi' ? 'बैंक का नाम' : 'Bank Name'}</Label>
                   <Input value={form.bank_name} onChange={e => update('bank_name', e.target.value)} placeholder="e.g. State Bank of India" className="mt-1.5 rounded-xl" data-testid="bank-name-input" />
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <Label className="font-body font-semibold text-[#0A0A0A]">{language === 'hi' ? 'संपर्क व्यक्ति' : 'Contact Person'}</Label>
+                    <Label className="font-body font-semibold text-[#0A1118] dark:text-[#FFFBF5]">{language === 'hi' ? 'संपर्क व्यक्ति' : 'Contact Person'}</Label>
                     <Input value={form.contact_person} onChange={e => update('contact_person', e.target.value)} placeholder="Full name" className="mt-1.5 rounded-xl" data-testid="contact-person-input" />
                   </div>
                   <div>
-                    <Label className="font-body font-semibold text-[#0A0A0A]">{language === 'hi' ? 'फोन' : 'Phone'}</Label>
+                    <Label className="font-body font-semibold text-[#0A1118] dark:text-[#FFFBF5]">{language === 'hi' ? 'फोन' : 'Phone'}</Label>
                     <Input value={form.phone} onChange={e => update('phone', e.target.value)} placeholder="9876543210" className="mt-1.5 rounded-xl" data-testid="phone-input" />
                   </div>
                 </div>
                 <div>
-                  <Label className="font-body font-semibold text-[#0A0A0A]">Email</Label>
+                  <Label className="font-body font-semibold text-[#0A1118] dark:text-[#FFFBF5]">Email</Label>
                   <Input type="email" value={form.email} onChange={e => update('email', e.target.value)} placeholder="partner@bank.com" className="mt-1.5 rounded-xl" data-testid="bank-email-input" />
                 </div>
                 <div>
-                  <Label className="font-body font-semibold text-[#0A0A0A]">{language === 'hi' ? 'पासवर्ड' : 'Password'}</Label>
+                  <Label className="font-body font-semibold text-[#0A1118] dark:text-[#FFFBF5]">{language === 'hi' ? 'पासवर्ड' : 'Password'}</Label>
                   <Input type="password" value={form.password} onChange={e => update('password', e.target.value)} placeholder="Min 6 characters" className="mt-1.5 rounded-xl" data-testid="bank-password-input" />
                 </div>
               </div>
@@ -104,24 +104,24 @@ export default function BankOnboardingPage() {
 
             {step === 2 && (
               <div className="space-y-5">
-                <h2 className="font-heading text-lg font-bold text-[#0A0A0A]">{language === 'hi' ? 'लोन प्रकार और क्षेत्र' : 'Loan Types & Coverage'}</h2>
+                <h2 className="font-heading text-lg font-bold text-[#0A1118] dark:text-[#FFFBF5]">{language === 'hi' ? 'लोन प्रकार और क्षेत्र' : 'Loan Types & Coverage'}</h2>
                 <div>
-                  <Label className="font-body font-semibold text-[#0A0A0A] mb-3 block">{language === 'hi' ? 'लोन प्रकार चुनें' : 'Select Loan Types Offered'}</Label>
+                  <Label className="font-body font-semibold text-[#0A1118] dark:text-[#FFFBF5] mb-3 block">{language === 'hi' ? 'लोन प्रकार चुनें' : 'Select Loan Types Offered'}</Label>
                   <div className="flex flex-wrap gap-2">
                     {LOAN_TYPES.map(t => (
                       <button key={t} onClick={() => toggleLoanType(t)}
-                        className={`px-3 py-1.5 rounded-full font-body text-xs font-semibold transition-all ${form.loan_types_offered.includes(t) ? 'bg-[#059669] text-white' : 'bg-[#F3F4F6] text-[#4B5563] hover:bg-[#059669]/10'}`}
+                        className={`px-3 py-1.5 rounded-full font-body text-xs font-semibold transition-all ${form.loan_types_offered.includes(t) ? 'bg-[#10B981] dark:bg-[#34D399] dark:text-[#0A1118] text-white' : 'bg-[#F3F4F6] dark:bg-[#141C2A] text-[#334155] dark:text-[#CBD5E1] hover:bg-[#10B981] dark:bg-[#34D399] dark:text-[#0A1118]/10'}`}
                         data-testid={`loan-type-${t}`}
                       >{t.replace('_', ' ').toUpperCase()}</button>
                     ))}
                   </div>
                 </div>
                 <div>
-                  <Label className="font-body font-semibold text-[#0A0A0A]">{language === 'hi' ? 'शाखा स्थान (कॉमा से अलग)' : 'Branch Locations (comma-separated)'}</Label>
+                  <Label className="font-body font-semibold text-[#0A1118] dark:text-[#FFFBF5]">{language === 'hi' ? 'शाखा स्थान (कॉमा से अलग)' : 'Branch Locations (comma-separated)'}</Label>
                   <Input value={form.branch_locations} onChange={e => update('branch_locations', e.target.value)} placeholder="Mumbai, Delhi, Bokaro, Chennai" className="mt-1.5 rounded-xl" data-testid="branches-input" />
                 </div>
                 <div>
-                  <Label className="font-body font-semibold text-[#0A0A0A]">{language === 'hi' ? 'कॉर्पोरेट टाईअप (कॉमा से अलग)' : 'Corporate Tie-ups (comma-separated)'}</Label>
+                  <Label className="font-body font-semibold text-[#0A1118] dark:text-[#FFFBF5]">{language === 'hi' ? 'कॉर्पोरेट टाईअप (कॉमा से अलग)' : 'Corporate Tie-ups (comma-separated)'}</Label>
                   <Input value={form.corporate_tieups} onChange={e => update('corporate_tieups', e.target.value)} placeholder="PSU, SAIL, TCS, Govt" className="mt-1.5 rounded-xl" data-testid="tieups-input" />
                 </div>
               </div>
@@ -129,24 +129,24 @@ export default function BankOnboardingPage() {
 
             {step === 3 && (
               <div className="space-y-5">
-                <h2 className="font-heading text-lg font-bold text-[#0A0A0A]">{language === 'hi' ? 'दर और कमीशन' : 'Rates & Commission'}</h2>
+                <h2 className="font-heading text-lg font-bold text-[#0A1118] dark:text-[#FFFBF5]">{language === 'hi' ? 'दर और कमीशन' : 'Rates & Commission'}</h2>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <Label className="font-body font-semibold text-[#0A0A0A]">{language === 'hi' ? 'न्यूनतम ब्याज दर (%)' : 'Min Interest Rate (%)'}</Label>
+                    <Label className="font-body font-semibold text-[#0A1118] dark:text-[#FFFBF5]">{language === 'hi' ? 'न्यूनतम ब्याज दर (%)' : 'Min Interest Rate (%)'}</Label>
                     <Input type="number" step="0.1" value={form.min_rate} onChange={e => update('min_rate', e.target.value)} placeholder="8.5" className="mt-1.5 rounded-xl" data-testid="min-rate-input" />
                   </div>
                   <div>
-                    <Label className="font-body font-semibold text-[#0A0A0A]">{language === 'hi' ? 'अधिकतम ब्याज दर (%)' : 'Max Interest Rate (%)'}</Label>
+                    <Label className="font-body font-semibold text-[#0A1118] dark:text-[#FFFBF5]">{language === 'hi' ? 'अधिकतम ब्याज दर (%)' : 'Max Interest Rate (%)'}</Label>
                     <Input type="number" step="0.1" value={form.max_rate} onChange={e => update('max_rate', e.target.value)} placeholder="14.0" className="mt-1.5 rounded-xl" data-testid="max-rate-input" />
                   </div>
                 </div>
                 <div>
-                  <Label className="font-body font-semibold text-[#0A0A0A]">{language === 'hi' ? 'कमीशन (%)' : 'Commission Rate (%)'}</Label>
+                  <Label className="font-body font-semibold text-[#0A1118] dark:text-[#FFFBF5]">{language === 'hi' ? 'कमीशन (%)' : 'Commission Rate (%)'}</Label>
                   <Input type="number" step="0.1" value={form.commission_pct} onChange={e => update('commission_pct', e.target.value)} placeholder="1.0" className="mt-1.5 rounded-xl" data-testid="commission-input" />
-                  <p className="font-body text-[10px] text-[#9CA3AF] mt-1">{language === 'hi' ? 'संवितरण पर प्लेटफॉर्म कमीशन' : 'Platform commission on disbursal'}</p>
+                  <p className="font-body text-[10px] text-[#94A3B8] dark:text-[#64748B] mt-1">{language === 'hi' ? 'संवितरण पर प्लेटफॉर्म कमीशन' : 'Platform commission on disbursal'}</p>
                 </div>
                 <div>
-                  <Label className="font-body font-semibold text-[#0A0A0A]">{language === 'hi' ? 'विवरण' : 'Description'}</Label>
+                  <Label className="font-body font-semibold text-[#0A1118] dark:text-[#FFFBF5]">{language === 'hi' ? 'विवरण' : 'Description'}</Label>
                   <Input value={form.description} onChange={e => update('description', e.target.value)} placeholder="Brief about your bank..." className="mt-1.5 rounded-xl" data-testid="description-input" />
                 </div>
               </div>
@@ -157,11 +157,11 @@ export default function BankOnboardingPage() {
                 <ArrowLeft className="w-4 h-4 mr-2" />{step === 1 ? (language === 'hi' ? 'होम' : 'Home') : (language === 'hi' ? 'पीछे' : 'Back')}
               </Button>
               {step < 3 ? (
-                <Button onClick={() => setStep(s => s + 1)} className="bg-[#059669] hover:bg-[#047857] text-white rounded-full px-6 font-body" data-testid="bank-next-btn">
+                <Button onClick={() => setStep(s => s + 1)} className="bg-[#10B981] dark:bg-[#34D399] dark:text-[#0A1118] hover:bg-[#059669] dark:hover:bg-[#10B981] text-white rounded-full px-6 font-body" data-testid="bank-next-btn">
                   {language === 'hi' ? 'अगला' : 'Next'}<ArrowRight className="w-4 h-4 ml-2" />
                 </Button>
               ) : (
-                <Button onClick={handleSubmit} disabled={loading} className="bg-[#059669] hover:bg-[#047857] text-white rounded-full px-6 font-body" data-testid="bank-submit-btn">
+                <Button onClick={handleSubmit} disabled={loading} className="bg-[#10B981] dark:bg-[#34D399] dark:text-[#0A1118] hover:bg-[#059669] dark:hover:bg-[#10B981] text-white rounded-full px-6 font-body" data-testid="bank-submit-btn">
                   {loading ? '...' : <><CheckCircle className="w-4 h-4 mr-2" />{language === 'hi' ? 'पंजीकरण करें' : 'Register Bank'}</>}
                 </Button>
               )}

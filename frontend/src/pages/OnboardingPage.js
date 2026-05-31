@@ -119,17 +119,17 @@ export default function OnboardingPage() {
   };
 
   return (
-    <div className="min-h-screen bg-mesh-light" data-testid="onboarding-page">
+    <div className="min-h-screen bg-[#FFFBF5] dark:bg-[#050810]" data-testid="onboarding-page">
       {/* Header */}
       <div className="glass-nav fixed top-0 w-full z-50">
         <div className="max-w-2xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Shield className="w-5 h-5 text-[#059669]" strokeWidth={1.5} />
-            <span className="font-heading font-bold text-lg text-[#0A0A0A]">Rinkosh</span>
+            <span className="font-heading font-bold text-lg text-[#0A1118] dark:text-[#FFFBF5]">Rinkosh</span>
           </div>
           <div className="flex items-center gap-3">
             <LanguageToggle compact />
-            <span className="text-sm font-body text-[#9CA3AF]">{t.stepOf} {step} {t.of} 4</span>
+            <span className="text-sm font-body text-[#94A3B8] dark:text-[#64748B]">{t.stepOf} {step} {t.of} 4</span>
           </div>
         </div>
         <div className="max-w-2xl mx-auto px-6 pb-2">
@@ -142,8 +142,8 @@ export default function OnboardingPage() {
               { label: t.creditInformation || 'Credit', icon: '3' },
               { label: t.loanDetails || 'Details', icon: '4' },
             ].map((s, i) => (
-              <div key={i} className={`flex items-center gap-1.5 transition-all ${step > i ? 'text-[#059669]' : step === i + 1 ? 'text-[#0A0A0A]' : 'text-[#D1D5DB]'}`}>
-                <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-heading font-bold border-2 transition-all ${step > i ? 'bg-[#059669] border-[#059669] text-white' : step === i + 1 ? 'border-[#059669] text-[#059669]' : 'border-[#D1D5DB]'}`}>
+              <div key={i} className={`flex items-center gap-1.5 transition-all ${step > i ? 'text-[#059669]' : step === i + 1 ? 'text-[#0A1118] dark:text-[#FFFBF5]' : 'text-[#D1D5DB]'}`}>
+                <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-heading font-bold border-2 transition-all ${step > i ? 'bg-[#10B981] dark:bg-[#34D399] dark:text-[#0A1118] border-[#059669] text-white' : step === i + 1 ? 'border-[#059669] text-[#059669]' : 'border-[#D1D5DB] dark:border-[#374151]'}`}>
                   {step > i ? <CheckCircle className="w-3.5 h-3.5" /> : s.icon}
                 </div>
                 <span className="font-body text-[10px] hidden sm:inline">{s.label.slice(0, 10)}</span>
@@ -166,15 +166,15 @@ export default function OnboardingPage() {
               {/* Step 1: Loan Type */}
               {step === 1 && (
                 <div>
-                  <h2 className="font-heading text-2xl md:text-3xl font-bold text-[#0A0A0A] tracking-tight mb-2">What type of loan are you looking for?</h2>
-                  <p className="font-body text-[#4B5563] mb-8">Select the loan type that matches your need</p>
+                  <h2 className="font-heading text-2xl md:text-3xl font-bold text-[#0A1118] dark:text-[#FFFBF5] tracking-tight mb-2">What type of loan are you looking for?</h2>
+                  <p className="font-body text-[#334155] dark:text-[#CBD5E1] mb-8">Select the loan type that matches your need</p>
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                     {loanTypes.map((lt) => (
                       <Card
                         key={lt.value}
                         className={`p-5 cursor-pointer transition-all duration-200 rounded-2xl border-2 ${
                           form.loan_type === lt.value
-                            ? 'border-[#059669] bg-[#059669]/5 shadow-md'
+                            ? 'border-[#059669] bg-[#10B981] dark:bg-[#34D399] dark:text-[#0A1118]/5 shadow-md'
                             : 'border-black/5 hover:border-[#059669]/30 hover:shadow-sm'
                         }`}
                         onClick={() => {
@@ -184,9 +184,9 @@ export default function OnboardingPage() {
                         }}
                         data-testid={`loan-type-${lt.value}`}
                       >
-                        <lt.icon className={`w-7 h-7 mb-3 ${form.loan_type === lt.value ? 'text-[#059669]' : 'text-[#4B5563]'}`} strokeWidth={1.5} />
-                        <h3 className="font-heading font-semibold text-[#0A0A0A] text-sm">{lt.label}</h3>
-                        <p className="font-body text-xs text-[#9CA3AF] mt-1">{lt.desc}</p>
+                        <lt.icon className={`w-7 h-7 mb-3 ${form.loan_type === lt.value ? 'text-[#059669]' : 'text-[#334155] dark:text-[#CBD5E1]'}`} strokeWidth={1.5} />
+                        <h3 className="font-heading font-semibold text-[#0A1118] dark:text-[#FFFBF5] text-sm">{lt.label}</h3>
+                        <p className="font-body text-xs text-[#94A3B8] dark:text-[#64748B] mt-1">{lt.desc}</p>
                       </Card>
                     ))}
                   </div>
@@ -196,41 +196,41 @@ export default function OnboardingPage() {
               {/* Step 2: Employment */}
               {step === 2 && (
                 <div>
-                  <h2 className="font-heading text-2xl md:text-3xl font-bold text-[#0A0A0A] tracking-tight mb-2">{t.employmentDetails}</h2>
-                  <p className="font-body text-[#4B5563] mb-8">{t.employmentHelp}</p>
+                  <h2 className="font-heading text-2xl md:text-3xl font-bold text-[#0A1118] dark:text-[#FFFBF5] tracking-tight mb-2">{t.employmentDetails}</h2>
+                  <p className="font-body text-[#334155] dark:text-[#CBD5E1] mb-8">{t.employmentHelp}</p>
                   <div className="space-y-6">
                     <div>
-                      <Label className="font-body font-semibold text-[#0A0A0A] mb-3 block">{t.employmentType}</Label>
+                      <Label className="font-body font-semibold text-[#0A1118] dark:text-[#FFFBF5] mb-3 block">{t.employmentType}</Label>
                       <div className="grid grid-cols-2 gap-3">
                         {employmentTypes.map((et) => (
                           <Card
                             key={et.value}
                             className={`p-4 cursor-pointer transition-all duration-200 rounded-xl border-2 flex items-center gap-3 ${
                               form.employment_type === et.value
-                                ? 'border-[#059669] bg-[#059669]/5'
+                                ? 'border-[#059669] bg-[#10B981] dark:bg-[#34D399] dark:text-[#0A1118]/5'
                                 : 'border-black/5 hover:border-[#059669]/30'
                             }`}
                             onClick={() => update('employment_type', et.value)}
                             data-testid={`employment-${et.value}`}
                           >
-                            <et.icon className={`w-5 h-5 ${form.employment_type === et.value ? 'text-[#059669]' : 'text-[#4B5563]'}`} strokeWidth={1.5} />
-                            <span className="font-body text-sm font-medium text-[#0A0A0A]">{et.label}</span>
+                            <et.icon className={`w-5 h-5 ${form.employment_type === et.value ? 'text-[#059669]' : 'text-[#334155] dark:text-[#CBD5E1]'}`} strokeWidth={1.5} />
+                            <span className="font-body text-sm font-medium text-[#0A1118] dark:text-[#FFFBF5]">{et.label}</span>
                           </Card>
                         ))}
                       </div>
                     </div>
                     <div>
-                      <Label htmlFor="employer" className="font-body font-semibold text-[#0A0A0A]">{language === 'hi' ? 'नियोक्ता / कंपनी' : 'Employer / Company'}</Label>
+                      <Label htmlFor="employer" className="font-body font-semibold text-[#0A1118] dark:text-[#FFFBF5]">{language === 'hi' ? 'नियोक्ता / कंपनी' : 'Employer / Company'}</Label>
                       <Input
                         id="employer" type="text" value={form.employer_name}
                         onChange={(e) => update('employer_name', e.target.value)}
                         placeholder={language === 'hi' ? 'जैसे SAIL, TCS, SBI' : 'e.g. SAIL, TCS, SBI'}
-                        className="mt-2 rounded-xl bg-white border-[#E5E7EB] focus:border-[#059669] focus:ring-[#059669]"
+                        className="mt-2 rounded-xl bg-white dark:bg-[#0B121C] border-[#E5E7EB] dark:border-[#1F2A3D] focus:border-[#059669] focus:ring-[#059669]"
                         data-testid="employer-name-input"
                       />
                     </div>
                     <div>
-                      <Label className="font-body font-semibold text-[#0A0A0A] mb-3 block">{language === 'hi' ? 'नियोक्ता प्रकार' : 'Employer Type'}</Label>
+                      <Label className="font-body font-semibold text-[#0A1118] dark:text-[#FFFBF5] mb-3 block">{language === 'hi' ? 'नियोक्ता प्रकार' : 'Employer Type'}</Label>
                       <div className="grid grid-cols-3 md:grid-cols-5 gap-2">
                         {[
                           { value: 'psu', label: 'PSU' },
@@ -242,7 +242,7 @@ export default function OnboardingPage() {
                           <button key={et.value}
                             onClick={() => update('employer_type', et.value)}
                             className={`px-3 py-2 rounded-lg font-body text-xs font-semibold transition-all ${
-                              form.employer_type === et.value ? 'bg-[#059669] text-white' : 'bg-[#F3F4F6] text-[#4B5563] hover:bg-[#059669]/10'
+                              form.employer_type === et.value ? 'bg-[#10B981] dark:bg-[#34D399] dark:text-[#0A1118] text-white' : 'bg-[#F3F4F6] dark:bg-[#141C2A] text-[#334155] dark:text-[#CBD5E1] hover:bg-[#10B981] dark:bg-[#34D399] dark:text-[#0A1118]/10'
                             }`}
                             data-testid={`employer-type-${et.value}`}
                           >{et.label}</button>
@@ -251,33 +251,33 @@ export default function OnboardingPage() {
                     </div>
                     <div className="grid grid-cols-2 gap-3">
                       <div>
-                        <Label htmlFor="city" className="font-body font-semibold text-[#0A0A0A]">{language === 'hi' ? 'शहर' : 'City'}</Label>
+                        <Label htmlFor="city" className="font-body font-semibold text-[#0A1118] dark:text-[#FFFBF5]">{language === 'hi' ? 'शहर' : 'City'}</Label>
                         <Input
                           id="city" type="text" value={form.city}
                           onChange={(e) => update('city', e.target.value)}
                           placeholder={language === 'hi' ? 'जैसे बोकारो, मुंबई' : 'e.g. Bokaro, Mumbai'}
-                          className="mt-2 rounded-xl bg-white border-[#E5E7EB] focus:border-[#059669] focus:ring-[#059669]"
+                          className="mt-2 rounded-xl bg-white dark:bg-[#0B121C] border-[#E5E7EB] dark:border-[#1F2A3D] focus:border-[#059669] focus:ring-[#059669]"
                           data-testid="city-input"
                         />
                       </div>
                       <div>
-                        <Label htmlFor="state" className="font-body font-semibold text-[#0A0A0A]">{language === 'hi' ? 'राज्य' : 'State'}</Label>
+                        <Label htmlFor="state" className="font-body font-semibold text-[#0A1118] dark:text-[#FFFBF5]">{language === 'hi' ? 'राज्य' : 'State'}</Label>
                         <Input
                           id="state" type="text" value={form.state}
                           onChange={(e) => update('state', e.target.value)}
                           placeholder={language === 'hi' ? 'जैसे झारखंड' : 'e.g. Jharkhand'}
-                          className="mt-2 rounded-xl bg-white border-[#E5E7EB] focus:border-[#059669] focus:ring-[#059669]"
+                          className="mt-2 rounded-xl bg-white dark:bg-[#0B121C] border-[#E5E7EB] dark:border-[#1F2A3D] focus:border-[#059669] focus:ring-[#059669]"
                           data-testid="state-input"
                         />
                       </div>
                     </div>
                     <div>
-                      <Label htmlFor="income" className="font-body font-semibold text-[#0A0A0A]">{t.monthlyIncome}</Label>
+                      <Label htmlFor="income" className="font-body font-semibold text-[#0A1118] dark:text-[#FFFBF5]">{t.monthlyIncome}</Label>
                       <Input
                         id="income" type="text" inputMode="numeric" value={formatIndianNumber(form.monthly_income)}
                         onChange={(e) => { const raw = parseIndianNumber(e.target.value).replace(/[^0-9]/g, ''); update('monthly_income', raw); }}
                         placeholder="e.g. 50000"
-                        className="mt-2 rounded-xl bg-white border-[#E5E7EB] focus:border-[#059669] focus:ring-[#059669]"
+                        className="mt-2 rounded-xl bg-white dark:bg-[#0B121C] border-[#E5E7EB] dark:border-[#1F2A3D] focus:border-[#059669] focus:ring-[#059669]"
                         data-testid="monthly-income-input"
                       />
                     </div>
@@ -288,13 +288,13 @@ export default function OnboardingPage() {
               {/* Step 3: Credit Info */}
               {step === 3 && (
                 <div>
-                  <h2 className="font-heading text-2xl md:text-3xl font-bold text-[#0A0A0A] tracking-tight mb-2">{t.creditInformation}</h2>
-                  <p className="font-body text-[#4B5563] mb-8">{t.creditHelp}</p>
+                  <h2 className="font-heading text-2xl md:text-3xl font-bold text-[#0A1118] dark:text-[#FFFBF5] tracking-tight mb-2">{t.creditInformation}</h2>
+                  <p className="font-body text-[#334155] dark:text-[#CBD5E1] mb-8">{t.creditHelp}</p>
                   <div className="space-y-6">
-                    <div className="flex items-center justify-between bg-white p-4 rounded-xl border border-black/5">
+                    <div className="flex items-center justify-between bg-white dark:bg-[#0B121C] p-4 rounded-xl border border-black/5">
                       <div>
-                        <Label className="font-body font-semibold text-[#0A0A0A]">{t.existingLoansQ}</Label>
-                        <p className="font-body text-xs text-[#9CA3AF] mt-0.5">{t.existingLoansDesc}</p>
+                        <Label className="font-body font-semibold text-[#0A1118] dark:text-[#FFFBF5]">{t.existingLoansQ}</Label>
+                        <p className="font-body text-xs text-[#94A3B8] dark:text-[#64748B] mt-0.5">{t.existingLoansDesc}</p>
                       </div>
                       <Switch
                         checked={form.existing_loans}
@@ -304,20 +304,20 @@ export default function OnboardingPage() {
                     </div>
                     {form.existing_loans && (
                       <div>
-                        <Label htmlFor="emi" className="font-body font-semibold text-[#0A0A0A]">Total Monthly EMI (Rs.)</Label>
+                        <Label htmlFor="emi" className="font-body font-semibold text-[#0A1118] dark:text-[#FFFBF5]">Total Monthly EMI (Rs.)</Label>
                         <Input
                           id="emi" type="text" inputMode="numeric" value={formatIndianNumber(form.existing_loan_emi)}
                           onChange={(e) => { const raw = parseIndianNumber(e.target.value).replace(/[^0-9]/g, ''); update('existing_loan_emi', raw); }}
                           placeholder="e.g. 15000"
-                          className="mt-2 rounded-xl bg-white border-[#E5E7EB] focus:border-[#059669] focus:ring-[#059669]"
+                          className="mt-2 rounded-xl bg-white dark:bg-[#0B121C] border-[#E5E7EB] dark:border-[#1F2A3D] focus:border-[#059669] focus:ring-[#059669]"
                           data-testid="existing-emi-input"
                         />
                       </div>
                     )}
-                    <div className="flex items-center justify-between bg-white p-4 rounded-xl border border-black/5">
+                    <div className="flex items-center justify-between bg-white dark:bg-[#0B121C] p-4 rounded-xl border border-black/5">
                       <div>
-                        <Label className="font-body font-semibold text-[#0A0A0A]">{t.knowCreditScore}</Label>
-                        <p className="font-body text-xs text-[#9CA3AF] mt-0.5">{t.creditScoreDesc}</p>
+                        <Label className="font-body font-semibold text-[#0A1118] dark:text-[#FFFBF5]">{t.knowCreditScore}</Label>
+                        <p className="font-body text-xs text-[#94A3B8] dark:text-[#64748B] mt-0.5">{t.creditScoreDesc}</p>
                       </div>
                       <Switch
                         checked={form.credit_score_known}
@@ -327,19 +327,19 @@ export default function OnboardingPage() {
                     </div>
                     {form.credit_score_known && (
                       <div>
-                        <Label htmlFor="cscore" className="font-body font-semibold text-[#0A0A0A]">{t.yourCreditScore}</Label>
+                        <Label htmlFor="cscore" className="font-body font-semibold text-[#0A1118] dark:text-[#FFFBF5]">{t.yourCreditScore}</Label>
                         <Input
                           id="cscore" type="number" value={form.credit_score} min={300} max={900}
                           onChange={(e) => update('credit_score', e.target.value)}
                           placeholder="e.g. 750"
-                          className="mt-2 rounded-xl bg-white border-[#E5E7EB] focus:border-[#059669] focus:ring-[#059669]"
+                          className="mt-2 rounded-xl bg-white dark:bg-[#0B121C] border-[#E5E7EB] dark:border-[#1F2A3D] focus:border-[#059669] focus:ring-[#059669]"
                           data-testid="credit-score-input"
                         />
-                        <p className="font-body text-xs text-[#9CA3AF] mt-1">{t.scoreBetween}</p>
+                        <p className="font-body text-xs text-[#94A3B8] dark:text-[#64748B] mt-1">{t.scoreBetween}</p>
                       </div>
                     )}
                     {!form.credit_score_known && (
-                      <div className="bg-[#059669]/5 rounded-xl p-4 border border-[#059669]/20">
+                      <div className="bg-[#10B981] dark:bg-[#34D399] dark:text-[#0A1118]/5 rounded-xl p-4 border border-[#059669]/20">
                         <p className="font-body text-sm text-[#059669]">
                           {t.noWorries}
                         </p>
@@ -352,21 +352,21 @@ export default function OnboardingPage() {
               {/* Step 4: Loan Details */}
               {step === 4 && (
                 <div>
-                  <h2 className="font-heading text-2xl md:text-3xl font-bold text-[#0A0A0A] tracking-tight mb-2">{t.loanDetails}</h2>
-                  <p className="font-body text-[#4B5563] mb-8">{t.loanDetailsHelp}</p>
+                  <h2 className="font-heading text-2xl md:text-3xl font-bold text-[#0A1118] dark:text-[#FFFBF5] tracking-tight mb-2">{t.loanDetails}</h2>
+                  <p className="font-body text-[#334155] dark:text-[#CBD5E1] mb-8">{t.loanDetailsHelp}</p>
                   <div className="space-y-6">
                     <div>
-                      <Label htmlFor="amount" className="font-body font-semibold text-[#0A0A0A]">{t.loanAmount}</Label>
+                      <Label htmlFor="amount" className="font-body font-semibold text-[#0A1118] dark:text-[#FFFBF5]">{t.loanAmount}</Label>
                       <Input
                         id="amount" type="text" inputMode="numeric" value={formatIndianNumber(form.desired_amount)}
                         onChange={(e) => { const raw = parseIndianNumber(e.target.value).replace(/[^0-9]/g, ''); update('desired_amount', raw); }}
                         placeholder="e.g. 5,00,000"
-                        className="mt-2 rounded-xl bg-white border-[#E5E7EB] focus:border-[#059669] focus:ring-[#059669]"
+                        className="mt-2 rounded-xl bg-white dark:bg-[#0B121C] border-[#E5E7EB] dark:border-[#1F2A3D] focus:border-[#059669] focus:ring-[#059669]"
                         data-testid="desired-amount-input"
                       />
                     </div>
                     <div>
-                      <Label className="font-body font-semibold text-[#0A0A0A]">Loan Tenure</Label>
+                      <Label className="font-body font-semibold text-[#0A1118] dark:text-[#FFFBF5]">Loan Tenure</Label>
                       <RadioGroup
                         value={form.desired_tenure_months}
                         onValueChange={(v) => update('desired_tenure_months', v)}
@@ -386,7 +386,7 @@ export default function OnboardingPage() {
                             key={t.value}
                             className={`flex items-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all ${
                               form.desired_tenure_months === t.value
-                                ? 'border-[#059669] bg-[#059669]/5'
+                                ? 'border-[#059669] bg-[#10B981] dark:bg-[#34D399] dark:text-[#0A1118]/5'
                                 : 'border-black/5 hover:border-[#059669]/30'
                             }`}
                             data-testid={`tenure-${t.value}`}
@@ -408,7 +408,7 @@ export default function OnboardingPage() {
             <Button
               variant="outline"
               onClick={() => step === 1 ? navigate('/') : setStep(s => s - 1)}
-              className="rounded-full px-6 font-body border-[#E5E7EB] hover:border-[#111827]"
+              className="rounded-full px-6 font-body border-[#E5E7EB] dark:border-[#1F2A3D] hover:border-[#111827]"
               data-testid="onboarding-back-button"
             >
               <ArrowLeft className="w-4 h-4 mr-2" />
@@ -418,7 +418,7 @@ export default function OnboardingPage() {
               <Button
                 onClick={() => setStep(s => s + 1)}
                 disabled={!canGoNext()}
-                className="bg-[#111827] text-white hover:bg-[#000000] rounded-full px-6 font-body font-semibold"
+                className="bg-[#0A1118] dark:bg-[#FFB347] dark:text-[#0A1118] text-white hover:bg-[#000000] rounded-full px-6 font-body font-semibold"
                 data-testid="onboarding-next-button"
               >
                 {t.next}
@@ -428,7 +428,7 @@ export default function OnboardingPage() {
               <Button
                 onClick={handleSubmit}
                 disabled={!canGoNext() || loading}
-                className="bg-[#059669] text-white hover:bg-[#047857] rounded-full px-8 font-body font-semibold"
+                className="bg-[#10B981] dark:bg-[#34D399] dark:text-[#0A1118] text-white hover:bg-[#059669] dark:hover:bg-[#10B981] rounded-full px-8 font-body font-semibold"
                 data-testid="onboarding-submit-button"
               >
                 {loading ? t.saving : t.getRecommendations}

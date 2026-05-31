@@ -47,25 +47,25 @@ export default function BankDashboardPage() {
   };
 
   if (loading) return <div className="min-h-screen flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-[#059669]" /></div>;
-  if (!data) return <div className="min-h-screen flex items-center justify-center font-body text-[#4B5563]">Failed to load</div>;
+  if (!data) return <div className="min-h-screen flex items-center justify-center font-body text-[#334155] dark:text-[#CBD5E1]">Failed to load</div>;
 
   const funnelData = Object.entries(data.funnel).filter(([k]) => k !== 'revoked').map(([k, v]) => ({ name: k.charAt(0).toUpperCase() + k.slice(1), value: v, fill: FUNNEL_COLORS[k] }));
   const regionData = Object.entries(data.region_breakdown).map(([k, v]) => ({ name: k, value: v }));
   const REGION_COLORS = ['#059669', '#3B82F6', '#F59E0B', '#7C3AED', '#DC2626', '#0891B2', '#CA8A04'];
 
   return (
-    <div className="min-h-screen bg-[#F9F9FB]" data-testid="bank-dashboard-page">
+    <div className="min-h-screen bg-[#FFFBF5] dark:bg-[#0B121C]" data-testid="bank-dashboard-page">
       {/* Nav */}
       <nav className="glass-nav fixed top-0 w-full z-50">
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
           <a href="/" className="flex items-center gap-2.5">
             <img src="https://static.prod-images.emergentagent.com/jobs/46236293-45eb-486f-8de9-3cfd3f7e2526/images/251ac3f41bd806cd53ef74f0a949d1a3be51ac19219729fbf89fb0dba4f12b85.png" alt="Rinkosh" className="w-8 h-8 object-contain" />
-            <span className="font-heading font-bold text-lg text-[#0A0A0A]">Rinkosh</span>
-            <Badge className="bg-[#059669]/10 text-[#059669] text-[10px] font-bold">{language === 'hi' ? 'बैंक पोर्टल' : 'Bank Portal'}</Badge>
+            <span className="font-heading font-bold text-lg text-[#0A1118] dark:text-[#FFFBF5]">Rinkosh</span>
+            <Badge className="bg-[#10B981] dark:bg-[#34D399] dark:text-[#0A1118]/10 text-[#059669] text-[10px] font-bold">{language === 'hi' ? 'बैंक पोर्टल' : 'Bank Portal'}</Badge>
           </a>
           <div className="flex items-center gap-3">
-            <span className="font-body text-sm text-[#4B5563]">{data.bank_name}</span>
-            <Button variant="ghost" size="sm" onClick={async () => { await logout(); navigate('/'); }} className="text-[#4B5563]"><LogOut className="w-4 h-4" /></Button>
+            <span className="font-body text-sm text-[#334155] dark:text-[#CBD5E1]">{data.bank_name}</span>
+            <Button variant="ghost" size="sm" onClick={async () => { await logout(); navigate('/'); }} className="text-[#334155] dark:text-[#CBD5E1]"><LogOut className="w-4 h-4" /></Button>
           </div>
         </div>
       </nav>
@@ -85,8 +85,8 @@ export default function BankDashboardPage() {
                   <s.icon className="w-5 h-5" style={{ color: s.color }} />
                 </div>
                 <div>
-                  <div className="font-heading font-bold text-xl text-[#0A0A0A]">{s.value}</div>
-                  <div className="font-body text-xs text-[#9CA3AF]">{s.label}</div>
+                  <div className="font-heading font-bold text-xl text-[#0A1118] dark:text-[#FFFBF5]">{s.value}</div>
+                  <div className="font-body text-xs text-[#94A3B8] dark:text-[#64748B]">{s.label}</div>
                 </div>
               </div>
             </Card>
@@ -94,18 +94,18 @@ export default function BankDashboardPage() {
         </div>
 
         <Tabs defaultValue="funnel" className="space-y-6">
-          <TabsList className="bg-white border border-black/5 rounded-full p-1">
-            <TabsTrigger value="funnel" className="rounded-full font-body text-sm data-[state=active]:bg-[#059669] data-[state=active]:text-white">{language === 'hi' ? 'फ़नल' : 'Lead Funnel'}</TabsTrigger>
-            <TabsTrigger value="leads" className="rounded-full font-body text-sm data-[state=active]:bg-[#059669] data-[state=active]:text-white">{language === 'hi' ? 'लीड्स' : 'Leads'}</TabsTrigger>
-            <TabsTrigger value="applications" className="rounded-full font-body text-sm data-[state=active]:bg-[#059669] data-[state=active]:text-white">{language === 'hi' ? 'आवेदन' : 'Applications'}</TabsTrigger>
-            <TabsTrigger value="products" className="rounded-full font-body text-sm data-[state=active]:bg-[#059669] data-[state=active]:text-white">{language === 'hi' ? 'उत्पाद' : 'Products'}</TabsTrigger>
+          <TabsList className="bg-white dark:bg-[#0B121C] border border-black/5 rounded-full p-1">
+            <TabsTrigger value="funnel" className="rounded-full font-body text-sm data-[state=active]:bg-[#10B981] dark:bg-[#34D399] dark:text-[#0A1118] data-[state=active]:text-white">{language === 'hi' ? 'फ़नल' : 'Lead Funnel'}</TabsTrigger>
+            <TabsTrigger value="leads" className="rounded-full font-body text-sm data-[state=active]:bg-[#10B981] dark:bg-[#34D399] dark:text-[#0A1118] data-[state=active]:text-white">{language === 'hi' ? 'लीड्स' : 'Leads'}</TabsTrigger>
+            <TabsTrigger value="applications" className="rounded-full font-body text-sm data-[state=active]:bg-[#10B981] dark:bg-[#34D399] dark:text-[#0A1118] data-[state=active]:text-white">{language === 'hi' ? 'आवेदन' : 'Applications'}</TabsTrigger>
+            <TabsTrigger value="products" className="rounded-full font-body text-sm data-[state=active]:bg-[#10B981] dark:bg-[#34D399] dark:text-[#0A1118] data-[state=active]:text-white">{language === 'hi' ? 'उत्पाद' : 'Products'}</TabsTrigger>
           </TabsList>
 
           {/* Funnel Tab */}
           <TabsContent value="funnel">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <Card className="rounded-2xl border border-black/5 p-6" data-testid="funnel-chart">
-                <h3 className="font-heading font-bold text-sm text-[#0A0A0A] mb-4">{language === 'hi' ? 'लीड फ़नल' : 'Lead Funnel'}</h3>
+                <h3 className="font-heading font-bold text-sm text-[#0A1118] dark:text-[#FFFBF5] mb-4">{language === 'hi' ? 'लीड फ़नल' : 'Lead Funnel'}</h3>
                 <ResponsiveContainer width="100%" height={220}>
                   <BarChart data={funnelData}>
                     <XAxis dataKey="name" tick={{ fontSize: 11, fontFamily: 'DM Sans' }} />
@@ -123,9 +123,9 @@ export default function BankDashboardPage() {
                     { label: language === 'hi' ? 'आवेदन → स्वीकृत' : 'Applied → Approved', value: data.conversion.applied_to_approved },
                     { label: language === 'hi' ? 'स्वीकृत → संवितरित' : 'Approved → Disbursed', value: data.conversion.approved_to_disbursed },
                   ].map((c, i) => (
-                    <div key={i} className="bg-[#F3F4F6] rounded-xl p-3 text-center">
-                      <div className="font-heading font-bold text-lg text-[#0A0A0A]">{c.value}%</div>
-                      <div className="font-body text-[10px] text-[#9CA3AF]">{c.label}</div>
+                    <div key={i} className="bg-[#F3F4F6] dark:bg-[#141C2A] rounded-xl p-3 text-center">
+                      <div className="font-heading font-bold text-lg text-[#0A1118] dark:text-[#FFFBF5]">{c.value}%</div>
+                      <div className="font-body text-[10px] text-[#94A3B8] dark:text-[#64748B]">{c.label}</div>
                     </div>
                   ))}
                 </div>
@@ -134,7 +134,7 @@ export default function BankDashboardPage() {
               <div className="space-y-6">
                 {/* Region Breakdown */}
                 <Card className="rounded-2xl border border-black/5 p-6" data-testid="region-chart">
-                  <h3 className="font-heading font-bold text-sm text-[#0A0A0A] mb-4">{language === 'hi' ? 'क्षेत्र वितरण' : 'Region Breakdown'}</h3>
+                  <h3 className="font-heading font-bold text-sm text-[#0A1118] dark:text-[#FFFBF5] mb-4">{language === 'hi' ? 'क्षेत्र वितरण' : 'Region Breakdown'}</h3>
                   {regionData.length > 0 ? (
                     <ResponsiveContainer width="100%" height={160}>
                       <PieChart>
@@ -145,29 +145,29 @@ export default function BankDashboardPage() {
                       </PieChart>
                     </ResponsiveContainer>
                   ) : (
-                    <p className="font-body text-sm text-[#9CA3AF] text-center py-8">{language === 'hi' ? 'अभी कोई डेटा नहीं' : 'No data yet'}</p>
+                    <p className="font-body text-sm text-[#94A3B8] dark:text-[#64748B] text-center py-8">{language === 'hi' ? 'अभी कोई डेटा नहीं' : 'No data yet'}</p>
                   )}
                 </Card>
 
                 {/* Platform Comparison */}
                 <Card className="rounded-2xl border border-black/5 p-6" data-testid="platform-comparison">
-                  <h3 className="font-heading font-bold text-sm text-[#0A0A0A] mb-4">{language === 'hi' ? 'प्लेटफॉर्म तुलना' : 'Platform Comparison'}</h3>
+                  <h3 className="font-heading font-bold text-sm text-[#0A1118] dark:text-[#FFFBF5] mb-4">{language === 'hi' ? 'प्लेटफॉर्म तुलना' : 'Platform Comparison'}</h3>
                   <div className="space-y-3">
                     <div className="flex justify-between items-center">
-                      <span className="font-body text-xs text-[#4B5563]">{language === 'hi' ? 'आपकी रूपांतरण दर' : 'Your Conversion'}</span>
+                      <span className="font-body text-xs text-[#334155] dark:text-[#CBD5E1]">{language === 'hi' ? 'आपकी रूपांतरण दर' : 'Your Conversion'}</span>
                       <span className="font-heading font-bold text-sm text-[#059669]">{data.conversion.overall}%</span>
                     </div>
                     <div className="flex justify-between items-center">
-                      <span className="font-body text-xs text-[#4B5563]">{language === 'hi' ? 'प्लेटफॉर्म औसत' : 'Platform Average'}</span>
-                      <span className="font-heading font-bold text-sm text-[#4B5563]">{data.platform_comparison.conversion_rate}%</span>
+                      <span className="font-body text-xs text-[#334155] dark:text-[#CBD5E1]">{language === 'hi' ? 'प्लेटफॉर्म औसत' : 'Platform Average'}</span>
+                      <span className="font-heading font-bold text-sm text-[#334155] dark:text-[#CBD5E1]">{data.platform_comparison.conversion_rate}%</span>
                     </div>
                     <div className="flex justify-between items-center">
-                      <span className="font-body text-xs text-[#4B5563]">{language === 'hi' ? 'कुल प्लेटफॉर्म लीड' : 'Total Platform Leads'}</span>
-                      <span className="font-heading font-bold text-sm text-[#4B5563]">{data.platform_comparison.total_leads}</span>
+                      <span className="font-body text-xs text-[#334155] dark:text-[#CBD5E1]">{language === 'hi' ? 'कुल प्लेटफॉर्म लीड' : 'Total Platform Leads'}</span>
+                      <span className="font-heading font-bold text-sm text-[#334155] dark:text-[#CBD5E1]">{data.platform_comparison.total_leads}</span>
                     </div>
                     <div className="flex justify-between items-center">
-                      <span className="font-body text-xs text-[#4B5563]">{language === 'hi' ? 'सक्रिय बैंक' : 'Active Banks'}</span>
-                      <span className="font-heading font-bold text-sm text-[#4B5563]">{data.platform_comparison.total_banks}</span>
+                      <span className="font-body text-xs text-[#334155] dark:text-[#CBD5E1]">{language === 'hi' ? 'सक्रिय बैंक' : 'Active Banks'}</span>
+                      <span className="font-heading font-bold text-sm text-[#334155] dark:text-[#CBD5E1]">{data.platform_comparison.total_banks}</span>
                     </div>
                   </div>
                 </Card>
@@ -180,28 +180,28 @@ export default function BankDashboardPage() {
             <Card className="rounded-2xl border border-black/5 overflow-hidden">
               <div className="overflow-x-auto">
                 <table className="w-full">
-                  <thead className="bg-[#F3F4F6]">
+                  <thead className="bg-[#F3F4F6] dark:bg-[#141C2A]">
                     <tr>
-                      <th className="text-left px-4 py-3 font-body text-xs text-[#4B5563] font-medium">{language === 'hi' ? 'लीड ID' : 'Lead ID'}</th>
-                      <th className="text-left px-4 py-3 font-body text-xs text-[#4B5563] font-medium">{language === 'hi' ? 'उत्पाद' : 'Product'}</th>
-                      <th className="text-left px-4 py-3 font-body text-xs text-[#4B5563] font-medium">{language === 'hi' ? 'स्थिति' : 'Status'}</th>
-                      <th className="text-left px-4 py-3 font-body text-xs text-[#4B5563] font-medium">{language === 'hi' ? 'तिथि' : 'Date'}</th>
+                      <th className="text-left px-4 py-3 font-body text-xs text-[#334155] dark:text-[#CBD5E1] font-medium">{language === 'hi' ? 'लीड ID' : 'Lead ID'}</th>
+                      <th className="text-left px-4 py-3 font-body text-xs text-[#334155] dark:text-[#CBD5E1] font-medium">{language === 'hi' ? 'उत्पाद' : 'Product'}</th>
+                      <th className="text-left px-4 py-3 font-body text-xs text-[#334155] dark:text-[#CBD5E1] font-medium">{language === 'hi' ? 'स्थिति' : 'Status'}</th>
+                      <th className="text-left px-4 py-3 font-body text-xs text-[#334155] dark:text-[#CBD5E1] font-medium">{language === 'hi' ? 'तिथि' : 'Date'}</th>
                     </tr>
                   </thead>
                   <tbody>
                     {data.recent_leads.length === 0 && (
-                      <tr><td colSpan={4} className="text-center py-8 font-body text-sm text-[#9CA3AF]">{language === 'hi' ? 'अभी कोई लीड नहीं' : 'No leads yet'}</td></tr>
+                      <tr><td colSpan={4} className="text-center py-8 font-body text-sm text-[#94A3B8] dark:text-[#64748B]">{language === 'hi' ? 'अभी कोई लीड नहीं' : 'No leads yet'}</td></tr>
                     )}
                     {data.recent_leads.map((lead) => (
-                      <tr key={lead.lead_id} className="border-t border-black/5 hover:bg-[#F9F9FB]">
-                        <td className="px-4 py-3 font-body text-xs text-[#0A0A0A]">{lead.lead_id?.slice(-8)}</td>
-                        <td className="px-4 py-3 font-body text-xs text-[#4B5563]">{lead.product_name}</td>
+                      <tr key={lead.lead_id} className="border-t border-black/5 hover:bg-[#FFFBF5] dark:bg-[#0B121C]">
+                        <td className="px-4 py-3 font-body text-xs text-[#0A1118] dark:text-[#FFFBF5]">{lead.lead_id?.slice(-8)}</td>
+                        <td className="px-4 py-3 font-body text-xs text-[#334155] dark:text-[#CBD5E1]">{lead.product_name}</td>
                         <td className="px-4 py-3">
-                          <Badge className={`text-[10px] rounded-full ${lead.status === 'disbursed' ? 'bg-[#059669]/10 text-[#059669]' : lead.status === 'approved' ? 'bg-[#3B82F6]/10 text-[#3B82F6]' : lead.status === 'revoked' ? 'bg-[#DC2626]/10 text-[#DC2626]' : 'bg-[#F59E0B]/10 text-[#F59E0B]'}`}>
+                          <Badge className={`text-[10px] rounded-full ${lead.status === 'disbursed' ? 'bg-[#10B981] dark:bg-[#34D399] dark:text-[#0A1118]/10 text-[#059669]' : lead.status === 'approved' ? 'bg-[#3B82F6]/10 text-[#3B82F6]' : lead.status === 'revoked' ? 'bg-[#DC2626]/10 text-[#DC2626]' : 'bg-[#F59E0B]/10 text-[#F59E0B]'}`}>
                             {lead.status}
                           </Badge>
                         </td>
-                        <td className="px-4 py-3 font-body text-xs text-[#9CA3AF]">{lead.created_at?.slice(0, 10)}</td>
+                        <td className="px-4 py-3 font-body text-xs text-[#94A3B8] dark:text-[#64748B]">{lead.created_at?.slice(0, 10)}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -215,27 +215,27 @@ export default function BankDashboardPage() {
             <Card className="rounded-2xl border border-black/5 overflow-hidden">
               <div className="overflow-x-auto">
                 <table className="w-full">
-                  <thead className="bg-[#F3F4F6]">
+                  <thead className="bg-[#F3F4F6] dark:bg-[#141C2A]">
                     <tr>
-                      <th className="text-left px-4 py-3 font-body text-xs text-[#4B5563] font-medium">{language === 'hi' ? 'आवेदन ID' : 'App ID'}</th>
-                      <th className="text-left px-4 py-3 font-body text-xs text-[#4B5563] font-medium">{language === 'hi' ? 'नाम' : 'Name'}</th>
-                      <th className="text-left px-4 py-3 font-body text-xs text-[#4B5563] font-medium">{language === 'hi' ? 'फोन' : 'Phone'}</th>
-                      <th className="text-left px-4 py-3 font-body text-xs text-[#4B5563] font-medium">{language === 'hi' ? 'राशि' : 'Amount'}</th>
-                      <th className="text-left px-4 py-3 font-body text-xs text-[#4B5563] font-medium">{language === 'hi' ? 'उद्देश्य' : 'Purpose'}</th>
-                      <th className="text-left px-4 py-3 font-body text-xs text-[#4B5563] font-medium">{language === 'hi' ? 'स्थिति' : 'Status'}</th>
+                      <th className="text-left px-4 py-3 font-body text-xs text-[#334155] dark:text-[#CBD5E1] font-medium">{language === 'hi' ? 'आवेदन ID' : 'App ID'}</th>
+                      <th className="text-left px-4 py-3 font-body text-xs text-[#334155] dark:text-[#CBD5E1] font-medium">{language === 'hi' ? 'नाम' : 'Name'}</th>
+                      <th className="text-left px-4 py-3 font-body text-xs text-[#334155] dark:text-[#CBD5E1] font-medium">{language === 'hi' ? 'फोन' : 'Phone'}</th>
+                      <th className="text-left px-4 py-3 font-body text-xs text-[#334155] dark:text-[#CBD5E1] font-medium">{language === 'hi' ? 'राशि' : 'Amount'}</th>
+                      <th className="text-left px-4 py-3 font-body text-xs text-[#334155] dark:text-[#CBD5E1] font-medium">{language === 'hi' ? 'उद्देश्य' : 'Purpose'}</th>
+                      <th className="text-left px-4 py-3 font-body text-xs text-[#334155] dark:text-[#CBD5E1] font-medium">{language === 'hi' ? 'स्थिति' : 'Status'}</th>
                     </tr>
                   </thead>
                   <tbody>
                     {(!data.applications || data.applications.length === 0) && (
-                      <tr><td colSpan={6} className="text-center py-8 font-body text-sm text-[#9CA3AF]">{language === 'hi' ? 'अभी कोई आवेदन नहीं' : 'No applications yet'}</td></tr>
+                      <tr><td colSpan={6} className="text-center py-8 font-body text-sm text-[#94A3B8] dark:text-[#64748B]">{language === 'hi' ? 'अभी कोई आवेदन नहीं' : 'No applications yet'}</td></tr>
                     )}
                     {(data.applications || []).map((app) => (
-                      <tr key={app.application_id} className="border-t border-black/5 hover:bg-[#F9F9FB]">
-                        <td className="px-4 py-3 font-body text-xs text-[#0A0A0A]">{app.application_id?.slice(-8)}</td>
-                        <td className="px-4 py-3 font-body text-xs text-[#0A0A0A] font-medium">{app.full_name}</td>
-                        <td className="px-4 py-3 font-body text-xs text-[#4B5563]">{app.phone}</td>
-                        <td className="px-4 py-3 font-body text-xs text-[#0A0A0A] font-medium">{app.loan_amount_requested ? formatCurrency(app.loan_amount_requested) : '—'}</td>
-                        <td className="px-4 py-3 font-body text-xs text-[#4B5563]">{app.loan_purpose || '—'}</td>
+                      <tr key={app.application_id} className="border-t border-black/5 hover:bg-[#FFFBF5] dark:bg-[#0B121C]">
+                        <td className="px-4 py-3 font-body text-xs text-[#0A1118] dark:text-[#FFFBF5]">{app.application_id?.slice(-8)}</td>
+                        <td className="px-4 py-3 font-body text-xs text-[#0A1118] dark:text-[#FFFBF5] font-medium">{app.full_name}</td>
+                        <td className="px-4 py-3 font-body text-xs text-[#334155] dark:text-[#CBD5E1]">{app.phone}</td>
+                        <td className="px-4 py-3 font-body text-xs text-[#0A1118] dark:text-[#FFFBF5] font-medium">{app.loan_amount_requested ? formatCurrency(app.loan_amount_requested) : '—'}</td>
+                        <td className="px-4 py-3 font-body text-xs text-[#334155] dark:text-[#CBD5E1]">{app.loan_purpose || '—'}</td>
                         <td className="px-4 py-3"><Badge className="text-[10px] rounded-full bg-[#3B82F6]/10 text-[#3B82F6]">{app.status}</Badge></td>
                       </tr>
                     ))}
@@ -248,13 +248,13 @@ export default function BankDashboardPage() {
           {/* Products Tab */}
           <TabsContent value="products">
             <div className="flex justify-between items-center mb-4">
-              <h3 className="font-heading font-bold text-sm text-[#0A0A0A]">{language === 'hi' ? 'आपके लोन उत्पाद' : 'Your Loan Products'}</h3>
-              <Button size="sm" onClick={() => setAddingProduct(!addingProduct)} className="bg-[#059669] hover:bg-[#047857] text-white rounded-full px-4 text-xs font-body" data-testid="add-product-btn">
+              <h3 className="font-heading font-bold text-sm text-[#0A1118] dark:text-[#FFFBF5]">{language === 'hi' ? 'आपके लोन उत्पाद' : 'Your Loan Products'}</h3>
+              <Button size="sm" onClick={() => setAddingProduct(!addingProduct)} className="bg-[#10B981] dark:bg-[#34D399] dark:text-[#0A1118] hover:bg-[#059669] dark:hover:bg-[#10B981] text-white rounded-full px-4 text-xs font-body" data-testid="add-product-btn">
                 <Plus className="w-3 h-3 mr-1" />{language === 'hi' ? 'उत्पाद जोड़ें' : 'Add Product'}
               </Button>
             </div>
             {addingProduct && (
-              <Card className="rounded-2xl border border-[#059669]/20 p-5 mb-4 bg-[#059669]/5" data-testid="add-product-form">
+              <Card className="rounded-2xl border border-[#059669]/20 p-5 mb-4 bg-[#10B981] dark:bg-[#34D399] dark:text-[#0A1118]/5" data-testid="add-product-form">
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mb-4">
                   <div>
                     <Label className="font-body text-xs font-semibold">{language === 'hi' ? 'उत्पाद नाम' : 'Product Name'}</Label>
@@ -262,7 +262,7 @@ export default function BankDashboardPage() {
                   </div>
                   <div>
                     <Label className="font-body text-xs font-semibold">{language === 'hi' ? 'लोन प्रकार' : 'Loan Type'}</Label>
-                    <select value={newProduct.loan_type} onChange={e => setNewProduct(p => ({...p, loan_type: e.target.value}))} className="mt-1 w-full h-9 rounded-lg border border-[#E5E7EB] text-sm px-3 font-body">
+                    <select value={newProduct.loan_type} onChange={e => setNewProduct(p => ({...p, loan_type: e.target.value}))} className="mt-1 w-full h-9 rounded-lg border border-[#E5E7EB] dark:border-[#1F2A3D] text-sm px-3 font-body">
                       {['personal','home','car','business','msme','gold','education','lap','working_capital','plot','bike','used_vehicle','mutual_funds','refinance'].map(t => <option key={t} value={t}>{t.replace('_',' ')}</option>)}
                     </select>
                   </div>
@@ -283,12 +283,12 @@ export default function BankDashboardPage() {
                     <Input value={newProduct.features} onChange={e => setNewProduct(p => ({...p, features: e.target.value}))} placeholder="Quick approval, Low rate" className="mt-1 rounded-lg text-sm h-9" />
                   </div>
                 </div>
-                <Button size="sm" onClick={handleAddProduct} className="bg-[#059669] hover:bg-[#047857] text-white rounded-full px-5 text-xs font-body" data-testid="save-product-btn">
+                <Button size="sm" onClick={handleAddProduct} className="bg-[#10B981] dark:bg-[#34D399] dark:text-[#0A1118] hover:bg-[#059669] dark:hover:bg-[#10B981] text-white rounded-full px-5 text-xs font-body" data-testid="save-product-btn">
                   {language === 'hi' ? 'सहेजें' : 'Save Product'}
                 </Button>
               </Card>
             )}
-            <p className="font-body text-xs text-[#9CA3AF]">{data.products_count} {language === 'hi' ? 'सक्रिय उत्पाद' : 'active products'}</p>
+            <p className="font-body text-xs text-[#94A3B8] dark:text-[#64748B]">{data.products_count} {language === 'hi' ? 'सक्रिय उत्पाद' : 'active products'}</p>
           </TabsContent>
         </Tabs>
       </div>

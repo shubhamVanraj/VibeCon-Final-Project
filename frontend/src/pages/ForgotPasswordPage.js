@@ -55,9 +55,9 @@ export default function ForgotPasswordPage() {
   };
 
   return (
-    <div className="min-h-screen bg-mesh-auth flex items-center justify-center p-4" data-testid="forgot-password-page">
+    <div className="min-h-screen bg-[#FFFBF5] dark:bg-[#050810] flex items-center justify-center p-4" data-testid="forgot-password-page">
       <div className="w-full max-w-md">
-        <Link to="/login" className="inline-flex items-center gap-2 text-[#4B5563] hover:text-[#0A0A0A] mb-8 transition-colors" data-testid="back-to-login-link">
+        <Link to="/login" className="inline-flex items-center gap-2 text-[#334155] dark:text-[#CBD5E1] hover:text-[#0A1118] dark:text-[#FFFBF5] mb-8 transition-colors" data-testid="back-to-login-link">
           <ArrowLeft className="w-4 h-4" />
           <span className="font-body text-sm">Back to login</span>
         </Link>
@@ -66,7 +66,7 @@ export default function ForgotPasswordPage() {
           <CardHeader className="text-center pb-2">
             <a href="/" className="flex items-center justify-center gap-2 mb-2 cursor-pointer" data-testid="logo-home-link">
               <img src="https://static.prod-images.emergentagent.com/jobs/46236293-45eb-486f-8de9-3cfd3f7e2526/images/251ac3f41bd806cd53ef74f0a949d1a3be51ac19219729fbf89fb0dba4f12b85.png" alt="Rinkosh" className="w-7 h-7 object-contain" />
-              <span className="font-heading font-bold text-xl text-[#0A0A0A] tracking-tight">Rinkosh</span>
+              <span className="font-heading font-bold text-xl text-[#0A1118] dark:text-[#FFFBF5] tracking-tight">Rinkosh</span>
             </a>
             <CardTitle className="font-heading text-2xl tracking-tight">
               {step === 1 ? 'Forgot Password' : step === 2 ? 'Enter Reset Code' : 'New Password'}
@@ -78,7 +78,7 @@ export default function ForgotPasswordPage() {
           <CardContent>
             <div className="flex items-center justify-center gap-2 mb-6">
               {[1, 2, 3].map(s => (
-                <div key={s} className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${step >= s ? 'bg-[#059669] scale-110' : 'bg-[#E5E7EB]'}`} />
+                <div key={s} className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${step >= s ? 'bg-[#10B981] dark:bg-[#34D399] dark:text-[#0A1118] scale-110' : 'bg-[#E5E7EB]'}`} />
               ))}
             </div>
 
@@ -88,18 +88,18 @@ export default function ForgotPasswordPage() {
 
                 {step === 1 && (
                   <form onSubmit={handleRequestOtp} className="space-y-4">
-                    <div className="w-12 h-12 rounded-xl bg-[#059669]/10 flex items-center justify-center mx-auto mb-4">
+                    <div className="w-12 h-12 rounded-xl bg-[#10B981] dark:bg-[#34D399] dark:text-[#0A1118]/10 flex items-center justify-center mx-auto mb-4">
                       <Mail className="w-6 h-6 text-[#059669]" strokeWidth={1.5} />
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="email" className="font-body">Email Address</Label>
                       <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)}
                         placeholder="you@example.com" required
-                        className="rounded-xl bg-[#F9F9FB] border-[#E5E7EB] focus:border-[#059669] focus:ring-[#059669]"
+                        className="rounded-xl bg-[#FFFBF5] dark:bg-[#0B121C] border-[#E5E7EB] dark:border-[#1F2A3D] focus:border-[#059669] focus:ring-[#059669]"
                         data-testid="forgot-email-input" />
                     </div>
                     <Button type="submit" disabled={loading}
-                      className="w-full bg-[#111827] text-white hover:bg-[#000000] rounded-full py-3 font-body font-semibold h-12"
+                      className="w-full bg-[#0A1118] dark:bg-[#FFB347] dark:text-[#0A1118] text-white hover:bg-[#000000] rounded-full py-3 font-body font-semibold h-12"
                       data-testid="forgot-submit-button">
                       {loading ? 'Sending...' : 'Send Reset Code'}
                     </Button>
@@ -108,7 +108,7 @@ export default function ForgotPasswordPage() {
 
                 {step === 2 && (
                   <form onSubmit={(e) => { e.preventDefault(); if (otp.length === 6) setStep(3); }} className="space-y-4">
-                    <div className="w-12 h-12 rounded-xl bg-[#059669]/10 flex items-center justify-center mx-auto mb-4">
+                    <div className="w-12 h-12 rounded-xl bg-[#10B981] dark:bg-[#34D399] dark:text-[#0A1118]/10 flex items-center justify-center mx-auto mb-4">
                       <KeyRound className="w-6 h-6 text-[#059669]" strokeWidth={1.5} />
                     </div>
                     <div className="space-y-2">
@@ -116,11 +116,11 @@ export default function ForgotPasswordPage() {
                       <Input id="otp" type="text" value={otp}
                         onChange={(e) => setOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
                         placeholder="000000" required maxLength={6}
-                        className="rounded-xl bg-[#F9F9FB] border-[#E5E7EB] focus:border-[#059669] focus:ring-[#059669] text-center text-2xl tracking-[0.5em] font-heading"
+                        className="rounded-xl bg-[#FFFBF5] dark:bg-[#0B121C] border-[#E5E7EB] dark:border-[#1F2A3D] focus:border-[#059669] focus:ring-[#059669] text-center text-2xl tracking-[0.5em] font-heading"
                         data-testid="forgot-otp-input" />
                     </div>
                     <Button type="submit" disabled={otp.length !== 6}
-                      className="w-full bg-[#111827] text-white hover:bg-[#000000] rounded-full py-3 font-body font-semibold h-12"
+                      className="w-full bg-[#0A1118] dark:bg-[#FFB347] dark:text-[#0A1118] text-white hover:bg-[#000000] rounded-full py-3 font-body font-semibold h-12"
                       data-testid="forgot-verify-button">
                       Verify Code
                     </Button>
@@ -132,25 +132,25 @@ export default function ForgotPasswordPage() {
 
                 {step === 3 && (
                   <form onSubmit={handleVerifyAndReset} className="space-y-4">
-                    <div className="w-12 h-12 rounded-xl bg-[#059669]/10 flex items-center justify-center mx-auto mb-4">
+                    <div className="w-12 h-12 rounded-xl bg-[#10B981] dark:bg-[#34D399] dark:text-[#0A1118]/10 flex items-center justify-center mx-auto mb-4">
                       <Lock className="w-6 h-6 text-[#059669]" strokeWidth={1.5} />
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="newPassword" className="font-body">New Password</Label>
                       <Input id="newPassword" type="password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)}
                         placeholder="Min 6 characters" required
-                        className="rounded-xl bg-[#F9F9FB] border-[#E5E7EB] focus:border-[#059669] focus:ring-[#059669]"
+                        className="rounded-xl bg-[#FFFBF5] dark:bg-[#0B121C] border-[#E5E7EB] dark:border-[#1F2A3D] focus:border-[#059669] focus:ring-[#059669]"
                         data-testid="new-password-input" />
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="confirmPassword" className="font-body">Confirm Password</Label>
                       <Input id="confirmPassword" type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)}
                         placeholder="Confirm password" required
-                        className="rounded-xl bg-[#F9F9FB] border-[#E5E7EB] focus:border-[#059669] focus:ring-[#059669]"
+                        className="rounded-xl bg-[#FFFBF5] dark:bg-[#0B121C] border-[#E5E7EB] dark:border-[#1F2A3D] focus:border-[#059669] focus:ring-[#059669]"
                         data-testid="confirm-password-input" />
                     </div>
                     <Button type="submit" disabled={loading}
-                      className="w-full bg-[#059669] text-white hover:bg-[#047857] rounded-full py-3 font-body font-semibold h-12"
+                      className="w-full bg-[#10B981] dark:bg-[#34D399] dark:text-[#0A1118] text-white hover:bg-[#059669] dark:hover:bg-[#10B981] rounded-full py-3 font-body font-semibold h-12"
                       data-testid="reset-password-button">
                       {loading ? 'Resetting...' : 'Reset Password'}
                     </Button>

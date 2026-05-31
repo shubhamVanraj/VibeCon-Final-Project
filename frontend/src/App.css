@@ -38,18 +38,68 @@
   --dsl-slate-soft: #64748B;
   --dsl-emerald: #10B981;
   --dsl-paper: rgba(255, 255, 255, 0.72);  /* glass card top */
+  --dsl-paper-solid: #FFFFFF;
+  --dsl-surface: #FFFBF5;
+  --dsl-surface-2: #FAF5EA;
+  --dsl-border: rgba(13, 27, 42, 0.06);
+  --dsl-border-strong: rgba(13, 27, 42, 0.10);
   --dsl-shadow: 0 1px 3px rgba(13,27,42,0.04), 0 0 0 1px rgba(13,27,42,0.04);
   --dsl-shadow-hover: 0 10px 28px rgba(13,27,42,0.10), 0 0 0 1px rgba(200,134,10,0.22);
   --dsl-shadow-best: 0 8px 24px rgba(200,134,10,0.14), 0 0 0 1.5px rgba(200,134,10,0.36);
+  --dsl-tile-best-bg: linear-gradient(135deg, #FFFEFB 0%, #FFFBF5 50%, #FFF8EE 100%);
+  --dsl-text: #0A1118;
+  --dsl-text-soft: #334155;
+  --dsl-text-muted: #64748B;
+  --dsl-text-dim: #94A3B8;
+  --dsl-input-bg: #FFFFFF;
+  --dsl-mid-glaze: linear-gradient(180deg, rgba(241,245,249,0.0) 0%, rgba(241,245,249,0.32) 100%);
+}
+
+/* ========== DALAL STREET MIDNIGHT (Dark Mode) ========== */
+.dark {
+  --dsl-cream: #050810;             /* surface base */
+  --dsl-cream-soft: #0B121C;
+  --dsl-ink: #FFFBF5;               /* inverted — bright cream "ink" on dark */
+  --dsl-ink-soft: #E5E7EB;
+  --dsl-amber: #FFB347;             /* lift amber to neon by default in dark */
+  --dsl-amber-neon: #FFD089;        /* even brighter amber for accents */
+  --dsl-amber-glow: rgba(255, 179, 71, 0.28);
+  --dsl-slate: #CBD5E1;
+  --dsl-slate-soft: #94A3B8;
+  --dsl-emerald: #34D399;
+  --dsl-paper: rgba(20, 28, 42, 0.72);
+  --dsl-paper-solid: #141C2A;
+  --dsl-surface: #050810;
+  --dsl-surface-2: #0B121C;
+  --dsl-border: rgba(255, 179, 71, 0.10);
+  --dsl-border-strong: rgba(255, 179, 71, 0.20);
+  --dsl-shadow: 0 1px 3px rgba(0,0,0,0.30), 0 0 0 1px rgba(255,179,71,0.06);
+  --dsl-shadow-hover: 0 12px 32px rgba(0,0,0,0.50), 0 0 0 1px rgba(255,179,71,0.32), 0 0 24px rgba(255,179,71,0.08);
+  --dsl-shadow-best: 0 0 0 1.5px rgba(255,179,71,0.50), 0 0 28px rgba(255,179,71,0.20), 0 8px 24px rgba(0,0,0,0.40);
+  --dsl-tile-best-bg: linear-gradient(135deg, #141C2A 0%, #1A2335 50%, #221A0F 100%);
+  --dsl-text: #FFFBF5;
+  --dsl-text-soft: #CBD5E1;
+  --dsl-text-muted: #94A3B8;
+  --dsl-text-dim: #64748B;
+  --dsl-input-bg: #0B121C;
+  --dsl-mid-glaze: linear-gradient(180deg, rgba(255,179,71,0.0) 0%, rgba(255,179,71,0.04) 100%);
 }
 
 /* ========== BASE ========== */
 body {
-  background: var(--dsl-cream);
-  color: var(--dsl-ink);
+  background: var(--dsl-surface);
+  color: var(--dsl-text);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   font-family: 'DM Sans', system-ui, sans-serif;
+  transition: background-color 280ms cubic-bezier(0.22, 1, 0.36, 1), color 280ms ease;
+}
+
+/* Smooth color transitions when flipping themes */
+.bismuth-tile, .cap, body, nav, footer, h1, h2, h3, h4, button, a, p, div, span {
+  transition: background-color 280ms cubic-bezier(0.22, 1, 0.36, 1),
+              color 200ms ease,
+              border-color 240ms ease;
 }
 
 /* ========== BAZAAR BISMUTH TILES — layered translucent depth ========== */
@@ -60,12 +110,13 @@ body {
   background: var(--dsl-paper);
   backdrop-filter: blur(8px) saturate(1.1);
   -webkit-backdrop-filter: blur(8px) saturate(1.1);
-  border: 1px solid rgba(13, 27, 42, 0.06);
+  border: 1px solid var(--dsl-border);
   border-radius: 14px;
   box-shadow: var(--dsl-shadow);
   transition: transform 320ms cubic-bezier(0.34, 1.56, 0.64, 1),
               box-shadow 320ms cubic-bezier(0.22, 1, 0.36, 1),
-              border-color 200ms ease;
+              border-color 200ms ease,
+              background-color 280ms ease;
   will-change: transform;
 }
 .bismuth-tile::before {
@@ -74,7 +125,7 @@ body {
   position: absolute;
   inset: 0;
   border-radius: 14px;
-  background: linear-gradient(180deg, rgba(241,245,249,0.0) 0%, rgba(241,245,249,0.32) 100%);
+  background: var(--dsl-mid-glaze);
   pointer-events: none;
   opacity: 0.6;
   transition: opacity 320ms cubic-bezier(0.22, 1, 0.36, 1);
@@ -82,7 +133,7 @@ body {
 .bismuth-tile:hover {
   transform: translateY(-3px) scale(1.008);
   box-shadow: var(--dsl-shadow-hover);
-  border-color: rgba(200, 134, 10, 0.32);
+  border-color: var(--dsl-border-strong);
 }
 .bismuth-tile:hover::before {
   opacity: 0.85;
@@ -90,8 +141,11 @@ body {
 
 .bismuth-tile-best {
   border: 1.5px solid rgba(200, 134, 10, 0.32);
-  background: linear-gradient(135deg, #FFFEFB 0%, #FFFBF5 50%, #FFF8EE 100%);
+  background: var(--dsl-tile-best-bg);
   box-shadow: var(--dsl-shadow-best);
+}
+.dark .bismuth-tile-best {
+  border-color: rgba(255, 179, 71, 0.40);
 }
 .bismuth-tile-best::after {
   /* shimmering top border for the "best value" */
@@ -175,8 +229,9 @@ body {
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: #94A3B8;
+  color: var(--dsl-text-dim);
 }
+.dark .cap { color: var(--dsl-text-muted); }
 
 /* ========== HERO + LANDING ========== */
 

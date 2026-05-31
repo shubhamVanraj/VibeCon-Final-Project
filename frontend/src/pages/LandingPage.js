@@ -85,7 +85,7 @@ export default function LandingPage() {
   const handleLogout = async () => { await logout(); navigate('/'); };
 
   return (
-    <div className="min-h-screen bg-white" data-testid="landing-page">
+    <div className="min-h-screen bg-[#FFFBF5] dark:bg-[#050810] transition-colors duration-300" data-testid="landing-page">
       <LandingNavbar
         t={t}
         isLoggedIn={isLoggedIn}
