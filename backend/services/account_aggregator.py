@@ -164,6 +164,13 @@ class MockAAProvider(AccountAggregatorProvider):
 
     async def fetch_financial_data(self, consent_id: str,
                                    user_id: str) -> FIDataPacket:
+        # Look up the stored consent to discover which FI types were granted
+        granted_fi_types = []
+        for v in self._store.values():
+            if v.get("consent_id") == consent_id:
+                granted_fi_types = v.get("fi_types", [])
+                break
+
         # Deterministic synthetic data based on user_id
         seed = int(hashlib.sha256(user_id.encode()).hexdigest()[:6], 16)
         avg_balance = 50000 + (seed % 450000)        # ₹50K - ₹5L
@@ -191,8 +198,10 @@ class MockAAProvider(AccountAggregatorProvider):
                     "avg_balance_3mo": avg_balance,
                 }
             ],
-            "epf_balance": 50000 + (seed % 250000) if "EPF" in (consent_id or "") or True else 0,
         }
+        # Only include EPF if the user actually consented to it
+        if "EPF" in granted_fi_types:
+            fi_data["epf_balance"] = 50000 + (seed % 250000)
         return FIDataPacket(
             consent_id=consent_id,
             session_id=f"sess_{uuid.uuid4().hex[:12]}",

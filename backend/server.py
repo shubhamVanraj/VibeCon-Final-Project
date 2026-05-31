@@ -255,6 +255,10 @@ class AAConsentRequest(BaseModel):
     fetch_history_months: int = 12
 
 
+class AAConsentIdRequest(BaseModel):
+    consent_id: str
+
+
 
 
 # ==================== AUTH HELPERS ====================
@@ -820,13 +824,10 @@ async def aa_consent_status(consent_handle: str, request: Request):
 
 
 @api_router.post("/aa/fi-data/fetch")
-async def aa_fetch_fi_data(request: Request):
-    """Step 3 — Pull FI Data once consent is APPROVED. Body: {consent_id: str}."""
+async def aa_fetch_fi_data(data: AAConsentIdRequest, request: Request):
+    """Step 3 — Pull FI Data once consent is APPROVED."""
     user = await get_current_user(request)
-    body = await request.json()
-    consent_id = body.get("consent_id")
-    if not consent_id:
-        raise HTTPException(status_code=400, detail="consent_id is required")
+    consent_id = data.consent_id
 
     # Validate consent belongs to this user and is APPROVED
     consent = await db.aa_consents.find_one(
@@ -856,13 +857,10 @@ async def aa_fetch_fi_data(request: Request):
 
 
 @api_router.post("/aa/consent/revoke")
-async def aa_revoke_consent(request: Request):
+async def aa_revoke_consent(data: AAConsentIdRequest, request: Request):
     """User exercises right to revoke AA consent (DPDP / AA spec)."""
     user = await get_current_user(request)
-    body = await request.json()
-    consent_id = body.get("consent_id")
-    if not consent_id:
-        raise HTTPException(status_code=400, detail="consent_id is required")
+    consent_id = data.consent_id
 
     consent = await db.aa_consents.find_one(
         {"consent_id": consent_id, "user_id": user["user_id"]}
