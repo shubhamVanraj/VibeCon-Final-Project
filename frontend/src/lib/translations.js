@@ -195,6 +195,12 @@ export const translations = {
     tenure: "Tenure",
     cibilScore: "CIBIL Score",
     applyUpdateCards: "Apply & Update Cards",
+    // Section headers (Dalal Light)
+    emiCalcKicker: "EMI Calculator",
+    emiCalcHeader: "Know your monthly EMI in",
+    emiCalcHeaderAccent: "30 seconds",
+    whyRinkoshKicker: "Why Rinkosh",
+    threePromisesHeader: "Three promises. Zero exceptions.",
   },
   hi: {
     brand: "रिंकोश", motto: "कोई स्पैम नहीं। कोई राज़ नहीं। बस बचत।",
@@ -391,5 +397,11 @@ export const translations = {
     tenure: "अवधि",
     cibilScore: "CIBIL स्कोर",
     applyUpdateCards: "लागू करें और कार्ड अपडेट करें",
+    // Section headers
+    emiCalcKicker: "EMI कैलकुलेटर",
+    emiCalcHeader: "अपनी मासिक EMI जानें",
+    emiCalcHeaderAccent: "30 सेकंड में",
+    whyRinkoshKicker: "रिंकोश क्यों",
+    threePromisesHeader: "तीन वादे। शून्य अपवाद।",
   }
 };

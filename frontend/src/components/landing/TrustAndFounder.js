@@ -10,8 +10,8 @@ export function TrustCards({ t }) {
     <section className="py-20 px-6 lg:px-8 relative" data-testid="trust-section">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-12">
-          <div className="cap text-[#C8860A] mb-2">Why Rinkosh</div>
-          <h2 className="font-heading font-bold text-3xl md:text-4xl text-[#0A1118] tracking-tight">Three promises. Zero exceptions.</h2>
+          <div className="cap text-[#C8860A] mb-2">{t.whyRinkoshKicker}</div>
+          <h2 className="font-heading font-bold text-3xl md:text-4xl text-[#0A1118] tracking-tight">{t.threePromisesHeader}</h2>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5 snap-in-stagger">
           {cards.map((tc) => (

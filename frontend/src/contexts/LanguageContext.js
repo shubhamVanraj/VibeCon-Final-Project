@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useCallback } from 'react';
+import { createContext, useContext, useState, useCallback, useEffect } from 'react';
 import { translations } from '../lib/translations';
 import api from '../lib/api';
 
@@ -12,6 +12,14 @@ export const LanguageProvider = ({ children }) => {
   });
 
   const t = translations[language] || translations.en;
+
+  // Mirror language to <html lang> so [lang="hi"] CSS rules activate
+  // (Devanagari font swap relies on this attribute.)
+  useEffect(() => {
+    if (typeof document !== 'undefined') {
+      document.documentElement.lang = language;
+    }
+  }, [language]);
 
   const setLanguage = useCallback(async (lang) => {
     setLanguageState(lang);

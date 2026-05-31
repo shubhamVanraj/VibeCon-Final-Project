@@ -11,6 +11,20 @@
 .font-numbers { font-family: 'Chivo', 'DM Sans', system-ui; font-variant-numeric: tabular-nums; letter-spacing: -0.01em; }
 [lang="hi"], .lang-hi { font-family: 'IBM Plex Sans Devanagari', 'DM Sans', system-ui, sans-serif; }
 
+/* Devanagari-aware overrides — Chivo has no Devanagari glyphs, so swap to IBM Plex */
+[lang="hi"] .font-heading,
+[lang="hi"] .hero-headline,
+[lang="hi"] .font-body,
+[lang="hi"] h1, [lang="hi"] h2, [lang="hi"] h3, [lang="hi"] h4 {
+  font-family: 'IBM Plex Sans Devanagari', 'Chivo', system-ui, sans-serif;
+}
+/* Keep tabular numbers in Chivo even in Hindi mode — ₹/digits look better */
+[lang="hi"] .font-numbers,
+[lang="hi"] .data-large {
+  font-family: 'Chivo', 'IBM Plex Sans Devanagari', 'DM Sans', system-ui;
+  font-variant-numeric: tabular-nums;
+}
+
 /* ========== DALAL STREET LIGHT TOKENS ========== */
 :root {
   --dsl-cream: #FFFBF5;

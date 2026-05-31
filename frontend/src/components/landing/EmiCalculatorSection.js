@@ -21,10 +21,10 @@ export function EmiCalculatorSection({ t }) {
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-12">
           <div className="inline-flex items-center gap-2 cap text-[#C8860A] mb-2">
-            <Calculator className="w-3.5 h-3.5" /> EMI Calculator
+            <Calculator className="w-3.5 h-3.5" /> {t.emiCalcKicker}
           </div>
           <h2 className="font-heading font-bold text-3xl md:text-4xl text-[#0A1118] tracking-tight">
-            Know your monthly EMI in <span className="hero-headline accent">30 seconds</span>
+            {t.emiCalcHeader} <span className="hero-headline accent">{t.emiCalcHeaderAccent}</span>
           </h2>
         </div>
 
